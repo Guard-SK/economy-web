@@ -32,7 +32,7 @@ export default {
           email: email.value,
           password: password.value
         })
-        router.push('/')
+        this.$router.push('/')
       }
       catch (err) {
         error.value = err.message
