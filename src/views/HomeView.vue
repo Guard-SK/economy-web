@@ -3,6 +3,7 @@
     <img alt="Vue logo" src="../assets/logo.png">
     <form @submit.prevent="handleSubmit">
       <h3>Sign up</h3>
+      <p>TEST</p>
 
       <label for="email">Email:</label>
       <input type="email" name="email" v-model="email" required>
