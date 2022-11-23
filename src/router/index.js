@@ -3,9 +3,33 @@ import HomeView from '../views/HomeView.vue'
 
 const routes = [
   {
-    path: '/',
+		path: '/',
+		redirect: '/auth/login'
+	},
+  {
+		path: '/auth/',
+    redirect: '/auth/login',
+		children: [
+			{
+				path: '',
+				redirect: '/auth/login'
+			},
+			{
+				path: 'login',
+				name: 'Login',
+				component: () => import('../views/login/login.vue')
+			},
+      {
+				path: 'signup',
+				name: 'Sign up',
+				component: () => import('../views/signup/signup.vue')
+			}
+		]
+	},
+  {
+    path: '/home',
     name: 'home',
-    component: HomeView
+    component: () => import('../views/HomeView.vue')
   },
   {
     path: '/about',
