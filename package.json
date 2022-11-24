@@ -7,9 +7,12 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "bootstrap": "^5.2.3",
+    "bootstrap-vue": "^2.23.1",
     "core-js": "^3.8.3",
     "firebase": "^9.14.0",
-    "vue": "^3.2.13",
+    "popper.js": "^1.16.1",
+    "vue": "^3.2.45",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"
   },
@@ -17,6 +20,8 @@
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-plugin-vuex": "~5.0.0",
-    "@vue/cli-service": "~5.0.0"
+    "@vue/cli-service": "~5.0.0",
+    "node-sass": "^8.0.0",
+    "sass-loader": "^13.2.0"
   }
 }
