@@ -50,7 +50,7 @@ setup() {
 		email: email.value,
 		password: password.value
 		})
-		router.push('/')
+		router.push('/auth/login')
 	}
 	catch (err) {
 		error.value = err.message
