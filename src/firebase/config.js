@@ -2,19 +2,18 @@ import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 
 const firebaseConfig = {
-	apiKey: "AIzaSyDibQQyyGFdmWo124YAFveQ6Cf1H3gLL4o",
-	authDomain: "economyweb-ed9d6.firebaseapp.com",
-	projectId: "economyweb-ed9d6",
-	storageBucket: "economyweb-ed9d6.appspot.com",
-	messagingSenderId: "311083782811",
-	appId: "1:311083782811:web:b8f7c464455e0d8ac3ac3e",
-	measurementId: "G-LG82GNCHS5"
+	apiKey: "AIzaSyC45onQJLS9-qvmwgu677L3Nr_lNubKcgQ",
+	authDomain: "vuefirebaseauth-35637.firebaseapp.com",
+	databaseURL: "https://vuefirebaseauth-35637-default-rtdb.europe-west1.firebasedatabase.app",
+	projectId: "vuefirebaseauth-35637",
+	storageBucket: "vuefirebaseauth-35637.appspot.com",
+	messagingSenderId: "717873384776",
+	appId: "1:717873384776:web:ba4e578036fe3de90e377d"
 };
-
 // init firebase
 initializeApp(firebaseConfig)
 
 // init firebase auth
 const auth = getAuth()
 
-export { auth}
+export { auth }
