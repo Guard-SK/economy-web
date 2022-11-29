@@ -19,7 +19,7 @@ const routes = [
 				name: 'Login',
 				component: () => import('../views/login/login.vue')
 			},
-		{
+			{
 				path: 'signup',
 				name: 'Sign up',
 				component: () => import('../views/signup/signup.vue')
@@ -59,8 +59,7 @@ router.beforeEach((to, from, next) => {
 		if (getAuth().currentUser) {
 			next()
 		} else {
-			alert("you dont have access")
-			next("/auth/login")
+			console.log('not logged in, cant go into there')
 		}
 	} else {
 		next()
