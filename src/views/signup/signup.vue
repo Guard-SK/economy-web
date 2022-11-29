@@ -23,6 +23,7 @@
         	<label for="exampleInputPassword1" class="form-label">Zopakuj heslo</label>
             <input type="password" class="form-control w-lg-75 w-50 mx-auto" id="repeatPasswordInput">
           </div>
+          <a @click="$router.push('/auth/login')" class="mb-3">Login instead?</a>
         </div>
         <button type="submit" class="btn col-12 btn-primary py-3">Sign up</button>
         <div v-if="error" class="alert alert-danger w-75 mt-3 mx-auto" role="alert">
@@ -50,7 +51,7 @@ setup() {
 		email: email.value,
 		password: password.value
 		})
-		router.push('/auth/login')
+		router.push('/home')
 	}
 	catch (err) {
 		error.value = err.message

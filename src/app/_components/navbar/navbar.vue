@@ -36,10 +36,10 @@
       <div class="offcanvas-body">
         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
           <li class="nav-item">
-            <router-link to="/home" class="nav-link active">Dashboard</router-link>
+            <router-link to="/app/dashboard" class="nav-link active">Dashboard</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/about" class="nav-link">Placeholder link 1</router-link>
+            <router-link to="/app/about" class="nav-link">Placeholder link 1</router-link>
           </li>
 		  <li class="nav-item">
             <router-link to="/auth/signup" class="nav-link">Log out</router-link>

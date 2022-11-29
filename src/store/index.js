@@ -3,7 +3,8 @@ import { createStore } from 'vuex'
 // firebase
 import { auth } from '../firebase/config'
 import {
-  createUserWithEmailAndPassword
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword
 } from 'firebase/auth'
 
 
@@ -22,15 +23,23 @@ export default createStore({
   actions: {
     async signUp(context, {email, password}) {
       console.log('signup action')
-      
-
       const res = await createUserWithEmailAndPassword(auth, email, password)
       if (res) {
         context.commit('setUser', res.user)
       } else {
         throw new Error('could not somplete signup')
       }
-    }
+    },
+    async login(context, {email, password}) {
+      console.log('signup action')
+      const res = await signInWithEmailAndPassword(auth, email, password)
+      if (res) {
+        context.commit('setUser', res.user)
+        console.log(auth.currentUser.id)
+      } else {
+        throw new Error('could not somplete login')
+      }
+    },
   },
   modules: {
   }
