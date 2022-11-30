@@ -5,11 +5,11 @@
         <div class="col-12 justify-content-center">
           <div class="mb-3">
             <label for="nameInput" class="form-label">Meno</label>
-            <input type="name" class="form-control w-lg-75 w-50 mx-auto" id="nameInput" aria-describedby="emailHelp">
+            <input type="name" class="form-control w-lg-75 w-50 mx-auto" id="nameInput" aria-describedby="emailHelp" v-model="name" required >
           </div>
           <div class="mb-3">
             <label for="surenameInput" class="form-label">Priezvisko</label>
-            <input type="surename" class="form-control w-lg-75 w-50 mx-auto" id="surenameInput" aria-describedby="emailHelp">
+            <input type="surename" class="form-control w-lg-75 w-50 mx-auto" id="surenameInput" aria-describedby="emailHelp" v-model="surename" required>
           </div>
           <div class="mb-3r">
             <label for="emailInput" class="form-label">Email</label>
@@ -37,27 +37,56 @@
 import { ref} from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import { getFirestore } from "firebase/firestore";
+import { setDoc ,doc } from "firebase/firestore"; 
+import { getAuth } from 'firebase/auth'
 
+const db = getFirestore();
 export default {
-  setup() {
-    const email = ref('')
-    const password = ref('')
-    const error = ref(null)
-    const store = useStore()
-    const router = useRouter()
-    const handleSubmit = async () => {
-    try {
-      await store.dispatch('signUp', {
-      email: email.value,
-      password: password.value
-      })
-      router.push('/home')
-    }
-    catch (err) {
-      error.value = err.message
-    }
-    }
-    return { handleSubmit, email, password, error }
-  }
+setup() {
+const name = ref('')
+const surename = ref('')
+const email = ref('')
+const password = ref('')
+const auth = getAuth();
+const error = ref(null)
+const store = useStore()
+const router = useRouter()
+const handleSubmit = async () => {
+
+try {
+  await store.dispatch('signUp', {
+  email: email.value,
+  password: password.value
+  })
+  router.push('/home')
+}
+catch (err) {
+  error.value = err.message
+}
+
+try {
+  
+
+
+  const user = auth.currentUser;
+  const uid = user.uid;
+
+  const docRef = await setDoc(doc(db, "users", uid), {
+    name: name.value,
+    surename: surename.value,
+    email: email.value,
+    password: password.value
+
+  });
+  
+
+  
+} catch (e) {
+  console.error("Error adding document: ", e);
+}
+}
+return { handleSubmit,name,surename, email, password, error }
+}
 }
 </script>
