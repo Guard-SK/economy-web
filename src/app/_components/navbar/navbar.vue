@@ -8,11 +8,11 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-			<router-link to="/home" class="nav-link active">Dashboard</router-link>
+			<router-link to="/home" class="nav-link active" v-if="isLoggedIn">Dashboard</router-link>
         </li>
-		_
+		
         <li class="nav-item">
-			<router-link to="/about" class="nav-link">Placeholder link 1</router-link>
+			<router-link to="/about" class="nav-link" v-if="isLoggedIn">My account</router-link>
         </li>
 		<li>
 			<button class="btn-primary" @click="handleSignOut()" v-if="isLoggedIn">Log out</button>
@@ -23,7 +23,10 @@
 </nav>
 <nav class="navbar bg-light fixed-top d-lg-none">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Men</a>
+    <a class="navbar-brand" href="#">
+		<img src="./_assets/logo.png" alt="Bootstrap" width="24" height="24">
+		Kartel 1.B
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -35,14 +38,12 @@
       <div class="offcanvas-body">
         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
           <li class="nav-item">
-            <router-link to="/app/dashboard" class="nav-link active">Dashboard</router-link>
+            <router-link to="/app/dashboard" class="nav-link active" v-if="isLoggedIn">Dashboard</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/app/about" class="nav-link">Placeholder link 1</router-link>
+            <router-link to="/app/about" class="nav-link" v-if="isLoggedIn">My account</router-link>
           </li>
-		  <li class="nav-item">
-            <router-link to="/auth/signup" class="nav-link">Log out</router-link>
-          </li>  
+
 		  <li>
 			<button class="btn-primary" @click="handleSignOut()" v-if="isLoggedIn">Log out</button>
 		  </li>
