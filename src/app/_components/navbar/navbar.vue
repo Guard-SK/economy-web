@@ -5,8 +5,8 @@
   </div>
   <div class="flex-none">
     <ul class="menu menu-horizontal px-1">
-		<li><router-link to="/dashboard" class="">Dashboard</router-link></li>
-		<li><router-link to="/profile" class="">My account</router-link></li>
+		<li><router-link to="/dashboard" class="" v-if="isLoggedIn">Dashboard</router-link></li>
+		<li><router-link to="/profile" class="" v-if="isLoggedIn">My account</router-link></li>
 		<li>
 			<button class="btn" @click="handleSignOut()" v-if="isLoggedIn"><i class="pi pi-sign-out"/></button>
 		</li>
