@@ -32,7 +32,7 @@
             </div>
         </div>
     </div>
-    <div v-if="error" class="alert alert-error shadow-l max-w-[70%] mx-auto mt-5">
+    <div v-if="error" class="alert alert-error shadow-l md:w-96 w-[80%] mx-auto mt-5">
         <div>
             <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             <span> {{ error }} </span>
@@ -78,7 +78,12 @@ export default {
                 })
                 this.$router.push('/dashboard')
             }
-            catch (err) {
+            catch (error) {
+                if(error.code === 'auth/user-not-found') {
+                    this.error = 'Používateľ s touto mailovou adresou neexistuje'
+                } else if(error.code === 'auth/invalid-password') {
+                    this.error = 'Zlé heslo'
+                }
                 this.error = err.message
             }
         },

@@ -44,7 +44,7 @@
             </div>
         </div>
     </div>
-    <div v-if="error" class="alert alert-error shadow-l max-w-[70%] mx-auto mt-5">
+    <div v-if="error" class="alert alert-error shadow-l md:w-96 w-[80%] mx-auto mt-5">
         <div>
             <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             <span> {{ error }} </span>
@@ -103,8 +103,17 @@ export default {
                     password: this.password
                 })
             }
-            catch (err) {
-                console.error("Error signing up: ", err);
+            catch (error) {
+                if (error.code === 'auth/weak-password') {
+                    this.error = 'Heslo musí mať aspoň 6 znakov' 
+                } else if(error.code === 'auth/email-already-in-use') {
+                    this.error = 'Tento email sa už používa'
+                } else if(error.code === 'auth/invalid-email') {
+                    this.error = 'Zadajte správnu mailovú adresu'
+                } else {
+                    this.error = 'Vyskytla sa neočakávaná chyba, ak sa bude chyba opakovať kontaktujte developera.'
+                    console.error("Vyskytla sa neočakávaná chyba", err);
+                }
             }
 
             try {
