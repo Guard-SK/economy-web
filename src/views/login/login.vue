@@ -3,12 +3,12 @@
         <div class="flex justify-content-center">
             <div class="card-body items-center text-center">
                 <div class="typewriter w-auto mx-auto mb-7 card-title">
-                    <h2 class="static-text text-3xl">Vitaj v Karteli!</h2>
+                    <h2 class="static-text sm:text-3xl text-xl">Vitaj v Karteli!</h2>
                 </div>
-                <form @submit.prevent="submit()" class="p-fluid form-control">
+                <form @submit.prevent="submit()" class="p-fluid form-control w-full h-full">
                     <div class="field mb-4">
                         <div>
-                            <input id="email" v-model="v$.email.$model" placeholder="Email" class="input input-bordered w-[250px] shadow-md" :class="{'p-invalid':v$.email.$invalid && submitted}" aria-describedby="email-error"/>
+                            <input id="email" v-model="v$.email.$model" placeholder="Email" class="input input-bordered w-[70%] shadow-md" :class="{'p-invalid':v$.email.$invalid && submitted}" aria-describedby="email-error"/>
                         </div>
                         <span v-if="v$.email.$error && submitted">
                             <span id="email-error" v-for="(error, index) of v$.email.$errors" :key="index">
@@ -32,7 +32,7 @@
             </div>
         </div>
     </div>
-    <div v-if="error" class="alert alert-error shadow-l max-w-[250px] mx-auto mt-5">
+    <div v-if="error" class="alert alert-error shadow-l max-w-[70%] mx-auto mt-5">
         <div>
             <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             <span> {{ error }} </span>
@@ -93,8 +93,8 @@ export default {
 </script>
 
 <style lang="scss">
-.p-password {
-    width: 250px;
+#password {
+    width: 70%;
     margin: auto;
     background-color: #212121;
 }
