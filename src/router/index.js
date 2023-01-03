@@ -1,10 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { getAuth } from 'firebase/auth'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 const routes = [
 	{
 		path: '/',
 		redirect: '/auth/login'
+	},
+	{
+		path: '/auth/dashboard',
+		redirect: '/dashboard'
 	},
 	{
 		path: '/auth/',
@@ -58,18 +62,38 @@ const router = createRouter({
 	routes
 })
 
-router.beforeEach((to, from, next) => {
+const getCurrentUser = () => {
+	return new Promise((resolve, reject)=>  {
+		const removeListener = onAuthStateChanged(
+			getAuth(),
+			(user) => {
+				removeListener()
+				resolve(user)
+			},
+			reject
+		)
+	})
+}
+
+router.beforeEach(async (to, from, next) => {
 	if (to.matched.some((record) => record.meta.requiresAuth)) {
-		if (getAuth().currentUser) {
+		if (await getCurrentUser()) {
+			console.log(getAuth().currentUser)
 			next()
 		} else {
-			console.log('not logged in, cant go into there')
+			console.log('not logged in, cant go into there', getAuth().currentUser)
+			next('/')
 		}
-	} else if (to.matched.some(record => record.meta.requiresVisitor)) {
-		if (!getAuth().currentUser) {
-			next()
+	} else {
+		next()
+	}
+	if (to.matched.some(record => record.meta.requiresVisitor)) {
+		if (await getCurrentUser()) {
+			console.log('not a visitor', getAuth().currentUser)
+			router.push('/dashboard')
 		} else {
-			throw new Error(`not a visitor`)
+			console.log(getAuth().currentUser)
+			next()
 		}
 	} else {
 		next()
