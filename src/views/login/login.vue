@@ -171,6 +171,18 @@ export default {
 </script>
 
 <style lang="scss">
+.p-password {
+    width: 250px;
+    margin: auto;
+    background-color: #212121;
+}
+.p-password .p-inputtext {
+    border-radius: 2px !important;
+    background-color: #212121;
+    border-color: #444444;
+    color: #cbdce4;
+}
+
 .typewriter h2 {
   overflow: hidden; 
   border-right: .15em solid #ffa500; 
