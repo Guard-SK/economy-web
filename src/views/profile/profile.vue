@@ -6,6 +6,7 @@
             <Table :fields='fields' :studentData ="studentData"></Table>
         </div>
         <p >{{name}}</p>
+        <p>{{ user }}</p>
     </div>
 
 </template>
@@ -39,24 +40,19 @@ export default {
         }
     },
     async created() {
-        this.getData()
-    },
-    methods: {
-        async getData() {
-            const auth = getAuth()
-            const db = getFirestore();
-            console.log(auth.currentUser.uid)
-            const docRef = doc(db, "users", auth.currentUser.uid);
-            const docSnap = await getDoc(docRef);
+        const auth = getAuth()
+        const db = getFirestore();
+        console.log(auth.currentUser.uid)
+        const docRef = doc(db, "users", auth.currentUser.uid);
+        const docSnap = await getDoc(docRef);
 
-            if (docSnap.exists()) {
-                this.name = docSnap.data().name
-                console.log(docSnap.data())
-            } else {
-                // doc.data() will be undefined in this case
-                console.log("No such document!");
-            }
-        },
+        if (docSnap.exists()) {
+            this.user = docSnap.data()
+            this.name = docSnap.data().name
+            console.log(docSnap.data())
+        } else {
+            console.log("No such document!");
+        }
     },
     methods: {
         methodThatForcesUpdate() {
