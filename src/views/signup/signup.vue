@@ -14,9 +14,9 @@
                     </div>
                     <div class="field mb-4">
                         <div>
-                            <input id="surename" v-model="v$.surename.$model" placeholder="Priezvisko" class="input input-bordered w-[70%] shadow-md" :class="{'p-invalid':v$.surename.$invalid && submitted}" />
+                            <input id="surname" v-model="v$.surname.$model" placeholder="Priezvisko" class="input input-bordered w-[70%] shadow-md" :class="{'p-invalid':v$.surname.$invalid && submitted}" />
                         </div>
-                        <small v-if="(v$.surename.$invalid && submitted) || v$.surename.$pending.$response" class="p-error">{{v$.name.required.$message.replace('Value', 'Surname')}}</small>
+                        <small v-if="(v$.surname.$invalid && submitted) || v$.surname.$pending.$response" class="p-error">{{v$.name.required.$message.replace('Value', 'Surname')}}</small>
                     </div>
                     <div class="field mb-4">
                         <div>
@@ -55,18 +55,15 @@
 <script>
 import { email, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
-import { getFirestore } from "firebase/firestore";
-import { useStore } from 'vuex'
-import { setDoc ,doc } from "firebase/firestore"; 
+import { getFirestore,setDoc ,doc,getDoc } from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
-
 const db = getFirestore();
 export default {
     setup: () => ({ v$: useVuelidate() }),
     data() {
         return {
             name: '',
-            surename: '',
+            surname: '',
             email: '',
             password: '',
             submitted: false,
@@ -84,7 +81,7 @@ export default {
                 required,
                 email
             },
-            surename: {
+            surname: {
                 required
             },
             password: {
@@ -120,13 +117,18 @@ export default {
                 const auth = getAuth();
                 const user = auth.currentUser;
                 const uid = user.uid;
-
-                const docRef = setDoc(doc(db, "users", uid), {
+                await setDoc(doc(db, "users", uid), {
                     name: this.name,
-                    surename: this.surename,
+                    surname: this.surname,
                     email: this.email,
                     password: this.password
                 })
+                const doc1 = await getDoc(doc(db,'sample','sample'))
+                const doc2 = doc1.data()
+                await setDoc(doc(db,"userstats",uid),doc2)
+                const eventRef = doc(db,'userstats',uid)
+                await setDoc(eventRef, {name: this.name} , {merge: true})
+                await setDoc(eventRef,{surname:this.surname}, {merge: true})
                 this.$router.push('/dashboard')
             } catch (e) {
                 console.error("Error adding document: ", e);

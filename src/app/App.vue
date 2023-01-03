@@ -1,6 +1,8 @@
 <template>
 	<nav-bar class="mb-5"/>
+	<suspense>
 	<router-view/>
+	</suspense>
 </template>
 
 <script>
