@@ -7,12 +7,14 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "@popperjs/core": "^2.11.6",
-    "bootstrap": "^5.2.3",
-    "bootstrap-vue": "^2.23.1",
+    "@k90mirzaei/vue-toast": "^1.0.3",
+    "@vuelidate/core": "^2.0.0",
+    "@vuelidate/validators": "^2.0.0",
     "core-js": "^3.8.3",
+    "daisyui": "^2.46.1",
     "firebase": "^9.14.0",
-    "popper.js": "^1.16.1",
+    "primeicons": "^6.0.1",
+    "primevue": "^3.21.0",
     "vue": "^3.2.45",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"
@@ -22,7 +24,10 @@
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-plugin-vuex": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
+    "autoprefixer": "^10.4.13",
     "node-sass": "^8.0.0",
-    "sass-loader": "^13.2.0"
+    "postcss": "^8.4.20",
+    "sass-loader": "^13.2.0",
+    "tailwindcss": "^3.2.4"
   }
 }

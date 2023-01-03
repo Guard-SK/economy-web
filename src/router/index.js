@@ -9,6 +9,9 @@ const routes = [
 	{
 		path: '/auth/',
 		redirect: '/auth/login',
+		meta: {
+			requiresVisitor: true
+		},
 		children: [
 			{
 				path: '',
@@ -28,24 +31,25 @@ const routes = [
 	},
 	
 	{
-		path: '/home',
-		name: 'home',
+		path: '/dashboard',
+		name: 'dashboard',
 		meta: {
 			requiresAuth: true
 		},
-		component: () => import('../views/HomeView.vue')
+		component: () => import('../views/dashboard/dashboard.vue')
 	},
 	{
-		path: '/about',
-		name: 'about',
+		path: '/profile',
+		name: 'profile',
 		meta: {
 			requiresAuth: true
 		},
-		component: () => import('../views/AboutView.vue')
+		component: () => import('../views/profile/profile.vue')
 	},
 	{ 
 		path: '/:pathMatch(.*)*', 
-		redirect: '/auth/login'
+		name: '404',
+		component: () => import('../views/404/404.vue')
 	}
 ]
 
@@ -60,6 +64,12 @@ router.beforeEach((to, from, next) => {
 			next()
 		} else {
 			console.log('not logged in, cant go into there')
+		}
+	} else if (to.matched.some(record => record.meta.requiresVisitor)) {
+		if (!getAuth().currentUser) {
+			next()
+		} else {
+			throw new Error(`not a visitor`)
 		}
 	} else {
 		next()
