@@ -4,8 +4,8 @@
 <thead>
   <tr>
     <!-- loop through each value of the fields to get the table header -->
-    <th  class = "text-primary-content" v-for="field in fields" :key='field' @click="sortTable(field)" > 
-      {{field}} <i class="bi bi-sort-alpha-down text-primary-content" aria-label='Sort Icon'></i>
+    <th  class = "text-primary-content" v-for="field in fields" :key='field'  > 
+      {{field}} 
      </th>
   </tr>
 </thead>

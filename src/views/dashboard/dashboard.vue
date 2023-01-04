@@ -11,6 +11,15 @@
             <Table :fields='fields' :studentData ="studentData"></Table>
         </div>
     </div>
+    <div>
+        <h1>Transakcie a vypisy</h1>
+            <div>
+                <Table :fields='transactionfields' :studentData = 'transactions'></Table>
+
+            </div>
+
+
+    </div>
 
 </template>
 
@@ -34,10 +43,10 @@ export default {
         const db = getFirestore();
         const auth = getAuth();
         const user = auth.currentUser;
-        const uid = user.uid;
+        const uid = getAuth().currentUser.uid;
         const documentSnap = await getDoc(doc(db,"users", uid))
         const userrole = documentSnap.data()['role'];
-        console.log(userrole)
+        
         
         const docRef = collection(db, "userstats");
         const docRef2 = collection(db,'events');
@@ -48,10 +57,12 @@ export default {
            studentData.push(doc.data()) 
         });
         var fields = ['name','surname']
+        const transactionfields = ['Transakcia', 'Datum','Cena', 'Cena na osobu']
+        const transactions = []
         docSnap2.forEach((doc) => {
             fields.push(doc.id)
         });
-            return{studentData,fields,userrole}
+            return{studentData,fields,userrole,transactionfields,transactions}
     },
     methods: {
         async addEvent() {
