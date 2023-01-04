@@ -35,7 +35,7 @@ export default createStore({
       const res = await signInWithEmailAndPassword(auth, email, password)
       if (res) {
         context.commit('setUser', res.user)
-        console.log(auth.currentUser.id)
+        console.log(auth.currentUser.uid)
       } else {
         throw new Error('could not somplete login')
       }
