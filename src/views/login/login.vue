@@ -68,6 +68,8 @@ export default {
     },
     methods: {
         async submit() {
+            this.submitted = true
+
 			if (!await this.v$.$validate())
 				return
 
@@ -81,10 +83,11 @@ export default {
             catch (error) {
                 if(error.code === 'auth/user-not-found') {
                     this.error = 'Používateľ s touto mailovou adresou neexistuje'
-                } else if(error.code === 'auth/invalid-password') {
-                    this.error = 'Zlé heslo'
-                }
-                this.error = err.message
+                } else if(error.code === 'auth/wrong-password') {
+                    this.error = 'Nesprávne heslo'
+                } else {
+                    this.error = error.message
+                }   
             }
         },
         resetForm() {

@@ -31,7 +31,7 @@ export default createStore({
       }
     },
     async login(context, {email, password}) {
-      console.log('signup action')
+      console.log('login action')
       const res = await signInWithEmailAndPassword(auth, email, password)
       if (res) {
         context.commit('setUser', res.user)

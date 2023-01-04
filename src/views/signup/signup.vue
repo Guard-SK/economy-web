@@ -5,7 +5,7 @@
                 <div class="typewriter w-auto mx-auto mb-7 card-title">
                     <h2 class="static-text sm:text-3xl text-xl">Vytvor si u nás účet!</h2>
                 </div>
-                <form @submit.prevent="handleSubmit(!v$.$invalid)" class="p-fluid form-control w-full h-full">
+                <form @submit.prevent="handleSubmit()" class="p-fluid form-control w-full h-full">
                     <div class="field mb-4">
                         <div>
                             <input id="name" v-model="v$.name.$model" placeholder="Meno" class="input input-bordered w-[70%] shadow-md" :class="{'p-invalid':v$.name.$invalid && submitted}" />
@@ -91,6 +91,8 @@ export default {
     },
     methods: {
         async handleSubmit() {
+            this.submitted = true
+
 			if (!await this.v$.$validate())
 				return
 
@@ -121,7 +123,6 @@ export default {
                     name: this.name,
                     surname: this.surname,
                     email: this.email,
-                    password: this.password
                 })
                 const doc1 = await getDoc(doc(db,'sample','sample'))
                 const doc2 = doc1.data()
@@ -129,6 +130,7 @@ export default {
                 const eventRef = doc(db,'userstats',uid)
                 await setDoc(eventRef, {name: this.name} , {merge: true})
                 await setDoc(eventRef,{surname:this.surname}, {merge: true})
+                this.resetForm()
                 this.$router.push('/dashboard')
             } catch (e) {
                 console.error("Error adding document: ", e);

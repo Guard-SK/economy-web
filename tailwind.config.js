@@ -23,6 +23,7 @@ module.exports = {
 				accent: "#ffa500",
 				"accent-focus": "#D18700"
 			  },
+			  light: { ...require("daisyui/src/colors/themes")["[data-theme=light]"] }
 			},
 		  ],
 		darkTheme: "business",
