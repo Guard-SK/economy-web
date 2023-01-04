@@ -1,9 +1,9 @@
 <template>
     <div class="container text-center  mt-5 mb-5"> 
         <h1 class="mt-5 fw-bolder text-success ">Štatistiky návštevnosti: </h1>
-        <div>
+        <div v-if="userrole == 'admin'">
             <p class="text-primary-content">Meno noveho eventu:</p>
-            <input class="text-primary-content" id= "eventname" v-model="eventname" placeholder="edit me" />
+            <input class="text-primary-content" id= "eventname" v-model="eventname" placeholder='sem ide event' />
             <button class="text-primary-content" v-on:click="addEvent">Pridat Event</button>
         </div>
         <div class="table-responsive my-5">
@@ -19,19 +19,26 @@
 
 // Importing the table component
 import Table from './_components/Table.vue'
-import { doc, getFirestore, getDocs, collection,setDoc} from "firebase/firestore";
-
+import { doc, getFirestore, getDocs, collection,setDoc, getDoc} from "firebase/firestore";
+import { getAuth } from 'firebase/auth'
 export default {
     components: {
         Table
     },
     data() {
         return {
-            eventname: ''
+            eventname: '',
         }
     },
     async setup(){
         const db = getFirestore();
+        const auth = getAuth();
+        const user = auth.currentUser;
+        const uid = user.uid;
+        const documentSnap = await getDoc(doc(db,"users", uid))
+        const userrole = documentSnap.data()['role'];
+        console.log(userrole)
+        
         const docRef = collection(db, "userstats");
         const docRef2 = collection(db,'events');
         const docSnap = await getDocs(docRef);
@@ -44,7 +51,7 @@ export default {
         docSnap2.forEach((doc) => {
             fields.push(doc.id)
         });
-            return{studentData,fields}
+            return{studentData,fields,userrole}
     },
     methods: {
         async addEvent() {
