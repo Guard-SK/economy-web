@@ -119,10 +119,12 @@ export default {
                 const auth = getAuth();
                 const user = auth.currentUser;
                 const uid = user.uid;
+                const user1 = 'user'
                 await setDoc(doc(db, "users", uid), {
                     name: this.name,
                     surname: this.surname,
                     email: this.email,
+                    role: user1
                 })
                 const doc1 = await getDoc(doc(db,'sample','sample'))
                 const doc2 = doc1.data()
