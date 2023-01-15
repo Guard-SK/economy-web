@@ -1,28 +1,17 @@
 <template>
-<div class="container text-center  mt-5 mb-5"> 
-        <h1 class="mt-5 fw-bolder text-success ">Štatistiky návštevnosti: </h1>
+    <div class="container text-center  mt-5 mb-5"> 
+        <h1 class="mt-5 fw-bolder text-success ">Štatistiky návštevnosti:</h1>
         <div v-if="userrole == 'admin'">
             <p class="text-primary-content">Meno noveho eventu:</p>
             <input class="text-primary-content" id= "eventname" v-model="eventname" placeholder='sem ide event' />
-
             <button class="text-primary-content" v-on:click="addEvent">Pridat Event</button>
             <Dialog v-model:visible="display1">
                 <p>Input1</p><input/>
-
-
-
-
-
-
-
-
             </Dialog>
         </div>
         <div class="table-responsive my-5">
             <Table :fields='fields' :studentData ="studentData"></Table>
         </div>
-    <div>
-    </div>
     </div>
     <div>
         <h1>Transakcie a vypisy</h1>
@@ -46,8 +35,7 @@ export default {
     data() {
         return {
             eventname: '',
-            display1: true
-            
+            display1: false
         }
     },
     
@@ -78,14 +66,7 @@ export default {
         var headers = ['Number','Transakcia','cena', 'Datum']
             return{studentData,fields,userrole,headers,fields1,studentData1}
     },
-    // mounted(){
-    //     this.$root.$on('trans',()=>{
-    //         console.log('works')
-    //     })
-    // },
-    methods: {
-
-
+methods: {
         async addEvent() {
             const db = getFirestore();
             const eventname1 = this.eventname
@@ -111,10 +92,5 @@ export default {
             setDoc(sampleway,obj1,{merge: true})
         } 
     }
-  
-
-
 }
-
-
 </script>

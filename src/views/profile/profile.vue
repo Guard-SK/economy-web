@@ -15,7 +15,6 @@
         </table>
     </div>
 </template>
-  
 <script>
 import { getFirestore,setDoc ,doc,getDocs,getDoc,collection } from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
@@ -28,14 +27,14 @@ export default {
         delete data.name
         delete data.surname
         function transformProperties(obj) {
-        const result = [];
-        for (const prop in obj) {
-            result.push({
-            name: prop,
-            selectedOption: obj[prop]
-            });
+            const result = [];
+            for (const prop in obj) {
+                result.push({
+                name: prop,
+                selectedOption: obj[prop]
+                });
             }
-            return result;
+                return result;
         }
         const items = transformProperties(data)
         return{items}
