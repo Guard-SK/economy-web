@@ -14,6 +14,12 @@
       </tbody>
     </table>
     <Dialog header="Header" footer="Footer" v-model:visible="display">
+        <template #header>
+		    <h3>Detaily transakcie: {{dialname }}</h3>
+	    </template>
+        <template #footer>
+		<h3 >Spolu cena(poznamenanych):</h3><h3 :class="getCenaClass(total)">{{ total }}</h3>
+	    </template>
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -40,6 +46,9 @@ data(){
     return{
         display:false,
         rows : [],
+        total:0,
+        dialname: 'null'
+        
     }
 },
 components:{
@@ -64,10 +73,14 @@ methods:{
             let docs = await getDocs(docRef);
             this.display = true;
             this.rows = [];
-            docs.forEach(doc => {
+            this.total = 0
+            docs.forEach((doc) => {
                 this.rows.push(doc.data());
+                let price  = doc.data().cena
+                this.total += price
             this.rows.sort((a, b) => a.Number - b.Number);
             });
+            this.dialname = ' ' + item.Transakcia
         } catch (error) {
             console.error(error);
         }
@@ -83,4 +96,5 @@ methods:{
     }
 }
 }
+
 </script>

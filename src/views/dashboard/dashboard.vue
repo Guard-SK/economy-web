@@ -56,13 +56,13 @@ export default {
             studentData.push(doc.data()) 
         });
         var fields = ['name','surname']
-        var fields1 = ['Transakcia', 'Datum','Cena', 'Cena na osobu']
+        var fields1 = ['Transakcia', 'Datum','FinalCena', 'Cena na osobu']
         const transactions = []
         docSnap2.forEach((doc) => {
             fields.push(doc.id)
         });
        // var dataTransakcie = [{Transakcia: 'pepo',item: 1},{Transakcia:'lelo', item:2}]
-        var studentData1 = [{Transakcia: 'Medicka25.11'},{Transakcia: 'test123'}]
+        var studentData1 = [{Transakcia: 'Medicka25.11'}]
         var headers = ['Number','Transakcia','cena', 'Datum']
             return{studentData,fields,userrole,headers,fields1,studentData1}
     },
