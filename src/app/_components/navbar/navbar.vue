@@ -17,9 +17,9 @@
 </div>
 
 <div class="collapse md:hidden w-full">
-  <input type="checkbox" class="peer" /> 
-  <div class="collapse-title bg-neutral text-neutral-content flex pr-[16px]">
-		<div class="flex-1">
+  <input type="checkbox" class="peer" v-if="isLoggedIn" /> 
+  <div class="collapse-title bg-neutral text-neutral-content flex pr-[16px] justify-between">
+		<div class="">
 			<a class="btn btn-ghost normal-case text-xl">Kartel 1.B</a>
 		</div>
 		<label class="btn btn-square btn-ghost">
@@ -27,10 +27,12 @@
 		</label>
   </div>
   <div class="collapse-content bg-neutral text-neutral-content"> 
+		<div class="divider"></div>
 		<ul class="menu menu-vertical px-1">
 				<li><router-link to="/dashboard" class="" v-if="isLoggedIn">Dashboard</router-link></li>
 				<li><router-link to="/profile" class="" v-if="isLoggedIn">My account</router-link></li>
-				<li class="mt-8 ">
+				<div class="divider"></div>
+				<li>
 					<button class="btn justify-start" @click="handleSignOut()" v-if="isLoggedIn"><i class="pi pi-sign-out"/>Sign Out</button>
 				</li>
 			</ul>
