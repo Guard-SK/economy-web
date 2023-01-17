@@ -1,12 +1,14 @@
 <template>
     <div class="container text-center  mt-5 mb-5"> 
-        <h1 class="mt-5 fw-bolder text-success ">Štatistiky návštevnosti: </h1>
+        <h1 class="mt-5 fw-bolder text-success text-xl">Štatistiky návštevnosti: </h1>
         <div>
-            <p class="text-primary-content">Meno noveho eventu:</p>
-            <input class="text-primary-content" id= "eventname" v-model="eventname" placeholder="edit me" />
-            <button class="text-primary-content" v-on:click="addEvent">Pridat Event</button>
+            <p class="text-base-content mt-8">Meno noveho eventu:</p>
+            <div class="flex justify-center gap-3 my-4">
+                <input class="text-base-content input input-bordered" id= "eventname" v-model="eventname" placeholder="Event name" />
+                <button class="text-base-content btn" v-on:click="addEvent">Pridat Event</button>
+            </div>
         </div>
-        <div class="table-responsive my-5">
+        <div class="table-responsive my-5 text-base-content">
             <!-- The table component -->
             <Table :fields='fields' :studentData ="studentData"></Table>
         </div>

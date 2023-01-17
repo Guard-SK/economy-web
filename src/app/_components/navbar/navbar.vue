@@ -1,18 +1,42 @@
 <template>
-<div class="navbar bg-neutral text-neutral-content !mb-16">
-  <div class="flex-1">
-    <a class="btn btn-ghost normal-case text-xl">Kartel 1.B</a>
+<div class="collapse">
+	<nav class="navbar bg-neutral text-neutral-content !mb-16 md:flex hidden">
+		<div class="flex-1">
+			<a class="btn btn-ghost normal-case text-xl">Kartel 1.B</a>
+		</div>
+		<div class="flex-none">
+			<ul class="menu menu-horizontal px-1">
+				<li><router-link to="/dashboard" class="" v-if="isLoggedIn">Dashboard</router-link></li>
+				<li><router-link to="/profile" class="" v-if="isLoggedIn">My account</router-link></li>
+				<li>
+					<button class="btn" @click="handleSignOut()" v-if="isLoggedIn"><i class="pi pi-sign-out"/></button>
+				</li>
+			</ul>
+		</div>
+	</nav>
+</div>
+
+<div class="collapse md:hidden w-full">
+  <input type="checkbox" class="peer" /> 
+  <div class="collapse-title bg-neutral text-neutral-content flex pr-[16px]">
+		<div class="flex-1">
+			<a class="btn btn-ghost normal-case text-xl">Kartel 1.B</a>
+		</div>
+		<label class="btn btn-square btn-ghost">
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+		</label>
   </div>
-  <div class="flex-none">
-    <ul class="menu menu-horizontal px-1">
-		<li><router-link to="/dashboard" class="" v-if="isLoggedIn">Dashboard</router-link></li>
-		<li><router-link to="/profile" class="" v-if="isLoggedIn">My account</router-link></li>
-		<li>
-			<button class="btn" @click="handleSignOut()" v-if="isLoggedIn"><i class="pi pi-sign-out"/></button>
-		</li>
-    </ul>
+  <div class="collapse-content bg-neutral text-neutral-content"> 
+		<ul class="menu menu-vertical px-1">
+				<li><router-link to="/dashboard" class="" v-if="isLoggedIn">Dashboard</router-link></li>
+				<li><router-link to="/profile" class="" v-if="isLoggedIn">My account</router-link></li>
+				<li class="mt-8 ">
+					<button class="btn justify-start" @click="handleSignOut()" v-if="isLoggedIn"><i class="pi pi-sign-out"/>Sign Out</button>
+				</li>
+			</ul>
   </div>
 </div>
+
 </template>
 
 <script>
