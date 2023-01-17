@@ -1,11 +1,14 @@
 <template>
     <div class="container text-center  mt-5 mb-5"> 
         <h1 class="mt-5 fw-bolder text-success text-xl">Štatistiky návštevnosti: </h1>
-        <div>
+        <div v-if="userrole == 'admin'">
             <p class="text-base-content mt-8">Meno noveho eventu:</p>
             <div class="flex justify-center gap-3 my-4">
                 <input class="text-base-content input input-bordered" id= "eventname" v-model="eventname" placeholder="Event name" />
                 <button class="text-base-content btn" v-on:click="addEvent">Pridat Event</button>
+                <Dialog v-model:visible="display1">
+                    <p>Input1</p><input/>
+                </Dialog>
             </div>
         </div>
         <div class="table-responsive my-5 text-base-content">
@@ -13,42 +16,60 @@
             <Table :fields='fields' :studentData ="studentData"></Table>
         </div>
     </div>
-
+    <div>
+        <h1>Transakcie a vypisy</h1>
+        <div>
+            <Table1 :fields1='fields1' :studentData1="studentData1"  :headers='headers' ></Table1>
+        </div>
+    </div>
 </template>
-
-
 <script>
-
-// Importing the table component
 import Table from './_components/Table.vue'
-import { doc, getFirestore, getDocs, collection,setDoc} from "firebase/firestore";
-
+import Table1 from './_components/Table1.vue'
+import { doc, getFirestore, getDocs, collection,setDoc, getDoc} from "firebase/firestore";
+import { getAuth } from 'firebase/auth'
+import Dialog from 'primevue/dialog';
 export default {
     components: {
-        Table
+        Table,
+        Dialog,
+        Table1
     },
     data() {
         return {
-            eventname: ''
+            eventname: '',
+            display1: false
         }
     },
+    
     async setup(){
         const db = getFirestore();
+        const uid = getAuth().currentUser.uid;
+        const documentSnap = await getDoc(doc(db,"users", uid))
+        const userrole = documentSnap.data()['role'];
+        
+        
         const docRef = collection(db, "userstats");
         const docRef2 = collection(db,'events');
         const docSnap = await getDocs(docRef);
         const docSnap2 = await getDocs(docRef2)
         var studentData = []
         docSnap.forEach((doc) => {
-           studentData.push(doc.data()) 
+   
+            studentData.push(doc.data()) 
         });
         var fields = ['name','surname']
+        var fields1 = ['Transakcia', 'Datum','FinalCena', 'Cena na osobu']
+        const transactions = []
         docSnap2.forEach((doc) => {
             fields.push(doc.id)
         });
-            return{studentData,fields}
+       // var dataTransakcie = [{Transakcia: 'pepo',item: 1},{Transakcia:'lelo', item:2}]
+        var studentData1 = [{Transakcia: 'Medicka25.11'}]
+        var headers = ['Number','Transakcia','cena', 'Datum']
+            return{studentData,fields,userrole,headers,fields1,studentData1}
     },
-    methods: {
+methods: {
         async addEvent() {
             const db = getFirestore();
             const eventname1 = this.eventname
@@ -72,12 +93,7 @@ export default {
             delete obj1['eventname1'];
             let sampleway = doc(db,'sample','sample')
             setDoc(sampleway,obj1,{merge: true})
-        }
+        } 
     }
-  
-
-
 }
-
-
 </script>

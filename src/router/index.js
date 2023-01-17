@@ -78,7 +78,7 @@ const getCurrentUser = () => {
 router.beforeEach(async (to, from, next) => {
 	if (to.matched.some((record) => record.meta.requiresAuth)) {
 		if (await getCurrentUser()) {
-			console.log(getAuth().currentUser)
+			console.log('user logged in, can go there',getAuth().currentUser)
 			next()
 		} else {
 			console.log('not logged in, cant go into there', getAuth().currentUser)

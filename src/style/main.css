@@ -3,3 +3,14 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+.positive-cena {
+    color: green;
+  }
+  
+  .negative-cena {
+    color: red;
+  }
+  
+  .neutral-cena {
+    color: black;
+  }
