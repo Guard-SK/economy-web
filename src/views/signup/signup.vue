@@ -55,7 +55,7 @@
 <script>
 import { email, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
-import { getFirestore,setDoc ,doc,getDoc } from "firebase/firestore";
+import { getFirestore,setDoc ,doc,getDoc,collection, getDocs } from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
 const db = getFirestore();
 export default {
@@ -132,6 +132,16 @@ export default {
                 const eventRef = doc(db,'userstats',uid)
                 await setDoc(eventRef, {name: this.name} , {merge: true})
                 await setDoc(eventRef,{surname:this.surname}, {merge: true})
+                const attendaceRef = collection(db,'events')
+                const attendaceSnap = await getDocs(attendaceRef)
+                attendaceSnap.forEach(async doc4 =>{
+                    const refatt2 = doc(db,'events',doc4.id)
+                    var eventname = this.name + ' ' + this.surname;
+                    let obj1 = {eventname1: "❌"}
+                    obj1[eventname] = obj1['eventname1'];
+                    delete obj1['eventname1'];
+                    await setDoc(refatt2, obj1,{merge:true})
+                });
                 this.resetForm()
                 this.$router.push('/dashboard')
             } catch (e) {

@@ -2,11 +2,21 @@
     <div class="container text-center  mt-5 mb-5"> 
         <h1 class="mt-5 fw-bolder text-success text-xl">Udalosti:</h1>
         <div v-if="userrole == 'admin'">
-            <p class="text-base-content mt-8">Meno noveho eventu:</p>
+            
             <div class="flex justify-center gap-3 my-4">
-                <input class="text-base-content input input-bordered" id= "eventname" v-model="eventname" placeholder="Event name" />
-                <button class="text-base-content btn" v-on:click="addEvent">Pridat Event</button>
-
+                
+                <button class="text-base-content btn" v-on:click="openDialog">Pridat udalost</button>
+                <Dialog v-model:visible="display1">
+                    <template #header>
+		                <h3 class="text-xl">Pridanie udalosti:</h3>
+	                </template>
+                    <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input11" v-model="nameofevent" placeholder="Meno udalost" /></div>
+                    <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input22" v-model="dateofevent" placeholder="Datum" /></div>
+                    <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input33" v-model="place" placeholder="Miesto" /></div>
+                    <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input44" v-model="costofevent" placeholder="Cena akcie(pouzivat -)" /></div>
+                    <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input55" v-model="notes" placeholder="Poznamky" /></div>
+                    <button class="btn btn-primary" v-on:click="addEvent">Pridat Udalost</button>
+                </Dialog>
             </div>
         </div>
         <div class="table-responsive my-5 text-base-content">
@@ -34,7 +44,12 @@ export default {
     data() {
         return {
             eventname: '',
-            display1: false
+            display1: false,
+            nameofevent: '',
+            dateofevent: '',
+            place: '',
+            costofevent: '',
+            notes: ''
         }
     },
     
@@ -50,15 +65,6 @@ export default {
             var namepush = doc.data().name+ ' ' + doc.data().surname
             userfields.push(namepush) 
         });
-        const docRef = collection(db, "userstats");
-        const docRef2 = collection(db,'events');
-        const docSnap = await getDocs(docRef);
-        const docSnap2 = await getDocs(docRef2)
-        // var studentData = []
-        // docSnap.forEach((doc) => {
-   
-        //     studentData.push(doc.data()) 
-        // });
         var rowsofevents = []
         const rowsofeventsSnap = await getDocs(collection(db,'events'))
         rowsofeventsSnap.forEach((doc) =>{
@@ -66,41 +72,54 @@ export default {
             data['eventname'] = doc.id
             rowsofevents.push(data)
         });
-        
-        var fields1 = ['Transakcia', 'Datum','FinalCena', 'Cena na osobu']
-        const transactions = []
-        // docSnap2.forEach((doc) => {
-        //     fields.push(doc.id)
-        // });
-       // var dataTransakcie = [{Transakcia: 'pepo',item: 1},{Transakcia:'lelo', item:2}]
-        var studentData1 = [{Transakcia: 'Medicka25.11'}]
         var headers = ['Number','Transakcia','cena', 'Datum']
-            return{rowsofevents,userfields,userrole,headers,fields1,studentData1,attendancedata}
+            return{rowsofevents,userfields,userrole,headers,attendancedata}
     },
 methods: {
+        async openDialog(){
+            this.display1 = true
+        },
         async addEvent() {
             const db = getFirestore();
-            const eventname1 = this.eventname
-            console.log(eventname1)
-            const data = {
-                event: true
-            } 
-            await setDoc(doc(db,"events",eventname1),data)
-            const docRef = collection(db, "userstats");
-            const docSnap = await getDocs(docRef);
-            docSnap.forEach((docum) => {
-            let eventRef = doc(db,'userstats',docum.id)
-            let obj = {eventname1: '❌'}
-            obj[eventname1] = obj['eventname1'];
-            delete obj['eventname1'];
-            setDoc(eventRef, obj , {merge: true})
-            
+            await setDoc(doc(db, "events", this.nameofevent), {
+                    nameofevent: this.nameofevent,
+                    dateofevent: this.dateofevent,
+                    place: this.place,
+                    costofevent: parseFloat(this.costofevent),
+                    notes:this.notes
+                })
+            const usersRef = collection(db,'users')
+            const usersSnap = await getDocs(usersRef)
+            usersSnap.forEach(async (doc1)=> {
+                var username = doc1.data().name + ' ' + doc1.data().surname
+                const reff1223 = doc(db,'events',this.nameofevent)
+                let obj1 = {eventname1: "❌"}
+                obj1[username] = obj1['eventname1'];
+                delete obj1['eventname1'];
+                await setDoc(reff1223, obj1,{merge:true}) 
             });
-            let obj1 = {eventname1: "❌"}
-            obj1[eventname1] = obj1['eventname1'];
-            delete obj1['eventname1'];
-            let sampleway = doc(db,'sample','sample')
-            setDoc(sampleway,obj1,{merge: true})
+            //location.reload()
+            // const eventname1 = this.eventname
+            // console.log(eventname1)
+            // const data = {
+            //     event: true
+            // } 
+            // await setDoc(doc(db,"events",eventname1),data)
+            // const docRef = collection(db, "userstats");
+            // const docSnap = await getDocs(docRef);
+            // docSnap.forEach((docum) => {
+            // let eventRef = doc(db,'userstats',docum.id)
+            // let obj = {eventname1: '❌'}
+            // obj[eventname1] = obj['eventname1'];
+            // delete obj['eventname1'];
+            // setDoc(eventRef, obj , {merge: true})
+            
+            // });
+            // let obj1 = {eventname1: "❌"}
+            // obj1[eventname1] = obj1['eventname1'];
+            // delete obj1['eventname1'];
+            // let sampleway = doc(db,'sample','sample')
+            // setDoc(sampleway,obj1,{merge: true})
         } 
     }
 }
