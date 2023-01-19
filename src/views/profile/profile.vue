@@ -19,35 +19,40 @@
 import { getFirestore,setDoc ,doc,getDocs,getDoc,collection } from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
 export default {
+    data() {
+        return {
+            items : []
+        }
+    },
     async setup(){
         const db = getFirestore()
         const uid = getAuth().currentUser.uid;
-        let document1 = await getDoc(doc(db,'userstats',uid))
-        const data = document1.data()
-        delete data.name
-        delete data.surname
-        function transformProperties(obj) {
-            const result = [];
-            for (const prop in obj) {
-                result.push({
-                name: prop,
-                selectedOption: obj[prop]
-                });
-            }
-                return result;
-        }
-        const items = transformProperties(data)
-        return{items}
+        var user = await getDoc(doc(db,'users',uid))
+        var username = user.data().name + ' ' + user.data().surname
+        const document1 = await getDocs(collection(db,'events'))
+        const items = []
+        document1.forEach(async doc1 =>{
+            const docname = doc1.id
+            const fieldselect = doc1.data()
+            const field = fieldselect[username]
+            items.push({
+                name: docname,
+                selectedOption: field
+            })
+        })
+        return {items}
     },
     methods: {
         async updateOption(item) {
         const db = getFirestore()
-        let obj1 = {selectedOption: item.selectedOption}
-        obj1[item.name] = obj1['selectedOption'];
-        delete obj1['selectedOption'];
+        const way2 = doc(db,'events',item.name)
         const uid = getAuth().currentUser.uid;
-        let sampleway = doc(db,'userstats', uid)
-        await setDoc(sampleway,obj1,{merge: true})
+        var user = await getDoc(doc(db,'users',uid))
+        var username = user.data().name + ' ' + user.data().surname
+        let obj1 = {selectedOption: item.selectedOption}
+        obj1[username] = obj1['selectedOption'];
+        delete obj1['selectedOption'];
+        await setDoc(way2,obj1,{merge: true})
         }
     }
 }

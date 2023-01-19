@@ -26,8 +26,6 @@
     </div>
 </template>
 <script>
-import Table from './_components/Table.vue'
-import Table1 from './_components/Table1.vue'
 import TableDashboard from './_components/TableDashboard.vue'
 import { doc, getFirestore, getDocs, collection,setDoc, getDoc} from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
@@ -35,9 +33,9 @@ import Dialog from 'primevue/dialog';
 
 export default {
     components: {
-        Table,
+        
         Dialog,
-        Table1,
+        
         TableDashboard
         
     },
@@ -98,28 +96,6 @@ methods: {
                 delete obj1['eventname1'];
                 await setDoc(reff1223, obj1,{merge:true}) 
             });
-            //location.reload()
-            // const eventname1 = this.eventname
-            // console.log(eventname1)
-            // const data = {
-            //     event: true
-            // } 
-            // await setDoc(doc(db,"events",eventname1),data)
-            // const docRef = collection(db, "userstats");
-            // const docSnap = await getDocs(docRef);
-            // docSnap.forEach((docum) => {
-            // let eventRef = doc(db,'userstats',docum.id)
-            // let obj = {eventname1: '❌'}
-            // obj[eventname1] = obj['eventname1'];
-            // delete obj['eventname1'];
-            // setDoc(eventRef, obj , {merge: true})
-            
-            // });
-            // let obj1 = {eventname1: "❌"}
-            // obj1[eventname1] = obj1['eventname1'];
-            // delete obj1['eventname1'];
-            // let sampleway = doc(db,'sample','sample')
-            // setDoc(sampleway,obj1,{merge: true})
         } 
     }
 }
