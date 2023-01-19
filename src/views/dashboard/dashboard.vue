@@ -65,9 +65,25 @@ export default {
         });
         var rowsofevents = []
         const rowsofeventsSnap = await getDocs(collection(db,'events'))
-        rowsofeventsSnap.forEach((doc) =>{
-            var data = doc.data()
-            data['eventname'] = doc.id
+        rowsofeventsSnap.forEach((doc1) =>{
+            var data = doc1.data()
+            data['eventname'] = doc1.id
+            var count = 0
+            
+            const doc2 = doc1.data()
+            const arr = Object.values(doc2)
+            count = arr.filter(function(value) {
+                return value === "✅";
+            }).length;
+            var valuex1 = doc1.data().costofevent
+            var cpp = valuex1 / count
+            if (cpp == Infinity){
+                data['cpp'] = 'None'
+            } else if (cpp == -Infinity){
+                data['cpp'] = 'None'
+            } else{
+                data['cpp'] = cpp + '€'
+            }
             rowsofevents.push(data)
         });
         var headers = ['Number','Transakcia','cena', 'Datum']

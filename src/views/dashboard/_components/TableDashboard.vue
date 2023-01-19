@@ -6,6 +6,7 @@
                 <th>Názov udalosti</th>
                 <th></th>
                 <th></th>
+                <th>CPP</th>
                 <th  v-for="field in userfields" :key="field" class="text-primary-content" >{{field}}</th>
             </tr>
         </thead>
@@ -16,6 +17,7 @@
                 <td>{{ event.eventname }}</td>
                 <td><Button label="Detaily" class="p-button-raised" @click="details(event)"/></td>
                 <td><Button label="Transakcie" class="p-button-raised" @click="transactions(event)"/></td>
+                <td>{{ event.cpp }}</td>
                 <td v-for="field in userfields" :key="field" class="text-primary-content">{{event[field]}}</td>
             </tr>
         </tbody>
