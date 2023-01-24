@@ -10,6 +10,7 @@
                     <template #header>
 		                <h3 class="text-xl">Pridanie udalosti:</h3>
 	                </template>
+                    
                     <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input11" v-model="nameofevent" placeholder="Meno udalost" /></div>
                     <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input22" v-model="dateofevent" placeholder="Datum" /></div>
                     <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input33" v-model="place" placeholder="Miesto" /></div>
@@ -30,6 +31,7 @@ import TableDashboard from './_components/TableDashboard.vue'
 import { doc, getFirestore, getDocs, collection,setDoc, getDoc} from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
 import Dialog from 'primevue/dialog';
+import { tsImportEqualsDeclaration } from '@babel/types';
 
 export default {
     components: {
@@ -86,12 +88,19 @@ export default {
             }
             rowsofevents.push(data)
         });
-        var headers = ['Number','Transakcia','cena', 'Datum']
+        var headers = ['Number','Transakcia','Cena','Subor']
             return{rowsofevents,userfields,userrole,headers,attendancedata}
     },
 methods: {
         async openDialog(){
             this.display1 = true
+        },
+        resetForm() {
+            this.nameofevent = '';
+            this.dateofevent = '';
+            this.place = '';
+            this.costofevent = '';
+            this.notes = ''
         },
         async addEvent() {
             const db = getFirestore();
@@ -112,6 +121,13 @@ methods: {
                 delete obj1['eventname1'];
                 await setDoc(reff1223, obj1,{merge:true}) 
             });
+            const coll = doc(db, 'transakcie', this.nameofevent,'transakcie', 'number')
+            await setDoc(coll,{
+                number: 0
+            });
+            this.display1 = false
+            this.resetForm()
+            location.reload();
         } 
     }
 }

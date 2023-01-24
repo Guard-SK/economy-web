@@ -25,7 +25,7 @@
     <Dialog header="Header" footer="Footer" v-model:visible="display">
         <template #header>
             <div >
-                <button class="text-base-content btn" v-on:click="openTransaction(nameofevent)">Pridat transakciu</button>
+                <button v-if="userrole == 'admin'" class="text-base-content btn" v-on:click="openTransaction(nameofevent)">Pridat transakciu</button>
             </div>
             
                 <h3 class="text-xl">Detaily transakcie: {{dialname}}</h3>
@@ -47,7 +47,7 @@
                     <td class="text-primary-content">{{ row['Number'] }}</td>
                     <td class="text-primary-content">{{ row['Transakcia'] }}</td>
                     <td class="text-primary-content" :class="getCenaClass(row.cena)">{{ row['cena'] }}</td>
-                    <td class="text-primary-content">{{ row['Datum'] }}</td>
+                    
                 </tr>
             </tbody>
         </table>
@@ -68,20 +68,30 @@
             <h3 class="text-xl">
                 Dialog pre pridavanie transakcii <br>
                 {{ namename }}
+            
+                
             </h3>
         </template>
+        
         <template #footer>
-
+            <button class="text-base-content btn" v-on:click="uploadFile(namename)">Potvrdit a odoslat</button>
 	    </template>
+        <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input111" v-model="nameoftransaction" placeholder="Meno Transakcie" /></div>
+        <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input222" v-model="priceoftransaction" placeholder="Cena Transakcie" /></div>
+        <input type="file" ref="fileInput"  class="file-input file-input-bordered file-input-info w-full max-w-xs" />
         <template>
-
+ 
         </template>
     </Dialog>
 </template>
 <script>
-import {getFirestore,getDocs,collection,doc,getDoc} from "firebase/firestore";
+import {getFirestore,getDocs,collection,doc,getDoc,setDoc,addDoc} from "firebase/firestore";
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
+import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getAuth } from 'firebase/auth'
+const storage = getStorage();
+const storageRef = ref(storage);
 export default {
 name: 'TableComponent',
 data(){
@@ -98,9 +108,19 @@ data(){
         costofevent: 0,
         costofevent1:0,
         notes: '',
-        namename: ''
+        namename: '',
+        nameoftransaction: '',
+        priceoftransaction:'',
+        userrole: 'user'
         
     }
+},
+async setup() {
+    const db = getFirestore()
+    const uid = getAuth().currentUser.uid;
+    const documentSnap = await getDoc(doc(db,"users", uid))
+    const userrole = documentSnap.data()['role'];
+    return{userrole}
 },
 components:{
     Dialog,
@@ -125,6 +145,37 @@ props:{
     }
 },
 methods:{
+
+    async uploadFile(eventnamepp) {
+        const db = getFirestore()
+        console.log(eventnamepp)
+        const doc11 = await getDoc(doc(db,'transakcie',eventnamepp,'transakcie','number'))
+        const number1 = parseInt(doc11.data().number) + 1
+        
+        const file = this.$refs.fileInput.files[0]
+        await setDoc(doc(db,'transakcie',eventnamepp,'transakcie','number'),{number: number1},{merge: true})
+
+        if (file != undefined){
+        const mountainsRef = ref(storage, eventnamepp+'/'+ file.name);
+        uploadBytes(mountainsRef, file).then((snapshot) => {
+            console.log('Uploaded a blob or file!');})
+        await addDoc(collection(db, "transakcie",eventnamepp,'transakcie'), {
+            Transakcia: this.nameoftransaction,
+            cena: parseFloat(this.priceoftransaction),
+            Number: number1,
+            file: 'lol'
+        });}else{
+            await addDoc(collection(db, "transakcie",eventnamepp,'transakcie'), {
+            Transakcia: this.nameoftransaction,
+            cena: parseFloat(this.priceoftransaction),
+            Number: number1,
+            file: false
+        });
+        
+        
+    }
+    location.reload();
+    },
     async transactions(event) {
         try {
             const db = getFirestore();
@@ -134,16 +185,20 @@ methods:{
             this.rows = [];
             this.total = 0
             docs.forEach((doc) => {
+                if (doc.id != 'number'){
                 this.rows.push(doc.data());
                 let price  = doc.data().cena
+                
                 this.total += price
+                this.total = Math.round((this.total+ Number.EPSILON) * 100) / 100
             this.rows.sort((a, b) => a.Number - b.Number);
-            });
+            }});
             this.dialname = ' ' + event.eventname
             const detRef = doc(db,'events', event.eventname)
             var data1 = await getDoc(detRef);
             this.costofevent1 = data1.data().costofevent
             this.namename = event.eventname
+            
         } catch (error) {
             console.error(error);
         }
