@@ -14,8 +14,6 @@ import 'primeicons/primeicons.css'
 import '../src/style/main.css'
 
 const app = createApp(App)
-
-
 app
     .use(store)
     .use(router)

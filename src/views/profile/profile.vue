@@ -1,8 +1,11 @@
 <template>
     <div class='table-responsive my-5'>
-        <table id="tableComponent" class="table table-bordered table-striped">
+        <table id="tableComponent" class="table table-bordered table-striped center">
+            <thead>
             <th class="text-primary-content">Event</th>
-            <th class=" text-primary-content" >Options</th>
+            <th class="text-primary-content" >Options</th>
+            </thead>
+            <tbody>
             <tr v-for="item in items" :key="item">
                 <td class="text-primary-content">{{ item.name }}</td>
                 <td class="text-primary-content">
@@ -11,9 +14,32 @@
                 <option value="❌">❌</option>
                 </select>
                 </td>
-        </tr>
+            </tr>
+            </tbody>
         </table>
+        
     </div>
+    <!-- <div class='table-responsive my-5'>
+        <table id="tableComponent" class="table table-bordered table-striped center">
+            <thead>
+            <th class="text-primary-content">Event</th>
+            <th class="text-primary-content" >Options</th>
+            </thead>
+            <tbody>
+            <tr v-for="item in items" :key="item">
+                <td class="text-primary-content">{{ item.name }}</td>
+                <td class="text-primary-content">
+                <select v-model="item.selectedOption" @change="updateOption(item)">
+                <option value="✅">✅</option>
+                <option value="❌">❌</option>
+                </select>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        
+    </div> -->
+
 </template>
 <script>
 import { getFirestore,setDoc ,doc,getDocs,getDoc,collection } from "firebase/firestore";

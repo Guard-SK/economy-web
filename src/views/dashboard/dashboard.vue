@@ -6,6 +6,56 @@
             <div class="flex justify-center gap-3 my-4">
                 
                 <button class="text-base-content btn" v-on:click="openDialog">Pridat udalost</button>
+                <button class="text-base-content btn" @click="addMoney">Pridat vklad uzivatelom</button>
+                <Dialog v-model:visible="displaymoney">
+                    <template #header>
+                        <h3 class="text-xl">Vklad pre uzivatelov</h3>
+                    </template>
+                    <div>
+                        <div class="field mb-4">
+                            <input class="text-base-content input input-bordered" v-model="nameofinsert" placeholder="Meno-Datum vkladu" type="text" />
+                        </div>
+                        <div class="field mb-4 text-xl">
+                            <input class="text-base-content input input-bordered" v-model="priceppofinsert" placeholder="Vklad na človeka" />€
+                        </div>
+                        <div class="field mb-4" >
+                        <label class="text-xl">Users:</label>
+                        <div v-for="user in users" :key="user.id">
+                            <input type="checkbox" :value="user.id" v-model="user.id" />
+                            {{ user.name + ' '+ user.surname }}
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <template #footer>
+                        <button class="btn btn-primary" @click="submitForm">Submit</button>
+                    </template>
+                </Dialog>
+                <!-- <Dialog v-model:visible="displaymoney">
+                    <template #header> </template>
+                    <template>
+                        <div>
+                        <div class="field mb-4">
+                            <input class="text-base-content input input-bordered" v-model="nameofinsert" placeholder="Meno-Datum vkladu" type="text" />
+                        </div>
+                        <div class="field mb-4 text-xl">
+                            <input class="text-base-content input input-bordered" v-model="priceppofinsert" placeholder="Vklad na človeka" />€
+                        </div>
+                        <div >
+                        <label class="text-xl">Users:</label>
+                        <div v-for="user in users" :key="user.id">
+                            <input type="checkbox" :value="user.id" v-model="selectedUsers" />
+                            {{ user.name }}
+                        </div>
+                        </div>
+                        </div>
+                        
+                    </template>
+                    <template #footer>
+                        <button class="btn btn-primary" @click="submitForm">Submit</button>
+
+                    </template>
+                </Dialog> -->
                 <Dialog v-model:visible="display1">
                     <template #header>
 		                <h3 class="text-xl">Pridanie udalosti:</h3>
@@ -14,7 +64,7 @@
                     <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input11" v-model="nameofevent" placeholder="Meno udalost" /></div>
                     <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input22" v-model="dateofevent" placeholder="Datum" /></div>
                     <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input33" v-model="place" placeholder="Miesto" /></div>
-                    <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input44" v-model="costofevent" placeholder="Cena akcie(pouzivat -)" /></div>
+                    <div class="field mb-4 text-xl"><input class="text-base-content input input-bordered" id= "input44" v-model="costofevent" placeholder="Cena akcie(pouzivat -)" /> €</div>
                     <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input55" v-model="notes" placeholder="Poznamky" /></div>
                     <button class="btn btn-primary" v-on:click="addEvent">Pridat Udalost</button>
                 </Dialog>
@@ -50,10 +100,30 @@ export default {
             place: '',
             costofevent: '',
             notes: '',
+            displaymoney:false,
+            users: [],
+            priceppofinsert:'',
+            nameofinsert:'',
+            
             
         }
     },
-    
+    async created() {
+        const db = getFirestore()
+        const docs = await getDocs(collection(db,'users'))
+        docs.forEach((doc5)=>{
+            var data = doc5.data()
+            data['id'] = doc5.id
+            data['uid'] = doc5.id
+            this.users.push(data)
+            
+        })
+    // db.collection('users').get().then(querySnapshot => {
+    //   querySnapshot.forEach(doc => {
+    //     this.users.push(doc.data());
+    //   });
+    // });
+    },
     async setup(){
         const db = getFirestore();
         const uid = getAuth().currentUser.uid;
@@ -99,6 +169,52 @@ export default {
             return{rowsofevents,userfields,userrole,headers,attendancedata}
     },
 methods: {
+        submitForm() {
+            console.log('Name:', this.nameofinsert);
+             console.log('Price per person:', this.priceppofinsert);
+            console.log('Selected users:');
+            this.users.forEach(async doc1 =>{
+                var username = doc1.name + ' ' + doc1.surname
+                if (doc1.id == true){
+                    const db =getFirestore()
+                    const data321 = await getDoc(doc(db,'users',doc1.uid))
+                    var bal1 = data321.data().positivebalance
+                    var posbalneu = bal1 + parseFloat(this.priceppofinsert)
+                    if (isNaN(posbalneu) == false){
+                        await setDoc(doc(db,'users',doc1.uid),{positivebalance: posbalneu},{merge:true})
+                        var posbal = posbalneu
+                        //getting all cpps and if to count or not
+                        const rowsofeventsSnap = await getDocs(collection(db,'events'))
+                        var usedcpp = 0
+                        rowsofeventsSnap.forEach((doc3) =>{
+                            var data = doc3.data()
+                            var count = 0
+                            const doc2 = doc3.data()
+                            const arr = Object.values(doc2)
+                            count = arr.filter(function(value) {
+                                return value === "✅";
+                            }).length;
+                            var valuex1 = doc3.data().costofevent
+                            var cpp = valuex1 / count
+                            if (data[username] == "✅")  {
+                                usedcpp += cpp
+                            }
+                        });
+                        //setting balance
+                        var setval = posbal + usedcpp
+                        var setval1 = Math.round((setval+ Number.EPSILON) * 100) / 100
+                        await setDoc(doc(db,'users',doc1.uid),{balance: setval1},{merge:true})
+                    }
+                    
+                }
+                
+            })
+            location.reload()
+    },
+        async addMoney(){
+            this.displaymoney = true
+
+        },
         async openDialog(){
             this.display1 = true
         },

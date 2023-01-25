@@ -46,7 +46,7 @@
                 <tr v-for="row in rows" :key="row.id">
                     <td class="text-primary-content">{{ row['Number'] }}</td>
                     <td class="text-primary-content">{{ row['Transakcia'] }}</td>
-                    <td class="text-primary-content" :class="getCenaClass(row.cena)">{{ row['cena'] }}</td>
+                    <td class="text-primary-content" :class="getCenaClass(row.cena)">{{ row['cena'] }}€</td>
                     
                 </tr>
             </tbody>
