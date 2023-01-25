@@ -3,9 +3,11 @@
 	<nav class="navbar bg-neutral text-neutral-content !mb-16 md:flex hidden">
 		<div class="flex-1">
 			<a class="btn btn-ghost normal-case text-xl">Kartel 1.B</a>
+			
 		</div>
 		<div class="flex-none">
 			<ul class="menu menu-horizontal px-1">
+				<li class="btn">Zostatok : {{ balance }}€</li>
 				<li><router-link to="/dashboard" class="" v-if="isLoggedIn">Dashboard</router-link></li>
 				<li><router-link to="/profile" class="" v-if="isLoggedIn">My account</router-link></li>
 				<li>
@@ -21,6 +23,7 @@
   <div class="collapse-title bg-neutral text-neutral-content flex pr-[16px] justify-between">
 		<div class="">
 			<a class="btn btn-ghost normal-case text-xl">Kartel 1.B</a>
+			<a class="btn-ghost">Zostatok : {{ balance }}€</a>
 		</div>
 		<label class="btn btn-square btn-ghost">
 			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -29,6 +32,7 @@
   <div class="collapse-content bg-neutral text-neutral-content"> 
 		<div class="divider"></div>
 		<ul class="menu menu-vertical px-1">
+			
 				<li><router-link to="/dashboard" class="" v-if="isLoggedIn">Dashboard</router-link></li>
 				<li><router-link to="/profile" class="" v-if="isLoggedIn">My account</router-link></li>
 				<div class="divider"></div>
@@ -42,12 +46,15 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue';
+
+import {getFirestore,getDoc,doc,onSnapshot} from "firebase/firestore" ;
 import { getAuth, onAuthStateChanged, signOut } from '@firebase/auth';
+
 
 export default {
 	data() {
 		return {
+			balance:0,
 			items: [
 				{
 					label:'Dashboard',
@@ -64,6 +71,7 @@ export default {
 			isLoggedIn: null
 		}
 	},
+
 	methods: {
 		handleSignOut() {
 			let auth = getAuth()
@@ -77,11 +85,16 @@ export default {
 		onAuthStateChanged(auth, (user) => {
 			if (user) {
 				this.isLoggedIn = true
+				const db = getFirestore()
+      			const uid = getAuth().currentUser.uid;
+				onSnapshot(doc(db, "users", uid), (doc) => {
+   					 this.balance = doc.data().balance
+			});
 			} else {
 				this.isLoggedIn = false
 			}
 		})
-	}
+	},
 }
 </script>
 

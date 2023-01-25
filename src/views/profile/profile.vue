@@ -40,6 +40,8 @@ export default {
                 selectedOption: field
             })
         })
+        
+        
         return {items}
     },
     methods: {
@@ -53,6 +55,47 @@ export default {
         obj1[username] = obj1['selectedOption'];
         delete obj1['selectedOption'];
         await setDoc(way2,obj1,{merge: true})
+        //getting positive balance
+        var posbal = user.data().positivebalance
+
+
+        //getting all cpps and if to count or not
+        const rowsofeventsSnap = await getDocs(collection(db,'events'))
+        rowsofeventsSnap.forEach((doc1) =>{
+            var data = doc1.data()
+            var count = 0
+            var usedcpp = 0
+            const doc2 = doc1.data()
+            const arr = Object.values(doc2)
+            count = arr.filter(function(value) {
+                return value === "✅";
+            }).length;
+            var valuex1 = doc1.data().costofevent
+            
+            
+            var cpp = valuex1 / count
+            if (data[username] == "✅")  {
+                usedcpp += cpp
+            }
+            if (cpp == Infinity){
+
+            } else if (cpp == -Infinity){
+
+            } else{
+                data['cpp'] = cpp + '€'
+            }
+           
+        });
+
+         
+        //setting balance
+        var setval = posbal - usedcpp
+        console.log(setval)
+
+        // await setDoc(doc(db,'users',uid),{
+        //     balance: setval
+        // })
+        
         }
     }
 }

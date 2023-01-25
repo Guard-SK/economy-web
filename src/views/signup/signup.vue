@@ -124,7 +124,9 @@ export default {
                     name: this.name,
                     surname: this.surname,
                     email: this.email,
-                    role: user1
+                    role: user1,
+                    positivebalance: 0,
+                    balance: 0
                 })
                 const doc1 = await getDoc(doc(db,'sample','sample'))
                 const doc2 = doc1.data()

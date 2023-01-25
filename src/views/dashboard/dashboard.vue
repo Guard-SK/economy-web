@@ -31,7 +31,7 @@ import TableDashboard from './_components/TableDashboard.vue'
 import { doc, getFirestore, getDocs, collection,setDoc, getDoc} from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
 import Dialog from 'primevue/dialog';
-import { tsImportEqualsDeclaration } from '@babel/types';
+
 
 export default {
     components: {
@@ -49,7 +49,8 @@ export default {
             dateofevent: '',
             place: '',
             costofevent: '',
-            notes: ''
+            notes: '',
+            
         }
     },
     
@@ -61,10 +62,15 @@ export default {
         var userfields = []
         var attendancedata = []
         const userfieldsSnap = await getDocs(collection(db, 'users'))
+        if (userrole == 'admin') {
         userfieldsSnap.forEach((doc) => {
             var namepush = doc.data().name+ ' ' + doc.data().surname
             userfields.push(namepush) 
-        });
+        });} else{
+            const doc4 = await getDoc(doc(db,'users', uid))
+            var username = doc4.data().name + ' ' + doc4.data().surname
+            userfields.push(username)
+        }
         var rowsofevents = []
         const rowsofeventsSnap = await getDocs(collection(db,'events'))
         rowsofeventsSnap.forEach((doc1) =>{
@@ -88,6 +94,7 @@ export default {
             }
             rowsofevents.push(data)
         });
+       
         var headers = ['Number','Transakcia','Cena','Subor']
             return{rowsofevents,userfields,userrole,headers,attendancedata}
     },
