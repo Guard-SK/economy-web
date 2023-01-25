@@ -27,11 +27,8 @@
             <div >
                 <button v-if="userrole == 'admin'" class="text-base-content btn" v-on:click="openTransaction(nameofevent)">Pridat transakciu</button>
             </div>
-            
                 <h3 class="text-xl">Detaily transakcie: {{dialname}}</h3>
-            
-		    
-	    </template>
+        </template>
         <template #footer>
 		<h3 >Spolu cena(poznamenanych):</h3><h3 :class="getCenaClass(total)">{{ total }}</h3>
         <h3 >Celkova cena:</h3><h3 :class="getCenaClass(costofevent1)">{{ costofevent1  }}€ </h3>
@@ -47,7 +44,6 @@
                     <td class="text-primary-content">{{ row['Number'] }}</td>
                     <td class="text-primary-content">{{ row['Transakcia'] }}</td>
                     <td class="text-primary-content" :class="getCenaClass(row.cena)">{{ row['cena'] }}€</td>
-                    
                 </tr>
             </tbody>
         </table>
@@ -61,27 +57,20 @@
         <p>Miesto: {{ place }}</p>
         <p>Dodatočné poznámky: {{ notes }}</p>
         <p>Celková cena:</p><p :class="getCenaClass(costofevent1)" > {{ costofevent }}</p>
-        
     </Dialog>
     <Dialog header="Header" footer="Footer" v-model:visible="display2">
         <template #header>
             <h3 class="text-xl">
                 Dialog pre pridavanie transakcii <br>
                 {{ namename }}
-            
-                
             </h3>
         </template>
-        
         <template #footer>
             <button class="text-base-content btn" v-on:click="uploadFile(namename)">Potvrdit a odoslat</button>
 	    </template>
         <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input111" v-model="nameoftransaction" placeholder="Meno Transakcie" /></div>
         <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input222" v-model="priceoftransaction" placeholder="Cena Transakcie" /></div>
         <input type="file" ref="fileInput"  class="file-input file-input-bordered file-input-info w-full max-w-xs" />
-        <template>
- 
-        </template>
     </Dialog>
 </template>
 <script>
@@ -91,7 +80,6 @@ import Button from 'primevue/button';
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { getAuth } from 'firebase/auth'
 const storage = getStorage();
-const storageRef = ref(storage);
 export default {
 name: 'TableComponent',
 data(){
@@ -112,7 +100,6 @@ data(){
         nameoftransaction: '',
         priceoftransaction:'',
         userrole: 'user'
-        
     }
 },
 async setup() {
@@ -145,16 +132,12 @@ props:{
     }
 },
 methods:{
-
     async uploadFile(eventnamepp) {
         const db = getFirestore()
-        console.log(eventnamepp)
         const doc11 = await getDoc(doc(db,'transakcie',eventnamepp,'transakcie','number'))
         const number1 = parseInt(doc11.data().number) + 1
-        
         const file = this.$refs.fileInput.files[0]
         await setDoc(doc(db,'transakcie',eventnamepp,'transakcie','number'),{number: number1},{merge: true})
-
         if (file != undefined){
         const mountainsRef = ref(storage, eventnamepp+'/'+ file.name);
         uploadBytes(mountainsRef, file).then((snapshot) => {
@@ -171,8 +154,6 @@ methods:{
             Number: number1,
             file: false
         });
-        
-        
     }
     location.reload();
     },
@@ -219,15 +200,9 @@ methods:{
         this.costofevent = data.data().costofevent + '€'
         this.notes = data.data().notes
         this.costofevent1 = data.data().costofevent
-
-
-
-        
     },
     async openTransaction(nameofevent){
         this.display2= true
-        
-        
     },
     getCenaClass(cena) {
         if (cena > 0) {
@@ -240,5 +215,4 @@ methods:{
     }
 }
 }
-
 </script>

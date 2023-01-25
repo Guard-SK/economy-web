@@ -78,7 +78,7 @@
 </template>
 <script>
 import TableDashboard from './_components/TableDashboard.vue'
-import { doc, getFirestore, getDocs, collection,setDoc, getDoc} from "firebase/firestore";
+import { doc, getFirestore, getDocs, collection,setDoc, getDoc,addDoc} from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
 import Dialog from 'primevue/dialog';
 
@@ -105,9 +105,12 @@ export default {
             priceppofinsert:'',
             nameofinsert:'',
             
+
+            
             
         }
     },
+
     async created() {
         const db = getFirestore()
         const docs = await getDocs(collection(db,'users'))
@@ -169,17 +172,22 @@ export default {
             return{rowsofevents,userfields,userrole,headers,attendancedata}
     },
 methods: {
-        submitForm() {
-            console.log('Name:', this.nameofinsert);
-             console.log('Price per person:', this.priceppofinsert);
-            console.log('Selected users:');
+        resetForm1(){
+            this.nameofinsert = ''
+            this.priceppofinsert = ''
+    },
+        async submitForm() {
+            var change = false
+
             this.users.forEach(async doc1 =>{
                 var username = doc1.name + ' ' + doc1.surname
                 if (doc1.id == true){
-                    const db =getFirestore()
+                    const db = getFirestore()
                     const data321 = await getDoc(doc(db,'users',doc1.uid))
                     var bal1 = data321.data().positivebalance
+    
                     var posbalneu = bal1 + parseFloat(this.priceppofinsert)
+
                     if (isNaN(posbalneu) == false){
                         await setDoc(doc(db,'users',doc1.uid),{positivebalance: posbalneu},{merge:true})
                         var posbal = posbalneu
@@ -204,13 +212,29 @@ methods: {
                         var setval = posbal + usedcpp
                         var setval1 = Math.round((setval+ Number.EPSILON) * 100) / 100
                         await setDoc(doc(db,'users',doc1.uid),{balance: setval1},{merge:true})
+                        await addDoc(collection(db,'users',doc1.uid,'vklady'),{
+                            nameofinsertdd: this.nameofinsert,
+                            priceadded:parseFloat(this.priceppofinsert)
+                        })
+                        change = true
                     }
                     
                 }
                 
             })
-            location.reload()
-    },
+    
+            
+            this.displaymoney = false
+            setInterval(() => {
+                if (change == true){
+                    location.reload()
+                }
+                 }
+    , 1000);
+            
+
+        },
+        
         async addMoney(){
             this.displaymoney = true
 

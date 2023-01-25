@@ -19,26 +19,21 @@
         </table>
         
     </div>
-    <!-- <div class='table-responsive my-5'>
+    <div class='table-responsive my-5'>
         <table id="tableComponent" class="table table-bordered table-striped center">
             <thead>
-            <th class="text-primary-content">Event</th>
-            <th class="text-primary-content" >Options</th>
+            <th class="text-primary-content">Meno / Datum</th>
+            <th class="text-primary-content" >Vklad</th>
             </thead>
             <tbody>
-            <tr v-for="item in items" :key="item">
-                <td class="text-primary-content">{{ item.name }}</td>
-                <td class="text-primary-content">
-                <select v-model="item.selectedOption" @change="updateOption(item)">
-                <option value="✅">✅</option>
-                <option value="❌">❌</option>
-                </select>
-                </td>
+            <tr v-for="insert in inserts" :key="insert">
+                <td class="text-primary-content">{{ insert.nameofinsertdd }}</td>
+                <td class="text-primary-content">{{ insert.priceadded }}€</td>
             </tr>
             </tbody>
         </table>
         
-    </div> -->
+    </div>
 
 </template>
 <script>
@@ -68,8 +63,16 @@ export default {
             })
         })
         
-        
-        return {items}
+        const inserts = []
+        const snapofinserts = await getDocs(collection(db,'users',uid,'vklady'))
+        snapofinserts.forEach(doc55 =>{
+            inserts.push({
+                nameofinsertdd: doc55.data().nameofinsertdd,
+                priceadded: doc55.data().priceadded
+                
+            })
+        })
+        return {items,inserts}
     },
     methods: {
         async updateOption(item) {
@@ -122,7 +125,7 @@ export default {
         //setting balance
         var setval = posbal + usedcpp
         var setval1 = Math.round((setval+ Number.EPSILON) * 100) / 100
-        console.log(setval1)
+        
 
         await setDoc(doc(db,'users',uid),{
            balance: setval1
