@@ -21,7 +21,8 @@ import { getAuth } from 'firebase/auth'
 export default {
     data() {
         return {
-            items : []
+            items : [],
+            usedcpp:0
         }
     },
     async setup(){
@@ -61,10 +62,11 @@ export default {
 
         //getting all cpps and if to count or not
         const rowsofeventsSnap = await getDocs(collection(db,'events'))
+        var usedcpp = 0
         rowsofeventsSnap.forEach((doc1) =>{
             var data = doc1.data()
             var count = 0
-            var usedcpp = 0
+            
             const doc2 = doc1.data()
             const arr = Object.values(doc2)
             count = arr.filter(function(value) {
@@ -74,13 +76,16 @@ export default {
             
             
             var cpp = valuex1 / count
+
+    
             if (data[username] == "✅")  {
+                
                 usedcpp += cpp
             }
             if (cpp == Infinity){
-
+                data['cpp'] = 'None'
             } else if (cpp == -Infinity){
-
+                data['cpp'] = 'None'
             } else{
                 data['cpp'] = cpp + '€'
             }
@@ -89,12 +94,13 @@ export default {
 
          
         //setting balance
-        var setval = posbal - usedcpp
-        console.log(setval)
+        var setval = posbal + usedcpp
+        var setval1 = Math.round((setval+ Number.EPSILON) * 100) / 100
+        console.log(setval1)
 
-        // await setDoc(doc(db,'users',uid),{
-        //     balance: setval
-        // })
+        await setDoc(doc(db,'users',uid),{
+           balance: setval1
+        },{merge:true})
         
         }
     }
