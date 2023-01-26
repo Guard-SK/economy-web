@@ -1,4 +1,6 @@
 <template>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
     <table  id="tableComponent" class="table table-bordered table-striped center">
         <thead>
         <!-- Headers with users -->
@@ -44,6 +46,8 @@
                     <td class="text-primary-content">{{ row['Number'] }}</td>
                     <td class="text-primary-content">{{ row['Transakcia'] }}</td>
                     <td class="text-primary-content" :class="getCenaClass(row.cena)">{{ row['cena'] }}€</td>
+                    <td v-if="row.file !== false"><Button @click="downloadFile(row.file)"><i class="fa fa-download"></i>...Download</Button></td>
+                    
                 </tr>
             </tbody>
         </table>
@@ -73,11 +77,13 @@
         <input type="file" ref="fileInput"  class="file-input file-input-bordered file-input-info w-full max-w-xs" />
     </Dialog>
 </template>
+
+
 <script>
 import {getFirestore,getDocs,collection,doc,getDoc,setDoc,addDoc} from "firebase/firestore";
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getAuth } from 'firebase/auth'
 const storage = getStorage();
 export default {
@@ -140,13 +146,14 @@ methods:{
         await setDoc(doc(db,'transakcie',eventnamepp,'transakcie','number'),{number: number1},{merge: true})
         if (file != undefined){
         const mountainsRef = ref(storage, eventnamepp+'/'+ file.name);
+        const fileString = eventnamepp+'/'+ file.name
         uploadBytes(mountainsRef, file).then((snapshot) => {
             console.log('Uploaded a blob or file!');})
         await addDoc(collection(db, "transakcie",eventnamepp,'transakcie'), {
             Transakcia: this.nameoftransaction,
             cena: parseFloat(this.priceoftransaction),
             Number: number1,
-            file: 'lol'
+            file: fileString
         });}else{
             await addDoc(collection(db, "transakcie",eventnamepp,'transakcie'), {
             Transakcia: this.nameoftransaction,
@@ -156,6 +163,44 @@ methods:{
         });
     }
     location.reload();
+    },
+    async downloadFile(fileref){
+        console.log(fileref)
+        if (fileref !== false){
+            const downloadRef = ref(storage,fileref)
+            getDownloadURL(downloadRef)
+                .then((url) => {
+   
+
+
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = 'readme.txt' ;
+                link.click()
+
+                    
+
+                        }).catch((error) => {
+    // A full list of error codes is available at
+    // https://firebase.google.com/docs/storage/web/handle-errors
+    switch (error.code) {
+      case 'storage/object-not-found':
+        // File doesn't exist
+        break;
+      case 'storage/unauthorized':
+        // User doesn't have permission to access the object
+        break;
+      case 'storage/canceled':
+        // User canceled the upload
+        break;
+
+      // ...
+
+      case 'storage/unknown':
+        // Unknown error occurred, inspect the server response
+        break;
+    }
+                    })}
     },
     async transactions(event) {
         try {
