@@ -139,6 +139,7 @@ props:{
 },
 methods:{
     async uploadFile(eventnamepp) {
+        var change = false
         const db = getFirestore()
         const doc11 = await getDoc(doc(db,'transakcie',eventnamepp,'transakcie','number'))
         const number1 = parseInt(doc11.data().number) + 1
@@ -154,17 +155,29 @@ methods:{
             cena: parseFloat(this.priceoftransaction),
             Number: number1,
             file: fileString
-        });}else{
+        });
+        change = true}else{
             await addDoc(collection(db, "transakcie",eventnamepp,'transakcie'), {
             Transakcia: this.nameoftransaction,
             cena: parseFloat(this.priceoftransaction),
             Number: number1,
             file: false
-        });
+            
+        }
+        );
+        change = true
+
     }
-    location.reload();
+    setInterval(() => {
+                if (change == true){
+                    location.reload()
+                }
+                 }
+    , 1000);
+    
     },
     async downloadFile(fileref){
+        
         console.log(fileref)
         if (fileref !== false){
             const downloadRef = ref(storage,fileref)
