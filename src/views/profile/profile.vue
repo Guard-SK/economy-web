@@ -4,9 +4,10 @@
             <thead>
             <th class="text-primary-content">Event</th>
             <th class="text-primary-content" >Options</th>
+            <th></th>
             </thead>
             <tbody>
-            <tr v-for="item in items" :key="item">
+            <tr v-for="item in items" :key="item" >
                 <td class="text-primary-content">{{ item.name }}</td>
                 <td class="text-primary-content">
                 <select v-model="item.selectedOption" @change="updateOption(item)">
@@ -14,6 +15,7 @@
                 <option value="❌">❌</option>
                 </select>
                 </td>
+                <td><button @click="setFalse" class="text-primary-content btn">Potvrdit ucast</button></td>
             </tr>
             </tbody>
         </table>
@@ -43,7 +45,8 @@ export default {
     data() {
         return {
             items : [],
-            usedcpp:0
+            usedcpp:0,
+            tree: false
         }
     },
     async setup(){
@@ -75,6 +78,9 @@ export default {
         return {items,inserts}
     },
     methods: {
+        async setFalse(){
+
+        },
         async updateOption(item) {
         const db = getFirestore()
         const way2 = doc(db,'events',item.name)

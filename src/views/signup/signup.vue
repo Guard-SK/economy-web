@@ -128,12 +128,7 @@ export default {
                     positivebalance: 0,
                     balance: 0
                 })
-                const doc1 = await getDoc(doc(db,'sample','sample'))
-                const doc2 = doc1.data()
-                await setDoc(doc(db,"userstats",uid),doc2)
-                const eventRef = doc(db,'userstats',uid)
-                await setDoc(eventRef, {name: this.name} , {merge: true})
-                await setDoc(eventRef,{surname:this.surname}, {merge: true})
+
                 const attendaceRef = collection(db,'events')
                 const attendaceSnap = await getDocs(attendaceRef)
                 attendaceSnap.forEach(async doc4 =>{
