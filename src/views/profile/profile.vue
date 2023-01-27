@@ -7,15 +7,17 @@
             <th></th>
             </thead>
             <tbody>
-            <tr v-for="item in items" :key="item" >
-                <td class="text-primary-content">{{ item.name }}</td>
-                <td class="text-primary-content">
+            <tr v-for="item in items" :key="item">
+                
+                <td v-if="item.visible" class="text-primary-content">{{ item.name }}</td>
+                <td v-if="item.visible" class="text-primary-content">
                 <select v-model="item.selectedOption" @change="updateOption(item)">
                 <option value="✅">✅</option>
                 <option value="❌">❌</option>
                 </select>
                 </td>
-                <td><button @click="setFalse" class="text-primary-content btn">Potvrdit ucast</button></td>
+                <td v-if="item.visible"><button @click="setFalse(item)" class="text-primary-content btn">Potvrdit ucast</button></td>
+                
             </tr>
             </tbody>
         </table>
@@ -54,15 +56,18 @@ export default {
         const uid = getAuth().currentUser.uid;
         var user = await getDoc(doc(db,'users',uid))
         var username = user.data().name + ' ' + user.data().surname
+        var visibleuser  = username+'visible'
         const document1 = await getDocs(collection(db,'events'))
         const items = []
+        console.log(visibleuser)
         document1.forEach(async doc1 =>{
             const docname = doc1.id
             const fieldselect = doc1.data()
             const field = fieldselect[username]
             items.push({
                 name: docname,
-                selectedOption: field
+                selectedOption: field,
+                visible: fieldselect[visibleuser]
             })
         })
         
@@ -72,13 +77,24 @@ export default {
             inserts.push({
                 nameofinsertdd: doc55.data().nameofinsertdd,
                 priceadded: doc55.data().priceadded
+
                 
             })
         })
         return {items,inserts}
     },
     methods: {
-        async setFalse(){
+        async setFalse(item){
+            const db = getFirestore()
+            const uid = getAuth().currentUser.uid;
+            const way2 = doc(db,'events',item.name)
+            var user = await getDoc(doc(db,'users',uid))
+            var username = user.data().name + ' ' + user.data().surname +'visible'
+            let obj3 = {selectedOption: false}
+            obj3[username] = obj3['selectedOption'];
+            delete obj3['selectedOption'];
+            await setDoc(way2,obj3,{merge: true})
+            location.reload()
 
         },
         async updateOption(item) {

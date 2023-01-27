@@ -177,8 +177,6 @@ methods:{
     
     },
     async downloadFile(fileref){
-        
-        console.log(fileref)
         if (fileref !== false){
             const downloadRef = ref(storage,fileref)
             getDownloadURL(downloadRef)

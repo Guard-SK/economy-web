@@ -262,11 +262,17 @@ methods: {
             const usersSnap = await getDocs(usersRef)
             usersSnap.forEach(async (doc1)=> {
                 var username = doc1.data().name + ' ' + doc1.data().surname
+                var username1 = username+ 'visible'
                 const reff1223 = doc(db,'events',this.nameofevent)
                 let obj1 = {eventname1: "❌"}
                 obj1[username] = obj1['eventname1'];
                 delete obj1['eventname1'];
+                let obj2 = {eventname1: true}
+                obj2[username1] = obj2['eventname1'];
+                delete obj2['eventname1'];
+                
                 await setDoc(reff1223, obj1,{merge:true}) 
+                await setDoc(reff1223, obj2,{merge:true}) 
             });
             const coll = doc(db, 'transakcie', this.nameofevent,'transakcie', 'number')
             await setDoc(coll,{
