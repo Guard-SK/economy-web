@@ -134,10 +134,16 @@ export default {
                 attendaceSnap.forEach(async doc4 =>{
                     const refatt2 = doc(db,'events',doc4.id)
                     var eventname = this.name + ' ' + this.surname;
+                    var name2 = eventname + 'visible'
                     let obj1 = {eventname1: "❌"}
                     obj1[eventname] = obj1['eventname1'];
                     delete obj1['eventname1'];
+                    let obj2 = {eventname1: true}
+                    obj2[name2] = obj2['eventname1'];
+                    delete obj2['eventname1'];
+
                     await setDoc(refatt2, obj1,{merge:true})
+                    await setDoc(refatt2, obj2,{merge:true})
                 });
                 this.resetForm()
                 this.$router.push('/dashboard')
