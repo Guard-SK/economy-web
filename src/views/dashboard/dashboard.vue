@@ -2,9 +2,7 @@
     <div class="container text-center  mt-5 mb-5"> 
         <h1 class="mt-5 fw-bolder text-success text-xl">Udalosti:</h1>
         <div v-if="userrole == 'admin'">
-            
             <div class="flex justify-center gap-3 my-4">
-                
                 <button class="text-base-content btn" v-on:click="openDialog">Pridat udalost</button>
                 <button class="text-base-content btn" @click="addMoney">Pridat vklad uzivatelom</button>
                 <Dialog v-model:visible="displaymoney">
@@ -25,42 +23,15 @@
                             {{ user.name + ' '+ user.surname }}
                             </div>
                         </div>
-                        
                     </div>
                     <template #footer>
                         <button class="btn btn-primary" @click="submitForm">Submit</button>
                     </template>
                 </Dialog>
-                <!-- <Dialog v-model:visible="displaymoney">
-                    <template #header> </template>
-                    <template>
-                        <div>
-                        <div class="field mb-4">
-                            <input class="text-base-content input input-bordered" v-model="nameofinsert" placeholder="Meno-Datum vkladu" type="text" />
-                        </div>
-                        <div class="field mb-4 text-xl">
-                            <input class="text-base-content input input-bordered" v-model="priceppofinsert" placeholder="Vklad na človeka" />€
-                        </div>
-                        <div >
-                        <label class="text-xl">Users:</label>
-                        <div v-for="user in users" :key="user.id">
-                            <input type="checkbox" :value="user.id" v-model="selectedUsers" />
-                            {{ user.name }}
-                        </div>
-                        </div>
-                        </div>
-                        
-                    </template>
-                    <template #footer>
-                        <button class="btn btn-primary" @click="submitForm">Submit</button>
-
-                    </template>
-                </Dialog> -->
                 <Dialog v-model:visible="display1">
                     <template #header>
 		                <h3 class="text-xl">Pridanie udalosti:</h3>
 	                </template>
-                    
                     <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input11" v-model="nameofevent" placeholder="Meno udalost" /></div>
                     <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input22" v-model="dateofevent" placeholder="Datum" /></div>
                     <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input33" v-model="place" placeholder="Miesto" /></div>
@@ -81,15 +52,10 @@ import TableDashboard from './_components/TableDashboard.vue'
 import { doc, getFirestore, getDocs, collection,setDoc, getDoc,addDoc} from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
 import Dialog from 'primevue/dialog';
-
-
 export default {
     components: {
-        
         Dialog,
-        
         TableDashboard
-        
     },
     data() {
         return {
@@ -104,10 +70,6 @@ export default {
             users: [],
             priceppofinsert:'',
             nameofinsert:'',
-            
-
-            
-            
         }
     },
 
@@ -121,11 +83,6 @@ export default {
             this.users.push(data)
             
         })
-    // db.collection('users').get().then(querySnapshot => {
-    //   querySnapshot.forEach(doc => {
-    //     this.users.push(doc.data());
-    //   });
-    // });
     },
     async setup(){
         const db = getFirestore();
@@ -137,11 +94,19 @@ export default {
         const userfieldsSnap = await getDocs(collection(db, 'users'))
         if (userrole == 'admin') {
         userfieldsSnap.forEach((doc) => {
-            var namepush = doc.data().name+ ' ' + doc.data().surname
-            userfields.push(namepush) 
+            const username = {
+                name: doc.data().name + ' ' + doc.data().surname,
+                balanceuser: doc.data().balance
+            }
+            
+            userfields.push(username) 
         });} else{
             const doc4 = await getDoc(doc(db,'users', uid))
-            var username = doc4.data().name + ' ' + doc4.data().surname
+            const username = {
+                name: doc4.data().name + ' ' + doc4.data().surname,
+                balanceuser: 0
+            }
+            
             userfields.push(username)
         }
         var rowsofevents = []
@@ -191,7 +156,6 @@ methods: {
                     if (isNaN(posbalneu) == false){
                         await setDoc(doc(db,'users',doc1.uid),{positivebalance: posbalneu},{merge:true})
                         var posbal = posbalneu
-                        //getting all cpps and if to count or not
                         const rowsofeventsSnap = await getDocs(collection(db,'events'))
                         var usedcpp = 0
                         rowsofeventsSnap.forEach((doc3) =>{
@@ -208,7 +172,6 @@ methods: {
                                 usedcpp += cpp
                             }
                         });
-                        //setting balance
                         var setval = posbal + usedcpp
                         var setval1 = Math.round((setval+ Number.EPSILON) * 100) / 100
                         await setDoc(doc(db,'users',doc1.uid),{balance: setval1},{merge:true})

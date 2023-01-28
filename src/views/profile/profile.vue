@@ -11,7 +11,7 @@
                 
                 <td v-if="item.visible" class="text-primary-content">{{ item.name }}</td>
                 <td v-if="item.visible" class="text-primary-content">
-                <select v-model="item.selectedOption" @change="updateOption(item)">
+                <select v-model="item.selectedOption">
                 <option value="✅">✅</option>
                 <option value="❌">❌</option>
                 </select>
@@ -59,7 +59,6 @@ export default {
         var visibleuser  = username+'visible'
         const document1 = await getDocs(collection(db,'events'))
         const items = []
-        console.log(visibleuser)
         document1.forEach(async doc1 =>{
             const docname = doc1.id
             const fieldselect = doc1.data()
@@ -84,19 +83,7 @@ export default {
         return {items,inserts}
     },
     methods: {
-        async setFalse(item){
-            const db = getFirestore()
-            const uid = getAuth().currentUser.uid;
-            const way2 = doc(db,'events',item.name)
-            var user = await getDoc(doc(db,'users',uid))
-            var username = user.data().name + ' ' + user.data().surname +'visible'
-            let obj3 = {selectedOption: false}
-            obj3[username] = obj3['selectedOption'];
-            delete obj3['selectedOption'];
-            await setDoc(way2,obj3,{merge: true})
-            location.reload()
-
-        },
+        
         async updateOption(item) {
         const db = getFirestore()
         const way2 = doc(db,'events',item.name)
@@ -107,53 +94,47 @@ export default {
         obj1[username] = obj1['selectedOption'];
         delete obj1['selectedOption'];
         await setDoc(way2,obj1,{merge: true})
-        //getting positive balance
-        var posbal = user.data().positivebalance
-
-
-        //getting all cpps and if to count or not
-        const rowsofeventsSnap = await getDocs(collection(db,'events'))
-        var usedcpp = 0
-        rowsofeventsSnap.forEach((doc1) =>{
-            var data = doc1.data()
-            var count = 0
-            
-            const doc2 = doc1.data()
-            const arr = Object.values(doc2)
-            count = arr.filter(function(value) {
-                return value === "✅";
-            }).length;
-            var valuex1 = doc1.data().costofevent
-            
-            
-            var cpp = valuex1 / count
-
-    
-            if (data[username] == "✅")  {
+        const usersSnap = await getDocs(collection(db,'users'))
+        usersSnap.forEach(async userdoc => {
+            const uddata = userdoc.data()
+            const userid = userdoc.id
+            var posbal = uddata.positivebalance
+            var usedcpp = 0
+            var username2 = uddata.name+ ' ' + uddata.surname
+            const rowsofeventsSnap = await getDocs(collection(db,'events'))
+            rowsofeventsSnap.forEach(eventdoc => {
+                var eventdata = eventdoc.data()
+                const arr = Object.values(eventdata)
+                var count = arr.filter(function(value) {
+                    return value === "✅";
+                }).length;
+                var valuex1 = eventdata.costofevent
+                var cpp123 = valuex1 / count
+                if (eventdata[username2] == "✅")  {
+                    usedcpp += cpp123
+                }
                 
-                usedcpp += cpp
-            }
-            if (cpp == Infinity){
-                data['cpp'] = 'None'
-            } else if (cpp == -Infinity){
-                data['cpp'] = 'None'
-            } else{
-                data['cpp'] = cpp + '€'
-            }
-           
-        });
+            })
+            var setbal = posbal + usedcpp
+            var setbal3= Math.round((setbal+ Number.EPSILON) * 100) / 100
+            await setDoc(doc(db,'users',userid),{balance: setbal3},{merge:true})
+        })
+        },
+        async setFalse(item){
+            await this.updateOption(item)
+            const db = getFirestore()
+            const uid = getAuth().currentUser.uid;
+            const way2 = doc(db,'events',item.name)
+            var user = await getDoc(doc(db,'users',uid))
+            var username = user.data().name + ' ' + user.data().surname +'visible'
+            let obj3 = {selectedOption: false}
+            obj3[username] = obj3['selectedOption'];
+            delete obj3['selectedOption'];
+            await setDoc(way2,obj3,{merge: true})
 
-         
-        //setting balance
-        var setval = posbal + usedcpp
-        var setval1 = Math.round((setval+ Number.EPSILON) * 100) / 100
-        
+            location.reload()
 
-        await setDoc(doc(db,'users',uid),{
-           balance: setval1
-        },{merge:true})
-        
-        }
+        },
     }
 }
 </script>

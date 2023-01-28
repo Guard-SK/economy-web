@@ -9,18 +9,25 @@
                 <th></th>
                 <th></th>
                 <th>CPP</th>
-                <th  v-for="field in userfields" :key="field" class="text-primary-content" >{{field}}</th>
+                <th  v-for="field in userfields" :key="field" class="text-primary-content" >{{field.name}}</th>
             </tr>
         </thead>
         <tbody>
         <!-- Every row is one event. -->
         <!-- Event row consists of its name, properties button, transactions button and attendance  -->
+            <tr v-if="userrole == 'admin'">
+                <td class="text-primary-content" >Zostatok uzivatelov</td>
+                <td class="text-primary-content">-----</td>
+                <td class="text-primary-content">-----</td>
+                <td class="text-primary-content">-----</td>
+                <td class="text-primary-content" v-for="field in userfields">{{ field.balanceuser }}€</td>
+            </tr>
             <tr v-for="event in rowsofevents" :key="event" class="text-primary-content">
                 <td>{{ event.eventname }}</td>
                 <td><Button label="Detaily" class="p-button-raised" @click="details(event)"/></td>
                 <td><Button label="Transakcie" class="p-button-raised" @click="transactions(event)"/></td>
                 <td>{{ event.cpp }}</td>
-                <td v-for="field in userfields" :key="field" class="text-primary-content">{{event[field]}}</td>
+                <td v-for="field in userfields" :key="field" class="text-primary-content">{{event[field.name]}}</td>
             </tr>
         </tbody>
     </table>
