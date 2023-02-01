@@ -8,7 +8,7 @@
                 <th>Názov udalosti</th>
                 <th></th>
                 <th></th>
-                <th></th>
+                <th v-if="userrole == 'admin'"></th>
                 <th>CPP</th>
                 <th  v-for="field in userfields" :key="field" class="text-primary-content" >{{field.name}}</th>
             </tr>
