@@ -188,12 +188,7 @@ methods: {
     
             
             this.displaymoney = false
-            setInterval(() => {
-                if (change == true){
-                    location.reload()
-                }
-                 }
-    , 1000);
+            setInterval(() => {if (change == true){location.reload()}}, 1000);
             
 
         },

@@ -116,6 +116,7 @@ export default {
             }
 
             try {
+                var change = false
                 const auth = getAuth();
                 const user = auth.currentUser;
                 const uid = user.uid;
@@ -131,7 +132,7 @@ export default {
 
                 const attendaceRef = collection(db,'events')
                 const attendaceSnap = await getDocs(attendaceRef)
-                attendaceSnap.forEach(async doc4 =>{
+                await attendaceSnap.forEach(async doc4 =>{
                     const refatt2 = doc(db,'events',doc4.id)
                     var eventname = this.name + ' ' + this.surname;
                     var name2 = eventname + 'visible'
@@ -145,8 +146,11 @@ export default {
                     await setDoc(refatt2, obj1,{merge:true})
                     await setDoc(refatt2, obj2,{merge:true})
                 });
+                
+                change = true
+                setInterval(() => {if (change == true){this.$router.push('/dashboard')}}, 2000);
                 this.resetForm()
-                this.$router.push('/dashboard')
+                
             } catch (e) {
                 console.error("Error adding document: ", e);
             }

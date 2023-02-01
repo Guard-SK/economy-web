@@ -117,11 +117,13 @@ export default {
             })
             var setbal = posbal + usedcpp
             var setbal3= Math.round((setbal+ Number.EPSILON) * 100) / 100
+            console.log(setbal3)
             await setDoc(doc(db,'users',userid),{balance: setbal3},{merge:true})
+            location.reload()
         })
         },
         async setFalse(item){
-            await this.updateOption(item)
+            
             const db = getFirestore()
             const uid = getAuth().currentUser.uid;
             const way2 = doc(db,'events',item.name)
@@ -131,8 +133,9 @@ export default {
             obj3[username] = obj3['selectedOption'];
             delete obj3['selectedOption'];
             await setDoc(way2,obj3,{merge: true})
+            await this.updateOption(item)
 
-            location.reload()
+            
 
         },
     }

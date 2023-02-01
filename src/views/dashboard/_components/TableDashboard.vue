@@ -8,6 +8,7 @@
                 <th>Názov udalosti</th>
                 <th></th>
                 <th></th>
+                <th></th>
                 <th>CPP</th>
                 <th  v-for="field in userfields" :key="field" class="text-primary-content" >{{field.name}}</th>
             </tr>
@@ -26,6 +27,7 @@
                 <td>{{ event.eventname }}</td>
                 <td><Button label="Detaily" class="p-button-raised" @click="details(event)"/></td>
                 <td><Button label="Transakcie" class="p-button-raised" @click="transactions(event)"/></td>
+                <td><Button label="Vymazat" class="p-button-raised p-button-danger" @click="deleteevent(event)"/></td>
                 <td>{{ event.cpp }}</td>
                 <td v-for="field in userfields" :key="field" class="text-primary-content">{{event[field.name]}}</td>
             </tr>
@@ -87,7 +89,7 @@
 
 
 <script>
-import {getFirestore,getDocs,collection,doc,getDoc,setDoc,addDoc} from "firebase/firestore";
+import {getFirestore,getDocs,collection,doc,getDoc,setDoc,addDoc,deleteDoc} from "firebase/firestore";
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -240,6 +242,44 @@ methods:{
     },
     async openTransaction(nameofevent){
         this.display2= true
+    },
+    async deleteevent(event){
+        const db = getFirestore()
+        const transakcie = await getDocs(collection(db,'transakcie',event.eventname,'transakcie'))
+        transakcie.forEach(async doc5=>{
+            await deleteDoc(doc(db,'transakcie',event.eventname,'transakcie',doc5.id))
+        })
+        var change = false
+        await deleteDoc(doc(db,'transakcie',event.eventname))
+        await deleteDoc(doc(db,'events',event.eventname))
+        const usersSnap = await getDocs(collection(db,'users'))
+        usersSnap.forEach(async userdoc => {
+            const uddata = userdoc.data()
+            const userid = userdoc.id
+            var posbal = uddata.positivebalance
+            var usedcpp = 0
+            var username2 = uddata.name+ ' ' + uddata.surname
+            const rowsofeventsSnap = await getDocs(collection(db,'events'))
+            rowsofeventsSnap.forEach(eventdoc => {
+                var eventdata = eventdoc.data()
+                const arr = Object.values(eventdata)
+                var count = arr.filter(function(value) {
+                    return value === "✅";
+                }).length;
+                var valuex1 = eventdata.costofevent
+                var cpp123 = valuex1 / count
+                if (eventdata[username2] == "✅")  {
+                    usedcpp += cpp123
+                }
+                
+            })
+            var setbal = posbal + usedcpp
+            var setbal3= Math.round((setbal+ Number.EPSILON) * 100) / 100
+            await setDoc(doc(db,'users',userid),{balance: setbal3},{merge:true})
+            change = true
+        })
+        setInterval(() => {if (change == true){location.reload()}}, 1000);
+        
     },
     getCenaClass(cena) {
         if (cena > 0) {

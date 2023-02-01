@@ -87,6 +87,7 @@ export default {
 				this.isLoggedIn = true
 				const db = getFirestore()
       			const uid = getAuth().currentUser.uid;
+				
 				onSnapshot(doc(db, "users", uid), (doc) => {
    					 this.balance = doc.data().balance
 			});
