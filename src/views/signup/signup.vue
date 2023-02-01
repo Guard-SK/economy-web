@@ -158,6 +158,7 @@ export default {
         },
         resetForm() {
             this.name = '';
+            this.surname = ''
             this.email = '';
             this.password = '';
             this.submitted = false;
