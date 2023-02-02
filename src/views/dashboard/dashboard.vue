@@ -131,7 +131,7 @@ export default {
             rowsofevents.push(data)
         });
        
-        var headers = ['Number','Transakcia','Cena','Subor']
+        var headers = ['Transakcia','Cena','Subor']
             return{rowsofevents,userfields,userrole,headers,attendancedata}
     },
 methods: {

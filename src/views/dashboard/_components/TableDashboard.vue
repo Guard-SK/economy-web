@@ -81,7 +81,6 @@
             </thead>
             <tbody>
                 <tr v-for="row in rows" :key="row.id">
-                    <td class="text-primary-content">{{ row['Number'] }}</td>
                     <td class="text-primary-content">{{ row['Transakcia'] }}</td>
                     <td class="text-primary-content" :class="getCenaClass(row.cena)">{{ row['cena'] }}€</td>
                     <td v-if="row.file !== false"><Button @click="downloadFile(row.file)"><i class="fa fa-download"></i>...Download</Button></td>
@@ -247,6 +246,9 @@ methods:{
                 this.total = Math.round((this.total+ Number.EPSILON) * 100) / 100
             this.rows.sort((a, b) => a.Number - b.Number);
             }});
+            for (var i = 0, len = this.rows.length; i < len; i++) {
+                delete this.rows[i].Number;
+            }
             this.dialname = ' ' + event.eventname
             const detRef = doc(db,'events', event.eventname)
             var data1 = await getDoc(detRef);
