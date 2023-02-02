@@ -40,17 +40,20 @@
         <Column field="eventname" header="Nazov udalosti"></Column>
         <Column>
                 <template #body="{data}">
-                    <Button label="Detaily" class="p-button-raised p-button-success"  @click="details(data)"/>
+                    <Button v-if="data.eventname != 'Zostatok uzivatelov'" label="Detaily" class="p-button-raised p-button-success"  @click="details(data)"/>
+                    <p v-if="data.eventname == 'Zostatok uzivatelov'">------</p>
                 </template>
         </Column>
         <Column >
                 <template  #body="{data}">
-                    <Button label="Transakcie" class="p-button-raised p-button-success" @click="transactions(data)"/>
+                    <Button v-if="data.eventname != 'Zostatok uzivatelov'" label="Transakcie" class="p-button-raised p-button-success" @click="transactions(data)"/>
+                    <p v-if="data.eventname == 'Zostatok uzivatelov'">------</p>
                 </template>
         </Column>
         <Column v-if="userrole == 'admin'">
                 <template  #body="{data}">
-                    <Button label="Vymazat"  class="p-button-raised p-button-danger" @click="deleteevent(data)"/>
+                    <Button label="Vymazat" v-if="data.eventname != 'Zostatok uzivatelov'"  class="p-button-raised p-button-danger" @click="deleteevent(data)"/>
+                    <p v-if="data.eventname == 'Zostatok uzivatelov'">------</p>
                 </template>
         </Column>
         <Column field="cpp" header="CPP"></Column>

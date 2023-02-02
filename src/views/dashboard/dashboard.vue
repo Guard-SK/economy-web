@@ -92,17 +92,22 @@ export default {
         var userfields = []
         var attendancedata = []
         const userfieldsSnap = await getDocs(collection(db, 'users'))
-        
+        const pushrow = {eventname:'Zostatok uzivatelov', cpp: '------'}
         userfieldsSnap.forEach((doc) => {
             const username = {
                 name: doc.data().name + ' ' + doc.data().surname,
-                balanceuser: doc.data().balance
+                
             }
+
+
             
             userfields.push(username) 
+            pushrow[username.name] = doc.data().balance + '€'
         });
             
-        var rowsofevents = [{eventname:'Zostatok uzivatelov'}]
+        var rowsofevents = []
+        console.log(pushrow)
+        rowsofevents.push(pushrow)
         const rowsofeventsSnap = await getDocs(collection(db,'events'))
         rowsofeventsSnap.forEach((doc1) =>{
             var data = doc1.data()
