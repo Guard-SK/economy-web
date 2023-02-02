@@ -21,6 +21,8 @@
                 <td class="text-primary-content">-----</td>
                 <td class="text-primary-content">-----</td>
                 <td class="text-primary-content">-----</td>
+                <td class="text-primary-content">-----</td>
+
                 <td class="text-primary-content" v-for="field in userfields">{{ field.balanceuser }}€</td>
             </tr>
             <tr v-for="event in rowsofevents" :key="event" class="text-primary-content">
