@@ -1,3 +1,5 @@
+
+
 <template>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- <div class="card">
@@ -36,28 +38,28 @@
     </div> -->
     
     
-    <DataTable  showGridlines :value="rowsofevents" :scrollable="true"   scrollDirection="horizontal">
-        <Column field="eventname" header="Nazov udalosti"></Column>
-        <Column>
+    <DataTable   showGridlines :value="rowsofevents" :scrollable="true"  scrollDirection="horizontal">
+        <Column field="eventname" header="Nazov udalosti" style="min-width:150px"></Column>
+        <Column style="min-width:130px">
                 <template #body="{data}">
                     <Button v-if="data.eventname != 'Zostatok uzivatelov'" label="Detaily" class="p-button-raised p-button-success"  @click="details(data)"/>
                     <p v-if="data.eventname == 'Zostatok uzivatelov'">------</p>
                 </template>
-        </Column>
-        <Column >
+        </Column >
+        <Column style="min-width:140px">
                 <template  #body="{data}">
                     <Button v-if="data.eventname != 'Zostatok uzivatelov'" label="Transakcie" class="p-button-raised p-button-success" @click="transactions(data)"/>
                     <p v-if="data.eventname == 'Zostatok uzivatelov'">------</p>
                 </template>
         </Column>
-        <Column v-if="userrole == 'admin'">
+        <Column v-if="userrole == 'admin'" style="min-width:130px">
                 <template  #body="{data}">
                     <Button label="Vymazat" v-if="data.eventname != 'Zostatok uzivatelov'"  class="p-button-raised p-button-danger" @click="deleteevent(data)"/>
                     <p v-if="data.eventname == 'Zostatok uzivatelov'">------</p>
                 </template>
         </Column>
-        <Column field="cpp" header="CPP"></Column>
-        <Column v-for="field in userfields" :field="field.name" :header= field.name ></Column>
+        <Column field="cpp" header="CPP" style="min-width:100px"></Column>
+        <Column v-for="field in userfields" :field="field.name" :header= field.name style="min-width:100px" ></Column>
     </DataTable>
     
     <Dialog header="Header" footer="Footer" v-model:visible="display">
