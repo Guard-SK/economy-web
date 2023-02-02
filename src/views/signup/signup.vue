@@ -129,10 +129,10 @@ export default {
                     positivebalance: 0,
                     balance: 0
                 })
-
+                const promises = [];
                 const attendaceRef = collection(db,'events')
                 const attendaceSnap = await getDocs(attendaceRef)
-                await attendaceSnap.forEach(async doc4 =>{
+                attendaceSnap.forEach(async doc4 =>{
                     const refatt2 = doc(db,'events',doc4.id)
                     var eventname = this.name + ' ' + this.surname;
                     var name2 = eventname + 'visible'
@@ -142,13 +142,15 @@ export default {
                     let obj2 = {eventname1: true}
                     obj2[name2] = obj2['eventname1'];
                     delete obj2['eventname1'];
-
-                    await setDoc(refatt2, obj1,{merge:true})
-                    await setDoc(refatt2, obj2,{merge:true})
+                    promises.push(setDoc(refatt2, obj1, {merge: true}));
+                    promises.push(setDoc(refatt2, obj2, {merge: true}));
+                    console.log('notok')
                 });
-                
-                change = true
-                setInterval(() => {if (change == true){this.$router.push('/dashboard')}}, 2000);
+                console.log('okk')
+                await Promise.all(promises);
+                this.$router.push('/dashboard')
+                // change = true
+                // setInterval(() => {if (change == true){this.$router.push('/dashboard')}}, 2000);
                 this.resetForm()
                 
             } catch (e) {
