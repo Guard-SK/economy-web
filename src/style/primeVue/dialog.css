@@ -8,3 +8,7 @@
 .p-dialog-footer {
     @apply !bg-[#212121] !text-[#d4d4d4]
 }
+
+.p-dialog {
+    @apply xl:w-[40%] md:w-[50%] w-[90%]
+}

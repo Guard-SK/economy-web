@@ -1,43 +1,51 @@
 <template>
-    <div class='table-responsive my-5'>
-        <table id="tableComponent" class="table table-bordered table-striped center">
-            <thead>
-            <th class="text-primary-content">Event</th>
-            <th class="text-primary-content" >Options</th>
-            <th></th>
-            </thead>
-            <tbody>
-            <tr v-for="item in items" :key="item">
-                
-                <td v-if="item.visible" class="text-primary-content">{{ item.name }}</td>
-                <td v-if="item.visible" class="text-primary-content">
-                <select v-model="item.selectedOption">
-                <option value="✅">✅</option>
-                <option value="❌">❌</option>
-                </select>
-                </td>
-                <td v-if="item.visible"><button @click="setFalse(item)" class="text-primary-content btn">Potvrdit ucast</button></td>
-                
-            </tr>
-            </tbody>
-        </table>
-        
+    <div class="block w-full">
+        <div>
+            <h1 class=" text-2xl text-base-content font-bold ">Ahoj {{ username }}!</h1>
+        </div>
+        <div class='table-responsive my-5 text-center mx-auto'>
+            <p class="text-base-content font-light mb-2">Bol si na nejakej akcii? Prihlás sa tu!</p>
+            <table id="tableComponent" class="table table-bordered table-striped border-2 border-base-200 center">
+                <thead>
+                <th class="text-primary-content">Event</th>
+                <th class="text-primary-content" >Options</th>
+                <th></th>
+                </thead>
+                <tbody>
+                <tr v-for="item in items" :key="item">
+                    
+                    <td v-if="item.visible" class="text-base-content">{{ item.name }}</td>
+                    <td v-if="item.visible" class="text-base-content">
+                    <select v-model="item.selectedOption">
+                    <option value="✅">✅</option>
+                    <option value="❌">❌</option>
+                    </select>
+                    </td>
+                    <td v-if="item.visible"><button @click="setFalse(item)" class="text-base-content btn">Potvrdit ucast</button></td>
+                    
+                </tr>
+                </tbody>
+            </table>
+            
+        </div>
+        <div class='table-responsive my-5'>
+            <h4 class="text-lg text-base-content">História vkladov</h4>
+            <table id="tableComponent" class="table table-bordered table-striped border-2 border-base-200 center">
+                <thead>
+                <th class="text-primary-content">Meno / Datum</th>
+                <th class="text-primary-content" >Vklad</th>
+                </thead>
+                <tbody>
+                <tr v-for="insert in inserts" :key="insert">
+                    <td class="text-base-content">{{ insert.nameofinsertdd }}</td>
+                    <td class="text-base-content">{{ insert.priceadded }}€</td>
+                </tr>
+                </tbody>
+            </table>
+            
+        </div>
     </div>
-    <div class='table-responsive my-5'>
-        <table id="tableComponent" class="table table-bordered table-striped center">
-            <thead>
-            <th class="text-primary-content">Meno / Datum</th>
-            <th class="text-primary-content" >Vklad</th>
-            </thead>
-            <tbody>
-            <tr v-for="insert in inserts" :key="insert">
-                <td class="text-primary-content">{{ insert.nameofinsertdd }}</td>
-                <td class="text-primary-content">{{ insert.priceadded }}€</td>
-            </tr>
-            </tbody>
-        </table>
-        
-    </div>
+
 
 </template>
 <script>
@@ -48,13 +56,15 @@ export default {
         return {
             items : [],
             usedcpp:0,
-            tree: false
+            tree: false,
+            username: {}
         }
     },
     async setup(){
         const db = getFirestore()
         const uid = getAuth().currentUser.uid;
         var user = await getDoc(doc(db,'users',uid))
+        console.log
         var username = user.data().name + ' ' + user.data().surname
         var visibleuser  = username+'visible'
         const document1 = await getDocs(collection(db,'events'))
@@ -80,7 +90,8 @@ export default {
                 
             })
         })
-        return {items,inserts}
+        console.log(user)
+        return {items,inserts,username}
     },
     methods: {
         

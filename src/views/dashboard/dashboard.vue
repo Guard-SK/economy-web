@@ -1,6 +1,6 @@
 <template>
-    <div class="container text-center mt-5 mb-5 "> 
-        <h1 class="mt-5 fw-bolder text-success text-xl">Udalosti:</h1>
+    <div class="block text-center mt-5 mb-5 w-full"> 
+        <h1 class="mt-5 font-semibold spacing text-accent text-3xl tracking-wide mb-8">NAŠE UDALOSTI</h1>
         <div v-if="userrole == 'admin'">
             <div class="flex justify-center gap-3 my-4">
                 <button class="text-base-content btn" v-on:click="openDialog">Pridat udalost</button>
@@ -41,7 +41,7 @@
                 </Dialog>
             </div>
         </div>
-        <div class="table-responsive my-5 text-base-content">
+        <div class="table-responsive my-5 text-base-content mx-8">
             <!-- The table component -->
             <TableDashboard :userfields='userfields' :rowsofevents ="rowsofevents" :headersoftransactions="headers" :attendancedata="attendancedata"></TableDashboard>
         </div>

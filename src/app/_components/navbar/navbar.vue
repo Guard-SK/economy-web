@@ -26,20 +26,19 @@
 			<a v-if="isLoggedIn" class="btn-ghost">Zostatok : {{ balance }}€</a>
 		</div>
 		<label class="btn btn-square btn-ghost">
-			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+			<svg v-if="isLoggedIn" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
 		</label>
   </div>
   <div class="collapse-content bg-neutral text-neutral-content"> 
 		<div class="divider"></div>
 		<ul class="menu menu-vertical px-1">
-			
-				<li><router-link to="/dashboard" class="" v-if="isLoggedIn">Dashboard</router-link></li>
-				<li><router-link to="/profile" class="" v-if="isLoggedIn">My account</router-link></li>
-				<div class="divider"></div>
-				<li>
-					<button class="btn justify-start" @click="handleSignOut()" v-if="isLoggedIn"><i class="pi pi-sign-out"/>Sign Out</button>
-				</li>
-			</ul>
+			<li><router-link to="/dashboard" class="" v-if="isLoggedIn">Dashboard</router-link></li>
+			<li><router-link to="/profile" class="" v-if="isLoggedIn">My account</router-link></li>
+			<div class="divider"></div>
+			<li>
+				<button class="btn justify-start" @click="handleSignOut()" v-if="isLoggedIn"><i class="pi pi-sign-out"/>Sign Out</button>
+			</li>
+		</ul>
   </div>
 </div>
 

@@ -1,0 +1,39 @@
+
+.p-datatable-wrapper {
+    @apply !border-lime-400 !bg-lime-400 !text-lime-400
+}
+
+
+
+
+
+
+
+
+
+/* scrollbar style */
+
+/* .p-datatable-wrapper {
+    scrollbar-width: none;
+}
+.p-datatable-wrapper::-webkit-scrollbar {
+    display: none;
+} */
+
+
+.p-datatable-wrapper::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+
+.p-datatable-wrapper::-webkit-scrollbar
+{
+	height: 4px;
+	background-color: #F5F5F5;
+}
+
+.p-datatable-wrapper::-webkit-scrollbar-thumb
+{
+	background-color: #000000;
+}

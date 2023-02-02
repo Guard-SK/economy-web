@@ -59,10 +59,10 @@
                 </template>
         </Column>
         <Column field="cpp" header="CPP" style="min-width:100px"></Column>
-        <Column v-for="field in userfields" :field="field.name" :header= field.name style="min-width:100px" ></Column>
+        <Column v-for="field in userfields" :key="field" :field="field.name" :header= field.name style="min-width:100px" ></Column>
     </DataTable>
     
-    <Dialog header="Header" footer="Footer" v-model:visible="display">
+    <p-dialog header="Header" footer="Footer" v-model:visible="display">
         <template #header>
             <div >
                 <button v-if="userrole == 'admin'" class="text-base-content btn" v-on:click="openTransaction(nameofevent)">Pridat transakciu</button>
@@ -88,8 +88,8 @@
                 </tr>
             </tbody>
         </table>
-    </Dialog>
-    <Dialog header="Header" v-model:visible="display1">
+    </p-dialog>
+    <p-dialog header="Header" v-model:visible="display1">
         <template #header>
 		    <h1 >Detaily(popis):</h1>
 	    </template>
@@ -98,8 +98,8 @@
         <p>Miesto: {{ place }}</p>
         <p>Dodatočné poznámky: {{ notes }}</p>
         <p>Celková cena:</p><p :class="getCenaClass(costofevent1)" > {{ costofevent }}</p>
-    </Dialog>
-    <Dialog header="Header" footer="Footer" v-model:visible="display2">
+    </p-dialog>
+    <p-dialog header="Header" footer="Footer" v-model:visible="display2">
         <template #header>
             <h3 class="text-xl">
                 Dialog pre pridavanie transakcii <br>
@@ -112,13 +112,12 @@
         <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input111" v-model="nameoftransaction" placeholder="Meno Transakcie" /></div>
         <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input222" v-model="priceoftransaction" placeholder="Cena Transakcie" /></div>
         <input type="file" ref="fileInput"  class="file-input file-input-bordered file-input-info w-full max-w-xs" />
-    </Dialog>
+    </p-dialog>
 </template>
 
 
 <script>
 import {getFirestore,getDocs,collection,doc,getDoc,setDoc,addDoc,deleteDoc} from "firebase/firestore";
-import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -156,7 +155,6 @@ async setup() {
     return{userrole}
 },
 components:{
-    Dialog,
     Button,
     DataTable,
     Column
