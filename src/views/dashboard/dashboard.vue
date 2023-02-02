@@ -1,5 +1,5 @@
 <template>
-    <div class="container text-center  mt-5 mb-5"> 
+    <div class="container text-center mt-5 mb-5 overflow-y-hidden"> 
         <h1 class="mt-5 fw-bolder text-success text-xl">Udalosti:</h1>
         <div v-if="userrole == 'admin'">
             <div class="flex justify-center gap-3 my-4">

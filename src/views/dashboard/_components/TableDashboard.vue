@@ -1,7 +1,7 @@
 <template>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     
-    <table id="tableComponent" class="table table-bordered table-striped center overflow-scroll">
+    <table id="tableComponent" class="table table-bordered table-striped center overflow-x-scroll">
         <thead>
         <!-- Headers with users -->
             <tr>
@@ -13,7 +13,7 @@
                 <th  v-for="field in userfields" :key="field" class="text-primary-content" >{{field.name}}</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="">
         <!-- Every row is one event. -->
         <!-- Event row consists of its name, properties button, transactions button and attendance  -->
             <tr v-if="userrole == 'admin'">
@@ -62,7 +62,7 @@
             </tbody>
         </table>
     </Dialog>
-    <Dialog position="topleft" header="Header" v-model:visible="display1">
+    <Dialog header="Header" v-model:visible="display1">
         <template #header>
 		    <h1 >Detaily(popis):</h1>
 	    </template>
