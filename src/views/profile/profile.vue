@@ -119,8 +119,9 @@ export default {
             var setbal3= Math.round((setbal+ Number.EPSILON) * 100) / 100
             console.log(setbal3)
             await setDoc(doc(db,'users',userid),{balance: setbal3},{merge:true})
-            location.reload()
+            
         })
+        location.reload()
         },
         async setFalse(item){
             
