@@ -1,9 +1,9 @@
 <template>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    
-    <table id="tableComponent" class="table table-bordered table-striped center overflow-x-scroll">
+    <!-- <div class="card">
+    <table id="tableComponent" class="table table-bordered table-striped center ">
         <thead>
-        <!-- Headers with users -->
+       
             <tr>
                 <th>Názov udalosti</th>
                 <th></th>
@@ -14,8 +14,7 @@
             </tr>
         </thead>
         <tbody class="">
-        <!-- Every row is one event. -->
-        <!-- Event row consists of its name, properties button, transactions button and attendance  -->
+
             <tr v-if="userrole == 'admin'">
                 <td class="text-primary-content" >Zostatok uzivatelov</td>
                 <td class="text-primary-content">-----</td>
@@ -34,6 +33,30 @@
             </tr>
         </tbody>
     </table>
+    </div> -->
+    
+    
+    <DataTable  showGridlines :value="rowsofevents" :scrollable="true"   scrollDirection="horizontal">
+        <Column field="eventname" header="Nazov udalosti"></Column>
+        <Column>
+                <template #body="{data}">
+                    <Button label="Detaily" class="p-button-raised p-button-success"  @click="details(data)"/>
+                </template>
+        </Column>
+        <Column >
+                <template  #body="{data}">
+                    <Button label="Transakcie" class="p-button-raised p-button-success" @click="transactions(data)"/>
+                </template>
+        </Column>
+        <Column v-if="userrole == 'admin'">
+                <template  #body="{data}">
+                    <Button label="Vymazat"  class="p-button-raised p-button-danger" @click="deleteevent(data)"/>
+                </template>
+        </Column>
+        <Column field="cpp" header="CPP"></Column>
+        <Column v-for="field in userfields" :field="field.name" :header= field.name ></Column>
+    </DataTable>
+    
     <Dialog header="Header" footer="Footer" v-model:visible="display">
         <template #header>
             <div >
@@ -93,6 +116,8 @@
 import {getFirestore,getDocs,collection,doc,getDoc,setDoc,addDoc,deleteDoc} from "firebase/firestore";
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getAuth } from 'firebase/auth'
 const storage = getStorage();
@@ -115,7 +140,8 @@ data(){
         namename: '',
         nameoftransaction: '',
         priceoftransaction:'',
-        userrole: 'user'
+        userrole: 'user',
+        customers2: []
     }
 },
 async setup() {
@@ -127,7 +153,9 @@ async setup() {
 },
 components:{
     Dialog,
-    Button
+    Button,
+    DataTable,
+    Column
 },
 props:{
     rowsofevents:{

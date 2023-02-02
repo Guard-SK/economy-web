@@ -1,5 +1,5 @@
 <template>
-    <div class="container text-center mt-5 mb-5 overflow-y-hidden"> 
+    <div class="container text-center mt-5 mb-5 "> 
         <h1 class="mt-5 fw-bolder text-success text-xl">Udalosti:</h1>
         <div v-if="userrole == 'admin'">
             <div class="flex justify-center gap-3 my-4">
@@ -102,7 +102,7 @@ export default {
             userfields.push(username) 
         });
             
-        var rowsofevents = []
+        var rowsofevents = [{eventname:'Zostatok uzivatelov'}]
         const rowsofeventsSnap = await getDocs(collection(db,'events'))
         rowsofeventsSnap.forEach((doc1) =>{
             var data = doc1.data()
