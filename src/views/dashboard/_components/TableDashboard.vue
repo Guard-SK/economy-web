@@ -38,7 +38,7 @@
     </div> -->
     
     
-    <DataTable   showGridlines :value="rowsofevents" :scrollable="true"  scrollDirection="horizontal">
+    <DataTable  showGridlines :value="rowsofevents" :scrollable="true"  scrollDirection="horizontal">
         <Column field="eventname" header="Nazov udalosti" style="min-width:150px"></Column>
         <Column style="min-width:130px">
                 <template #body="{data}">
