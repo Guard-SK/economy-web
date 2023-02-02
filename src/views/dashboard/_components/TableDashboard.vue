@@ -22,7 +22,6 @@
                 <td class="text-primary-content">-----</td>
                 <td class="text-primary-content">-----</td>
                 <td class="text-primary-content">-----</td>
-
                 <td class="text-primary-content" :key="field" v-for="field in userfields">{{ field.balanceuser }}€</td>
             </tr>
             <tr v-for="event in rowsofevents" :key="event" class="text-primary-content">
@@ -63,7 +62,7 @@
             </tbody>
         </table>
     </Dialog>
-    <Dialog  header="Header" v-model:visible="display1">
+    <Dialog position="topleft" header="Header" v-model:visible="display1">
         <template #header>
 		    <h1 >Detaily(popis):</h1>
 	    </template>
