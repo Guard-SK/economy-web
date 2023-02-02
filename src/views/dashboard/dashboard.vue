@@ -92,7 +92,7 @@ export default {
         var userfields = []
         var attendancedata = []
         const userfieldsSnap = await getDocs(collection(db, 'users'))
-        if (userrole == 'admin') {
+        
         userfieldsSnap.forEach((doc) => {
             const username = {
                 name: doc.data().name + ' ' + doc.data().surname,
@@ -100,15 +100,8 @@ export default {
             }
             
             userfields.push(username) 
-        });} else{
-            const doc4 = await getDoc(doc(db,'users', uid))
-            const username = {
-                name: doc4.data().name + ' ' + doc4.data().surname,
-                balanceuser: 0
-            }
+        });
             
-            userfields.push(username)
-        }
         var rowsofevents = []
         const rowsofeventsSnap = await getDocs(collection(db,'events'))
         rowsofeventsSnap.forEach((doc1) =>{
