@@ -121,6 +121,7 @@ export default {
             }).length;
             var valuex1 = doc1.data().costofevent
             var cpp = valuex1 / count
+            cpp = Math.round((cpp+ Number.EPSILON) * 100) / 100
             if (cpp == Infinity){
                 data['cpp'] = 'None'
             } else if (cpp == -Infinity){
