@@ -1,7 +1,7 @@
 <template>
     <div class="block w-full">
         <div>
-            <h1 class=" text-2xl text-base-content font-bold ">Ahoj {{ username }}!</h1>
+            <h1 class="md:mt-0 mt-6 text-2xl text-base-content font-bold ">Ahoj {{ username }}!</h1>
         </div>
         <div class='table-responsive my-5 text-center mx-auto'>
             <p class="text-base-content font-light mb-2">Bol si na nejakej akcii? Prihlás sa tu!</p>
