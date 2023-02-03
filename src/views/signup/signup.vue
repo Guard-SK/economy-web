@@ -92,8 +92,12 @@ export default {
     methods: {
         async handleSubmit() {
             this.submitted = true
-
-			if (!await this.v$.$validate())
+            var emailcheck = this.email.includes("@gjh.sk");
+            if (emailcheck == false) {
+                this.error = 'Pristup povoleny iba pre GJH emaily.'
+                return
+            }
+            if (!await this.v$.$validate())
 				return
 
             try {
@@ -144,13 +148,9 @@ export default {
                     delete obj2['eventname1'];
                     promises.push(setDoc(refatt2, obj1, {merge: true}));
                     promises.push(setDoc(refatt2, obj2, {merge: true}));
-                    console.log('notok')
                 });
-                console.log('okk')
                 await Promise.all(promises);
                 this.$router.push('/dashboard')
-                // change = true
-                // setInterval(() => {if (change == true){this.$router.push('/dashboard')}}, 2000);
                 this.resetForm()
                 
             } catch (e) {

@@ -133,7 +133,6 @@ export default {
         });
             
         var rowsofevents = []
-        console.log(pushrow)
         rowsofevents.push(pushrow)
         const rowsofeventsSnap = await getDocs(collection(db,'events'))
         rowsofeventsSnap.forEach((doc1) =>{
