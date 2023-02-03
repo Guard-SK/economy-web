@@ -2,6 +2,7 @@
 
 <template>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
     <!-- <div class="card">
     <table id="tableComponent" class="table table-bordered table-striped center ">
         <thead>
@@ -38,7 +39,7 @@
     </div> -->
     
     
-    <DataTable  showGridlines :value="rowsofevents" :scrollable="true"  scrollDirection="horizontal">
+    <DataTable   :value="rowsofevents" :scrollable="true"  scrollDirection="horizontal">
         <Column field="eventname" header="Nazov udalosti" style="min-width:150px"></Column>
         <Column style="min-width:130px">
                 <template #body="{data}">
