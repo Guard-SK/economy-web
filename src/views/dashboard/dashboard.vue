@@ -41,7 +41,7 @@
                 </Dialog>
             </div>
         </div>
-        <div class="table-responsive my-5 text-base-content mx-8">
+        <div class="table-responsive my-5 text-base-content md:mx-8 mx-0">
             <!-- The table component -->
             <TableDashboard :userfields='userfields' :rowsofevents ="rowsofevents" :headersoftransactions="headers" :attendancedata="attendancedata"></TableDashboard>
         </div>
