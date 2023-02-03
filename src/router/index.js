@@ -50,6 +50,14 @@ const routes = [
 		},
 		component: () => import('../views/profile/profile.vue')
 	},
+	{
+		path: '/admin',
+		name: 'admin',
+		meta: {
+			requiresAuth: true
+		},
+		component: () => import('../views/admin/admin.vue')
+	},
 	{ 
 		path: '/:pathMatch(.*)*', 
 		name: '404',

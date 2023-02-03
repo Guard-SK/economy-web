@@ -9,6 +9,8 @@
 				<li v-if="isLoggedIn"  class="btn">Zostatok : {{ balance }}€</li>
 				<li><router-link to="/dashboard" class="" v-if="isLoggedIn">Dashboard</router-link></li>
 				<li><router-link to="/profile" class="" v-if="isLoggedIn">My account</router-link></li>
+				<li v-if="userrole =='admin'"><router-link to="/admin" class="" v-if="isLoggedIn">Admin</router-link></li>
+
 				<li>
 					<button class="btn" @click="handleSignOut()" v-if="isLoggedIn"><i class="pi pi-sign-out"/></button>
 				</li>
@@ -33,6 +35,7 @@
 		<ul class="menu menu-vertical px-1">
 			<li><router-link to="/dashboard" class="" v-if="isLoggedIn">Dashboard</router-link></li>
 			<li><router-link to="/profile" class="" v-if="isLoggedIn">My account</router-link></li>
+			<li v-if="userrole =='admin'"><router-link to="/admin" class="" v-if="isLoggedIn">Admin</router-link></li>
 			<div class="divider"></div>
 			<li>
 				<button class="btn justify-start" @click="handleSignOut()" v-if="isLoggedIn"><i class="pi pi-sign-out"/>Sign Out</button>
@@ -66,7 +69,8 @@ export default {
 					icon:'pi pi-fw pi-power-off'
 				}
 			],
-			isLoggedIn: null
+			isLoggedIn: null,
+			userrole: 'user'
 		}
 	},
 
@@ -86,8 +90,10 @@ export default {
 				const db = getFirestore()
       			const uid = getAuth().currentUser.uid;
 				
+				
 				onSnapshot(doc(db, "users", uid), (doc) => {
    					 this.balance = doc.data().balance
+					 this.userrole = doc.data().role
 			});
 			} else {
 				this.isLoggedIn = false
