@@ -1,5 +1,10 @@
 <template>
-    <div class="block w-full">
+
+    <div v-if="loading">
+        <p-spinner/>
+    </div>
+
+    <div class="block w-full" v-else>
         <div>
             <h1 class="md:mt-0 mt-6 text-2xl text-base-content font-bold ">Ahoj {{ username }}!</h1>
         </div>
@@ -57,10 +62,12 @@ export default {
             items : [],
             usedcpp:0,
             tree: false,
-            username: {}
+            username: {},
+            loading: true
         }
     },
-    async setup(){
+
+    async setup() {
         const db = getFirestore()
         const uid = getAuth().currentUser.uid;
         var user = await getDoc(doc(db,'users',uid))
@@ -91,7 +98,8 @@ export default {
             })
         })
         console.log(user)
-        return {items,inserts,username}
+        let loading = false
+        return {items,inserts,username,loading}
     },
     methods: {
         

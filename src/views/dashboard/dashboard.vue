@@ -5,7 +5,7 @@
             <div class="flex justify-center gap-3 my-4">
                 <button class="text-base-content btn" v-on:click="openDialog">Pridat udalost</button>
                 <button class="text-base-content btn" @click="addMoney">Pridat vklad uzivatelom</button>
-                <Dialog v-model:visible="displaymoney">
+                <p-dialog v-model:visible="displaymoney" style="width:330px">
                     <template #header>
                         <h3 class="text-xl">Vklad pre uzivatelov</h3>
                     </template>
@@ -14,34 +14,60 @@
                             <input class="text-base-content input input-bordered" v-model="nameofinsert" placeholder="Meno-Datum vkladu" type="text" />
                         </div>
                         <div class="field mb-4 text-xl">
-                            <input class="text-base-content input input-bordered" v-model="priceppofinsert" placeholder="Vklad na človeka" />€
+                            <input class="text-base-content input input-bordered" v-model="priceppofinsert" placeholder="Vklad na človeka" />
+                            <span class="ml-1">€</span>
                         </div>
                         <div class="field mb-4" >
                         <label class="text-xl">Users:</label>
                         <div v-for="user in users" :key="user.id">
-                            <input type="checkbox" :value="user.id" v-model="user.id" />
-                            {{ user.name + ' '+ user.surname }}
+                            <div class="form-control">
+                                <label class="block cursor-pointer">
+                                    <input type="checkbox" :value="user.id" v-model="user.id" checked="checked" class="checkbox" />
+                                    <span class="inline-block align-middle ml-2">{{ user.name + ' ' + user.surname }}</span> 
+                                </label>
+                            </div>
                             </div>
                         </div>
                     </div>
                     <template #footer>
                         <button class="btn btn-primary" @click="submitForm">Submit</button>
                     </template>
-                </Dialog>
-                <Dialog v-model:visible="display1">
+                </p-dialog>
+                <p-dialog v-model:visible="display1" style="width:330px">
                     <template #header>
-		                <h3 class="text-xl">Pridanie udalosti:</h3>
+		                <h3 class="text-2xl">Pridanie udalosti</h3>
 	                </template>
-                    <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input11" v-model="nameofevent" placeholder="Meno udalost" /></div>
-                    <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input22" v-model="dateofevent" placeholder="Datum" /></div>
-                    <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input33" v-model="place" placeholder="Miesto" /></div>
-                    <div class="field mb-4 text-xl"><input class="text-base-content input input-bordered" id= "input44" v-model="costofevent" placeholder="Cena akcie(pouzivat -)" /> €</div>
-                    <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input55" v-model="notes" placeholder="Poznamky" /></div>
-                    <button class="btn btn-primary" v-on:click="addEvent">Pridat Udalost</button>
-                </Dialog>
+                    <div class="field mb-4">
+                        <p>Meno Udalosti</p>
+                        <input class="text-base-content input input-bordered" id= "input11" v-model="nameofevent" placeholder="Medická záhrada" />
+                    </div>
+                    <div class="field mb-4">
+                        <p>Dátum</p>
+                        <input class="text-base-content input input-bordered" id= "input22" v-model="dateofevent" placeholder="DD.MM.YYYY" />
+                    </div>
+                    <div class="field mb-4">
+                        <p>Miesto</p>
+                        <input class="text-base-content input input-bordered" id= "input33" v-model="place" placeholder="GJH" />
+                    </div>
+                    <div class="field mb-4">
+                        <p>Cena (použiť znak - )</p>
+                        <input class="text-base-content input input-bordered" id= "input44" v-model="costofevent" placeholder="-69" /> 
+                        <span class="ml-1 text-xl">€</span>
+                    </div>
+                    <div class="field mb-4">
+                        <p>Dodatočné poznámky</p>
+                        <input class="text-base-content input input-bordered" id= "input55" v-model="notes" placeholder="Poznamky" />
+                    </div>
+                    <button class="btn btn-primary px-auto" v-on:click="addEvent">Pridať Udalosť</button>
+                </p-dialog>
             </div>
         </div>
-        <div class="table-responsive my-5 text-base-content md:mx-8 mx-0">
+
+        <div v-if="loading">
+            <p-spinner/>
+        </div>
+
+        <div class="table-responsive my-5 text-base-content md:mx-8 mx-0" v-else>
             <!-- The table component -->
             <TableDashboard :userfields='userfields' :rowsofevents ="rowsofevents" :headersoftransactions="headers" :attendancedata="attendancedata"></TableDashboard>
         </div>
@@ -51,10 +77,9 @@
 import TableDashboard from './_components/TableDashboard.vue'
 import { doc, getFirestore, getDocs, collection,setDoc, getDoc,addDoc} from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
-import Dialog from 'primevue/dialog';
+
 export default {
     components: {
-        Dialog,
         TableDashboard
     },
     data() {
@@ -70,6 +95,7 @@ export default {
             users: [],
             priceppofinsert:'',
             nameofinsert:'',
+            loading: true
         }
     },
 
@@ -83,6 +109,7 @@ export default {
             this.users.push(data)
             
         })
+        this.loading = false
     },
     async setup(){
         const db = getFirestore();
@@ -131,9 +158,8 @@ export default {
             }
             rowsofevents.push(data)
         });
-       
         var headers = ['Transakcia','Cena','Subor']
-            return{rowsofevents,userfields,userrole,headers,attendancedata}
+        return{rowsofevents,userfields,userrole,headers,attendancedata}
     },
 methods: {
         resetForm1(){

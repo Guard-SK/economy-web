@@ -82,6 +82,9 @@
 	color: rgba(255, 255, 255, 0.87);
 	transition: box-shadow 0.15s;
   }
+  .p-datatable .p-datatable-tbody > tr:focus {
+	@apply outline-0
+  }
   .p-datatable .p-datatable-tbody > tr > td {
 	text-align: left;
 	border: 1px solid #3f4b5b;

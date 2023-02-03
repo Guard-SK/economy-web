@@ -1,12 +1,12 @@
 .p-dialog-header {
-    @apply !bg-[#212121] !text-[#d4d4d4]
+    @apply !bg-base-100 !text-base-content
 }
 .p-dialog-content {
-    @apply !bg-[#212121] !text-[#d4d4d4]
+    @apply !bg-base-100 !text-base-content
 }
 
 .p-dialog-footer {
-    @apply !bg-[#212121] !text-[#d4d4d4]
+    @apply !bg-base-100 !text-base-content
 }
 
 .p-dialog {

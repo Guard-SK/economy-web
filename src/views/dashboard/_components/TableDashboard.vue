@@ -1,74 +1,27 @@
-
-
 <template>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    
-    <!-- <div class="card">
-    <table id="tableComponent" class="table table-bordered table-striped center ">
-        <thead>
-       
-            <tr>
-                <th>Názov udalosti</th>
-                <th></th>
-                <th></th>
-                <th v-if="userrole == 'admin'"></th>
-                <th>CPP</th>
-                <th  v-for="field in userfields" :key="field" class="text-primary-content" >{{field.name}}</th>
-            </tr>
-        </thead>
-        <tbody class="">
-
-            <tr v-if="userrole == 'admin'">
-                <td class="text-primary-content" >Zostatok uzivatelov</td>
-                <td class="text-primary-content">-----</td>
-                <td class="text-primary-content">-----</td>
-                <td class="text-primary-content">-----</td>
-                <td class="text-primary-content">-----</td>
-                <td class="text-primary-content" :key="field" v-for="field in userfields">{{ field.balanceuser }}€</td>
-            </tr>
-            <tr v-for="event in rowsofevents" :key="event" class="text-primary-content">
-                <td>{{ event.eventname }}</td>
-                <td><Button label="Detaily" class="p-button-raised" @click="details(event)"/></td>
-                <td><Button label="Transakcie" class="p-button-raised" @click="transactions(event)"/></td>
-                <td v-if="userrole == 'admin'"><Button label="Vymazat" class="p-button-raised p-button-danger" @click="deleteevent(event)"/></td>
-                <td>{{ event.cpp }}</td>
-                <td v-for="field in userfields" :key="field" class="text-primary-content">{{event[field.name]}}</td>
-            </tr>
-        </tbody>
-    </table>
-    </div> -->
-    
-    
-    <DataTable   :value="rowsofevents" :scrollable="true"  scrollDirection="horizontal">
+    <p-table :value="rowsofevents" :scrollable="true"  scrollDirection="horizontal">
         <Column field="eventname" header="Nazov udalosti" style="min-width:150px"></Column>
-        <Column style="min-width:130px">
+        <Column style="min-width:360px" header="">
                 <template #body="{data}">
-                    <Button v-if="data.eventname != 'Zostatok uzivatelov'" label="Detaily" class="p-button-raised p-button-success"  @click="details(data)"/>
-                    <p v-if="data.eventname == 'Zostatok uzivatelov'">------</p>
-                </template>
-        </Column >
-        <Column style="min-width:140px">
-                <template  #body="{data}">
-                    <Button v-if="data.eventname != 'Zostatok uzivatelov'" label="Transakcie" class="p-button-raised p-button-success" @click="transactions(data)"/>
-                    <p v-if="data.eventname == 'Zostatok uzivatelov'">------</p>
-                </template>
-        </Column>
-        <Column v-if="userrole == 'admin'" style="min-width:130px">
-                <template  #body="{data}">
-                    <Button label="Vymazat" v-if="data.eventname != 'Zostatok uzivatelov'"  class="p-button-raised p-button-danger" @click="deleteevent(data)"/>
-                    <p v-if="data.eventname == 'Zostatok uzivatelov'">------</p>
+                    <div class="flex gap-3">
+                        <button v-if="data.eventname != 'Zostatok uzivatelov'" class="btn btn-outline btn-accent" @click="details(data)">Detaily</button>
+                        <button v-if="data.eventname != 'Zostatok uzivatelov'" class="btn btn-outline btn-accent" @click="transactions(data)">Transakcie</button>
+                        <button v-if="data.eventname != 'Zostatok uzivatelov' && userrole == 'admin'" class="btn btn-outline btn-error" @click="deleteevent(data)">Vymazať</button>
+                    </div>
                 </template>
         </Column>
         <Column field="cpp" header="CPP" style="min-width:100px"></Column>
         <Column v-for="field in userfields" :key="field" :field="field.name" :header= field.name style="min-width:100px" ></Column>
-    </DataTable>
+    </p-table>
     
     <p-dialog header="Header" footer="Footer" v-model:visible="display">
         <template #header>
-            <div >
+            <div class="xl:flex block">
                 <button v-if="userrole == 'admin'" class="text-base-content btn" v-on:click="openTransaction(nameofevent)">Pridat transakciu</button>
+                <h3 class="text-xl xl:ml-6 mt-4 xl:my-auto">Detaily transakcie: {{dialname}}</h3>
             </div>
-                <h3 class="text-xl">Detaily transakcie: {{dialname}}</h3>
+            
         </template>
         <template #footer>
 		<h3 >Spolu cena(poznamenanych):</h3><h3 :class="getCenaClass(total)">{{ total }}</h3>
@@ -82,10 +35,9 @@
             </thead>
             <tbody>
                 <tr v-for="row in rows" :key="row.id">
-                    <td class="text-primary-content">{{ row['Transakcia'] }}</td>
+                    <td class="max-w-[220px] overflow-hidden text-primary-content truncate">{{ row['Transakcia'] }}</td>
                     <td class="text-primary-content" :class="getCenaClass(row.cena)">{{ row['cena'] }}€</td>
                     <td v-if="row.file !== false"><Button @click="downloadFile(row.file)"><i class="fa fa-download"></i>...Download</Button></td>
-                    
                 </tr>
             </tbody>
         </table>
@@ -119,7 +71,6 @@
 
 <script>
 import {getFirestore,getDocs,collection,doc,getDoc,setDoc,addDoc,deleteDoc} from "firebase/firestore";
-import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -156,8 +107,6 @@ async setup() {
     return{userrole}
 },
 components:{
-    Button,
-    DataTable,
     Column
 },
 props:{

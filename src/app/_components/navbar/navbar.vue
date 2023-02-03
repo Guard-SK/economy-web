@@ -3,7 +3,6 @@
 	<nav class="navbar bg-neutral text-neutral-content !mb-16 md:flex hidden">
 		<div class="flex-1">
 			<a class="btn btn-ghost normal-case text-xl">Kartel 1.B</a>
-			
 		</div>
 		<div class="flex-none">
 			<ul class="menu menu-horizontal px-1">
