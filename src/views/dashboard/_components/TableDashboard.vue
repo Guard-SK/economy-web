@@ -37,7 +37,7 @@
                 <tr v-for="row in rows" :key="row.id">
                     <td class="max-w-[220px] overflow-hidden text-primary-content truncate">{{ row['Transakcia'] }}</td>
                     <td class="text-primary-content" :class="getCenaClass(row.cena)">{{ row['cena'] }}€</td>
-                    <td v-if="row.file !== false"><Button @click="downloadFile(row.file)"><i class="fa fa-download"></i>...Download</Button></td>
+                    <td v-if="row.file !== false"><button @click="downloadFile(row.file)"><i class="fa fa-download"></i>...Download</button></td>
                 </tr>
             </tbody>
         </table>

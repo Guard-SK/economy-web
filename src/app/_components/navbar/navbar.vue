@@ -70,7 +70,7 @@ export default {
 				}
 			],
 			isLoggedIn: null,
-			userrole: 'user'
+			userrole: null
 		}
 	},
 
@@ -98,6 +98,7 @@ export default {
 			} else {
 				this.isLoggedIn = false
 				this.balance = 0
+				
 			}
 		})
 	},

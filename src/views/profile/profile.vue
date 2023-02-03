@@ -140,7 +140,9 @@ export default {
             await setDoc(doc(db,'users',userid),{balance: setbal3},{merge:true})
             
         })
-        location.reload()
+        setTimeout(() => {
+            location.reload();
+        }, 2000);
         },
         async setFalse(item){
             
