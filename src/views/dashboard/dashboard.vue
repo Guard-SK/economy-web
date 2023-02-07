@@ -1,4 +1,5 @@
 <template>
+    
     <div class="block text-center mt-5 mb-5 w-full"> 
         <h1 class="mt-5 font-semibold spacing text-accent text-3xl tracking-wide mb-8">NAŠE UDALOSTI</h1>
         <div v-if="userrole == 'admin'">
@@ -69,14 +70,15 @@
 
         <div class="table-responsive my-5 text-base-content md:mx-8 mx-0" v-else>
             <!-- The table component -->
-            <TableDashboard :userfields='userfields' :rowsofevents ="rowsofevents" :headersoftransactions="headers" :attendancedata="attendancedata"></TableDashboard>
+            <TableDashboard :userfields='userfields' :rowsofevents ="rowsofevents" :headersoftransactions="headers"></TableDashboard>
         </div>
     </div>
 </template>
 <script>
 import TableDashboard from './_components/TableDashboard.vue'
-import { doc, getFirestore, getDocs, collection,setDoc, getDoc,addDoc} from "firebase/firestore";
+import { doc, getFirestore, getDocs, collection,setDoc, getDoc,addDoc, query, where, onSnapshot} from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
+
 
 export default {
     components: {
@@ -95,11 +97,17 @@ export default {
             users: [],
             priceppofinsert:'',
             nameofinsert:'',
-            loading: true
+            loading: true,
+            rowsofevents: [],
+            headers: [],
+            userfields: [],
+            userrole: 'user',
+            headers: []
         }
     },
 
     async created() {
+        this.headers = ['Transakcia','Cena','Subor']
         const db = getFirestore()
         const docs = await getDocs(collection(db,'users'))
         docs.forEach((doc5)=>{
@@ -108,19 +116,11 @@ export default {
             data['uid'] = doc5.id
             this.users.push(data)
             
+            
         })
-        this.loading = false
-    },
-    async setup(){
-        const db = getFirestore();
-        const uid = getAuth().currentUser.uid;
-        const documentSnap = await getDoc(doc(db,"users", uid))
-        const userrole = documentSnap.data()['role'];
-        var userfields = []
-        var attendancedata = []
         const userfieldsSnap = await getDocs(collection(db, 'users'))
-        const pushrow = {eventname:'Zostatok uzivatelov', cpp: '------'}
-        userfieldsSnap.forEach((doc) => {
+            const pushrow = {eventname:'Zostatok uzivatelov', cpp: '------'}
+            userfieldsSnap.forEach((doc) => {
             const username = {
                 name: doc.data().name + ' ' + doc.data().surname,
                 
@@ -128,38 +128,54 @@ export default {
 
 
             
-            userfields.push(username) 
+            this.userfields.push(username) 
             pushrow[username.name] = doc.data().balance + '€'
-        });
+            });
+        const q = query(collection(db, "events"));
+        const unsubscribe = onSnapshot(q, async (querySnapshot) => {
             
-        var rowsofevents = []
-        rowsofevents.push(pushrow)
-        const rowsofeventsSnap = await getDocs(collection(db,'events'))
-        rowsofeventsSnap.forEach((doc1) =>{
-            var data = doc1.data()
-            data['eventname'] = doc1.id
-            var count = 0
+            this.rowsofevents = []
+            const uid = getAuth().currentUser.uid;
+            const documentSnap = await getDoc(doc(db,"users", uid))
+            this.userrole = documentSnap.data()['role'];
             
-            const doc2 = doc1.data()
-            const arr = Object.values(doc2)
-            count = arr.filter(function(value) {
-                return value === "✅";
-            }).length;
-            var valuex1 = doc1.data().costofevent
-            var cpp = valuex1 / count
-            cpp = Math.round((cpp+ Number.EPSILON) * 100) / 100
-            if (cpp == Infinity){
-                data['cpp'] = 'None'
-            } else if (cpp == -Infinity){
-                data['cpp'] = 'None'
-            } else{
-                data['cpp'] = cpp + '€'
-            }
-            rowsofevents.push(data)
+
+            this.rowsofevents = []
+            this.rowsofevents.push(pushrow)
+            querySnapshot.forEach((doc) => {
+                var data = doc.data()
+                data['eventname'] = doc.id
+                var count = 0
+                
+                const doc2 = doc.data()
+                const arr = Object.values(doc2)
+                count = arr.filter(function(value) {
+                    return value === "✅";
+                }).length;
+                var valuex1 = doc.data().costofevent
+                var cpp = valuex1 / count
+                cpp = Math.round((cpp+ Number.EPSILON) * 100) / 100
+                if (cpp == Infinity){
+                    data['cpp'] = 'None'
+                } else if (cpp == -Infinity){
+                    data['cpp'] = 'None'
+                } else{
+                    data['cpp'] = cpp + '€'
+                }
+                
+                this.rowsofevents.push(data)
+               
+                
+                
+                
+            }); 
+            
+            
         });
-        var headers = ['Transakcia','Cena','Subor']
-        return{rowsofevents,userfields,userrole,headers,attendancedata}
+        this.loading = false
+        
     },
+    
 methods: {
         resetForm1(){
             this.nameofinsert = ''
@@ -212,7 +228,7 @@ methods: {
     
             
             this.displaymoney = false
-            setInterval(() => {if (change == true){location.reload()}}, 1000);
+            
             
 
         },
@@ -262,7 +278,7 @@ methods: {
             });
             this.display1 = false
             this.resetForm()
-            location.reload();
+            
         } 
     }
 }

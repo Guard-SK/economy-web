@@ -1,6 +1,6 @@
 <template>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <p-table :value="rowsofevents" :scrollable="true"  scrollDirection="horizontal">
+    <p-table :value="rowsofevents" :scrollable="true" :key="rowsofevents" scrollDirection="horizontal">
         <Column field="eventname" header="Nazov udalosti" style="min-width:150px"></Column>
         <Column style="min-width:360px" header="">
                 <template #body="{data}">
@@ -122,10 +122,7 @@ props:{
         type: Array,
         required: true
     },
-    attendancedata:{
-        type:Array,
-        required: true
-    }
+
 },
 methods:{
     async uploadFile(eventnamepp) {
@@ -146,7 +143,7 @@ methods:{
             Number: number1,
             file: fileString
         });
-        change = true}else{
+        }else{
             await addDoc(collection(db, "transakcie",eventnamepp,'transakcie'), {
             Transakcia: this.nameoftransaction,
             cena: parseFloat(this.priceoftransaction),
@@ -155,15 +152,10 @@ methods:{
             
         }
         );
-        change = true
+        
 
     }
-    setInterval(() => {
-                if (change == true){
-                    location.reload()
-                }
-                 }
-    , 1000);
+
     
     },
     async downloadFile(fileref){
@@ -260,9 +252,9 @@ methods:{
             var setbal = posbal + usedcpp
             var setbal3= Math.round((setbal+ Number.EPSILON) * 100) / 100
             await setDoc(doc(db,'users',userid),{balance: setbal3},{merge:true})
-            change = true
+            
         })
-        setInterval(() => {if (change == true){location.reload()}}, 1000);
+        
         
     },
     getCenaClass(cena) {

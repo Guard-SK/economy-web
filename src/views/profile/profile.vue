@@ -43,7 +43,7 @@
                 <tbody>
                 <tr v-for="insert in inserts" :key="insert">
                     <td class="text-base-content">{{ insert.nameofinsertdd }}</td>
-                    <td class="text-base-content">{{ insert.priceadded }}€</td>
+                    <td class="text-base-content positive-cena">{{ insert.priceadded }}€</td>
                 </tr>
                 </tbody>
             </table>
@@ -54,7 +54,7 @@
 
 </template>
 <script>
-import { getFirestore,setDoc ,doc,getDocs,getDoc,collection } from "firebase/firestore";
+import { getFirestore,setDoc ,doc,getDocs,getDoc,collection,query,onSnapshot } from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
 export default {
     data() {
@@ -63,45 +63,41 @@ export default {
             usedcpp:0,
             tree: false,
             username: {},
-            loading: true
+            loading: true,
+            inserts: []
         }
     },
-
-    async setup() {
+    async created() {
         const db = getFirestore()
+        const q = query(collection(db, "events"));
         const uid = getAuth().currentUser.uid;
         var user = await getDoc(doc(db,'users',uid))
-        console.log
         var username = user.data().name + ' ' + user.data().surname
         var visibleuser  = username+'visible'
-        const document1 = await getDocs(collection(db,'events'))
-        const items = []
-        document1.forEach(async doc1 =>{
-            const docname = doc1.id
-            const fieldselect = doc1.data()
-            const field = fieldselect[username]
-            items.push({
-                name: docname,
-                selectedOption: field,
-                visible: fieldselect[visibleuser]
+        this.username = username
+        const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+            this.items = []
+            querySnapshot.forEach(async doc0 => {
+                this.items.push({
+                    name: doc0.id,
+                    selectedOption: doc0.data()[username],
+                    visible: doc0.data()[visibleuser]
+                })
             })
         })
-        
-        const inserts = []
-        const snapofinserts = await getDocs(collection(db,'users',uid,'vklady'))
-        snapofinserts.forEach(doc55 =>{
-            inserts.push({
-                nameofinsertdd: doc55.data().nameofinsertdd,
-                priceadded: doc55.data().priceadded
-
-                
+        const d = query(collection(db,'users',uid,'vklady'))
+        const unsubscribe2 = onSnapshot(d, async (querySnapshot1) => {
+            this.inserts = []
+            querySnapshot1.forEach(async doc1 => {
+                this.inserts.push({
+                    nameofinsertdd: doc1.data().nameofinsertdd,
+                    priceadded: doc1.data().priceadded
+                })
             })
-        })
-        console.log(user)
-        let loading = false
-        return {items,inserts,username,loading}
+        })    
+        this.loading = false
     },
-    methods: {
+methods: {
         
         async updateOption(item) {
         const db = getFirestore()
@@ -136,16 +132,13 @@ export default {
             })
             var setbal = posbal + usedcpp
             var setbal3= Math.round((setbal+ Number.EPSILON) * 100) / 100
-            console.log(setbal3)
+            
             await setDoc(doc(db,'users',userid),{balance: setbal3},{merge:true})
             
         })
-        setTimeout(() => {
-            location.reload();
-        }, 2000);
+
         },
         async setFalse(item){
-            
             const db = getFirestore()
             const uid = getAuth().currentUser.uid;
             const way2 = doc(db,'events',item.name)
