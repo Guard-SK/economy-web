@@ -7,6 +7,15 @@ const routes = [
 		redirect: '/auth/login'
 	},
 	{
+		path: '/fileview/:filename',
+		name: 'FileView',
+		component: () => import('../views/filesystem/file.vue'),
+		props: true,
+		meta: {
+			requiresAuth: true
+		}
+	},
+	{
 		path: '/auth/dashboard',
 		redirect: '/dashboard'
 	},
