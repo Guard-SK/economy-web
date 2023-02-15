@@ -1,6 +1,6 @@
 <template>
     <p>Priprava Admin</p>
-    <button @click="$router.push({name: 'FileView',params: {filename:'2PACX-1vQvloQKcH3YLjOxcnGEutFMEtUWhUkkqlTqML_a6abGH-WIYy1su5MGNW0TtGhVVA'}})">Press1</button>
+    <button @click="redirectToFile('2PACX-1vQvloQKcH3YLjOxcnGEutFMEtUWhUkkqlTqML_a6abGH-WIYy1su5MGNW0TtGhVVA')">Press1</button>
     <div class="container">    
     <Dropdown v-model="selectedUser" :options="users" optionLabel="name" :filter="true" placeholder="Select a user" :showClear="true" @change="userset"></Dropdown>
     </div>
@@ -40,15 +40,13 @@ methods:{
     },
     async redirectToFile(filename) {
         console.log(filename);
-        this.$router.push({
-            name: 'FileView',
-            params: {filename: filename}
-    });
+        this.$router.push({name: 'FileView',params: {filename:filename}})
+    }
 }
 
 
 }
-}
+
 
 
 </script>
