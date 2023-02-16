@@ -1,6 +1,6 @@
 <template>
 <div class="collapse">
-	<nav class="navbar bg-neutral text-neutral-content !mb-16 md:flex hidden">
+	<nav class="navbar bg-neutral text-neutral-content  md:flex hidden  " >
 		<div class="flex-1">
 			<a class="btn btn-ghost normal-case text-xl">Kartel 1.B</a>
 		</div>
@@ -9,6 +9,7 @@
 				<li v-if="isLoggedIn"  class="btn">Zostatok : {{ balance }}€</li>
 				<li><router-link to="/dashboard" class="" v-if="isLoggedIn">Dashboard</router-link></li>
 				<li><router-link to="/profile" class="" v-if="isLoggedIn">My account</router-link></li>
+				<li><router-link to="/notes" class="" v-if="isLoggedIn">Notes</router-link></li>
 				<li v-if="userrole =='admin'"><router-link to="/admin" class="" v-if="isLoggedIn">Admin</router-link></li>
 
 				<li>
@@ -35,6 +36,7 @@
 		<ul class="menu menu-vertical px-1">
 			<li><router-link to="/dashboard" class="" v-if="isLoggedIn">Dashboard</router-link></li>
 			<li><router-link to="/profile" class="" v-if="isLoggedIn">My account</router-link></li>
+			<li><router-link to="/notes" class="" v-if="isLoggedIn">Notes</router-link></li>
 			<li v-if="userrole =='admin'"><router-link to="/admin" class="" v-if="isLoggedIn">Admin</router-link></li>
 			<div class="divider"></div>
 			<li>
@@ -50,6 +52,8 @@
 
 import {getFirestore,getDoc,doc,onSnapshot} from "firebase/firestore" ;
 import { getAuth, onAuthStateChanged, signOut } from '@firebase/auth';
+
+
 
 
 export default {
@@ -70,7 +74,9 @@ export default {
 				}
 			],
 			isLoggedIn: null,
-			userrole: null
+			userrole: null,
+			
+			
 		}
 	},
 
@@ -83,6 +89,7 @@ export default {
 		}
 	},
 	created() {
+		
 		let auth = getAuth()
 		onAuthStateChanged(auth, (user) => {
 			if (user) {

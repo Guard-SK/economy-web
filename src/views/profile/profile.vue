@@ -4,8 +4,8 @@
         <p-spinner/>
     </div>
 
-    <div class="block w-full" v-else>
-        <div>
+    <div class="block w-full mt-5" v-else>
+        <div >
             <h1 class="md:mt-0 mt-6 text-2xl text-base-content font-bold ">Ahoj {{ username }}!</h1>
         </div>
         <div class='table-responsive my-5 text-center mx-auto'>

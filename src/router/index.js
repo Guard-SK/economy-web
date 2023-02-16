@@ -20,6 +20,14 @@ const routes = [
 		redirect: '/dashboard'
 	},
 	{
+		path: '/notes',
+		name: '/notes',
+		component: () => import('../views/notes/notesmenu.vue'),
+		meta: {
+			requiresAuth: true
+		}
+	},
+	{
 		path: '/auth/',
 		redirect: '/auth/login',
 		meta: {
