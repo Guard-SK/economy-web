@@ -1,24 +1,25 @@
 <template>
     <div v-if="userrole == 'admin'">
-
     <Card>      
       <template #content>
-            <h1 class="font-semibold spacing  text-xl ">Posuvatelne menu</h1>
-            <TabMenu class="mt-5 " style="align: center" :model="items" :activeIndex="activeIndex" >
+            <h1 class="font-semibold spacing  text-xl">Posuvatelne menu</h1>
+            <TabMenu class="mt-5" :model="items" :activeIndex="activeIndex" >
             </TabMenu>
             
+            <Dropdown v-model="selectedUser" :options="users" optionLabel="name" :filter="true" placeholder="Vyber Uzivatela" :showClear="true" @change="userset"></Dropdown>
+            <p-button>Pridat Predmet</p-button>
 
           
           </template>
     </Card>
-  </div>
+    </div>
 </template>
 <script>
 import { getFirestore,setDoc ,doc,getDocs,getDoc,collection} from "firebase/firestore";
-import { getAuth } from 'firebase/auth'
 import Dropdown from 'primevue/dropdown';
 import TabMenu from 'primevue/tabmenu';
 import Card from 'primevue/card';
+import { getAuth } from 'firebase/auth'
 export default {
   components:{
     Dropdown,
@@ -28,16 +29,16 @@ export default {
   data () {
       return{
           selectedUser: null,
-          activeIndex: 0,
-          users:[],  
+          activeIndex: 1,
           userrole: 'user',
+          users:[],  
           items: [
-                {label: 'Udalosti', icon: 'pi pi-fw pi-home', to: '/admin'},
-                {label: 'Uzivatelia', icon: 'pi pi-fw pi-calendar', to: '/admin/user'},
+                {label: 'Udalosti', icon: 'pi pi-fw pi-calendar', to: '/admin'},
+                {label: 'Uzivatelia', icon: 'pi pi-fw pi-user-edit', to: '/admin/user'},
                 {label: 'Poznamky', icon: 'pi pi-fw pi-pencil', to: '/admin/notes'},
-                {label: 'Ulozisko', icon: 'pi pi-fw pi-file', to: '/admin/storage'},
+                {label: 'Ulozisko', icon: 'pi pi-fw pi-server', to: '/admin/storage'},
                 
-            ]    
+            ]   
       }
   },
   async created() {
@@ -65,4 +66,3 @@ export default {
   }
 }
 </script>
-

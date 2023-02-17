@@ -1,24 +1,25 @@
 <template>
+    
     <div v-if="userrole == 'admin'">
-
     <Card>      
       <template #content>
-            <h1 class="font-semibold spacing  text-xl ">Posuvatelne menu</h1>
-            <TabMenu class="mt-5 " style="align: center" :model="items" :activeIndex="activeIndex" >
+            <h1 class="font-semibold spacing  text-xl">Posuvatelne menu</h1>
+            <TabMenu  class="mt-5" :model="items" :activeIndex="activeIndex" >
             </TabMenu>
             
 
           
           </template>
     </Card>
-  </div>
+    </div>
 </template>
+
 <script>
 import { getFirestore,setDoc ,doc,getDocs,getDoc,collection} from "firebase/firestore";
-import { getAuth } from 'firebase/auth'
 import Dropdown from 'primevue/dropdown';
 import TabMenu from 'primevue/tabmenu';
 import Card from 'primevue/card';
+import { getAuth } from 'firebase/auth'
 export default {
   components:{
     Dropdown,

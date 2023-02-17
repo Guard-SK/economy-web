@@ -7,6 +7,30 @@ const routes = [
 		redirect: '/auth/login'
 	},
 	{
+		path: '/admin/user',
+		name: 'tabuser',
+		component: () => import('../views/admin/user.vue'),
+		meta: {
+			requiresAuth: true
+		}
+	},
+	{
+		path: '/admin/notes',
+		name: 'tabmotes',
+		component: () => import('../views/admin/notes.vue'),
+		meta: {
+			requiresAuth: true
+		}
+	},
+	{
+		path: '/admin/storage',
+		name: 'tabstorage',
+		component: () => import('../views/admin/storage.vue'),
+		meta: {
+			requiresAuth: true
+		}
+	},
+	{
 		path: '/fileview/:filename',
 		name: 'FileView',
 		component: () => import('../views/filesystem/file.vue'),
