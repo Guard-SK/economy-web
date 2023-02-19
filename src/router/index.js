@@ -7,6 +7,14 @@ const routes = [
 		redirect: '/auth/login'
 	},
 	{
+		path: '/photos',
+		name: 'Photos',
+		component: () => import('../views/photos/photos.vue'),
+		meta: {
+			requiresAuth: true
+		}
+	},
+	{
 		path: '/admin/user',
 		name: 'tabuser',
 		component: () => import('../views/admin/user.vue'),
