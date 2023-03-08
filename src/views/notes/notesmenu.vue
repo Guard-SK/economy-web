@@ -15,7 +15,8 @@
                         <Column field="docname" header="Meno dokumentu"></Column>
                        <Column headerStyle="width:4rem">
                             <template #body="{data}">
-                                <Button @click="redirectToFile(data.view)" icon="pi pi-search" label="View"/>
+                                
+                                <Button v-if="data.view != ''" @click="redirectToFile(data.view)" icon="pi pi-search" label="View"/>
                             </template>
                         </Column>
                         <Column headerStyle="width:4rem">

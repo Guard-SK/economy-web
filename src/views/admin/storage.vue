@@ -2,13 +2,13 @@
     
   <div v-if="userrole == 'admin'">
   <Card>      
-    <template #content>
+    <template #content >
           <h1 class="font-semibold spacing  text-xl">Posuvatelne menu</h1>
           <TabMenu class="mt-5" :model="items" :activeIndex="activeIndex" >
           </TabMenu>
-          <p> Later Bitch</p>
           
-          <FileUpload name="demo[]"  :multiple="true" accept="image/* , video/*"  @select="onSelectedFiles">
+          <div class="mt-5">
+          <FileUpload  name="demo[]"  :multiple="true" accept="image/* , video/*"  @select="onSelectedFiles">
                     <template #header="{ chooseCallback, uploadCallback, clearCallback, files }">
                         <div class="flex flex-wrap justify-content-between align-items-center flex-1 gap-2">
                             <div class="flex gap-2">
@@ -56,6 +56,7 @@
                         </div>
                     </template>
                   </FileUpload>
+                </div>
 
         </template>
   </Card>

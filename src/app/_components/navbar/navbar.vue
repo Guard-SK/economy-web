@@ -11,7 +11,7 @@
 				<li><router-link to="/dashboard" class="" v-if="isLoggedIn">Dashboard</router-link></li>
 				<li><router-link to="/profile" class="" v-if="isLoggedIn">My account</router-link></li>
 				<li><router-link to="/notes" class="" v-if="isLoggedIn">Notes</router-link></li>
-				<li><router-link to="/photos" class="" v-if="isLoggedIn">Photos</router-link></li>
+				<li v-if="userrole =='admin'"><router-link to="/photos" class="" v-if="isLoggedIn">PhotosTest</router-link></li>
 				<li v-if="userrole =='admin'"><router-link to="/admin" class="" v-if="isLoggedIn">Admin</router-link></li>
 
 				<li>
@@ -39,7 +39,7 @@
 			<li><router-link to="/dashboard" class="" v-if="isLoggedIn">Dashboard</router-link></li>
 			<li><router-link to="/profile" class="" v-if="isLoggedIn">My account</router-link></li>
 			<li><router-link to="/notes" class="" v-if="isLoggedIn">Notes</router-link></li>
-			<li><router-link to="/photos" class="" v-if="isLoggedIn">Photos</router-link></li>
+			<li v-if="userrole =='admin'"><router-link to="/photos" class="" v-if="isLoggedIn">PhotosTest</router-link></li>
 			<li v-if="userrole =='admin'"><router-link to="/admin" class="" v-if="isLoggedIn">Admin</router-link></li>
 			<div class="divider"></div>
 			<li>
