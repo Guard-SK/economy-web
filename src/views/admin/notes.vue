@@ -96,6 +96,16 @@ export default {
       async userset(){
           console.log(this.selectedUser.uid)
       },
+      async addNotes(){
+
+      },
+      async addClass (){
+        const db = getFirestore()
+        console.log('Pridany predmet')
+        await setDoc(doc(db,'notes',this.nameofclass),{class:true,id: Math.random()*100})
+        this.classes.push({name: this.nameofclass})
+        this.nameofclass = ''
+      }
   }
 }
 </script>

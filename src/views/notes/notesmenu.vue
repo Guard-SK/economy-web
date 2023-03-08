@@ -8,6 +8,14 @@
             </template>
             <Column :expander="true" headerStyle="width: 3rem" />
             <Column field="class" header="Predmety" sortable></Column>
+            <Column headerStyle="width:4rem">
+            <template #body="{data}">
+                
+                <button v-if="userrole =='admin'" class="btn btn-outline btn-error" @click="deleteclass(data.class)">Vymazať</button>
+            </template>
+            
+            
+            </Column>
             <template #expansion="slotProps">
                 <div class="orders-subtable">
                     
@@ -30,10 +38,11 @@
         </p-table>
 </template>
 <script>
-import { getFirestore,setDoc ,doc,getDocs,getDoc,collection} from "firebase/firestore";
+import { getFirestore,setDoc ,doc,getDocs,getDoc,collection, onSnapshot} from "firebase/firestore";
 import Dropdown from 'primevue/dropdown';
 import Column from "primevue/column";
 import Button from "primevue/button";
+import { getAuth } from "@firebase/auth";
 export default {
     components:{
         Dropdown,
@@ -45,13 +54,22 @@ data () {
     return{
 
         classes: [],
-        expandedRows: []
+        expandedRows: [],
+        userrole: 'user'
         
     }
 
 },
 async created() {
     const db = getFirestore()
+      			const uid = getAuth().currentUser.uid;
+				
+				
+				onSnapshot(doc(db, "users", uid), (doc) => {
+   					 
+					 this.userrole = doc.data().role
+			});
+    
     const classesSnap = await getDocs(collection(db,'notes'))
     classesSnap.forEach(async class1 => {
         const docsclass = await getDocs(collection(db,'notes', class1.id,'docs'))
@@ -78,6 +96,9 @@ async created() {
 methods:{
     linkopen (url) {
         window.open(url,"_blank")
+    },
+    async deleteclass (classname){
+        console.log(classname)
     },
     onRowExpand(event) {
             
