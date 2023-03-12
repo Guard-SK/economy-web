@@ -30,14 +30,22 @@
                         <input class="text-base-content input input-bordered" id= "99" v-model="nameofclass" placeholder="meno predmetu" />
           </div>
           <button class="text-base-content btn" v-on:click="addClass">Pridat predmet</button>
+          <Divider/>
 
+          <h1 class="text-2xl mt-5">Vymazanie predmetu</h1>
+          
+          <div class="field mb-4">
+                        <p>Meno predmetu</p>
+                        <Dropdown v-model="selectedClass2" :options="classes2" optionLabel="name" placeholder="Vyber predmet" class=" md:w-14rem" />
+          </div>
+          <button class="text-base-content btn" v-on:click="removeClass">Vymazat zvoleny predmet</button>
           </template>
     </Card>
     </div>
 </template>
 
 <script>
-import { getFirestore,setDoc ,doc,getDocs,getDoc,collection} from "firebase/firestore";
+import { getFirestore,setDoc ,doc,getDocs,getDoc,collection,deleteDoc, onSnapshot} from "firebase/firestore";
 import Dropdown from 'primevue/dropdown';
 import TabMenu from 'primevue/tabmenu';
 import Card from 'primevue/card';
@@ -54,6 +62,8 @@ export default {
       return{
           selectedClass: null,
           classes: [],
+          selectedClass2: null,
+          classes2: [],
           activeIndex: 0,
           users:[],  
           userrole: 'user',
@@ -76,6 +86,7 @@ export default {
       const classesSnap = await getDocs(collection(db,'notes'))
       classesSnap.forEach(doc1 => {
         this.classes.push({name: doc1.id})
+        this.classes2.push({name: doc1.id})
       })
       data.forEach(doc => {
           var username = doc.data().name + ' ' + doc.data().surname
@@ -93,11 +104,18 @@ export default {
       }
   },
   methods:{
-      async userset(){
-          console.log(this.selectedUser.uid)
-      },
-      async addNotes(){
 
+      async addNotes(){
+        const db = getFirestore()
+
+          await setDoc(doc(db,'notes',this.selectedClass.name,'docs',this.nameofnote), ({
+            link: this.linkdoc,
+            view: this.iframe
+          }))
+        this.selectedClass = null
+        this.linkdoc = ''
+        this.nameofnote = ''
+        this.iframe = ''
       },
       async addClass (){
         const db = getFirestore()
@@ -105,7 +123,16 @@ export default {
         await setDoc(doc(db,'notes',this.nameofclass),{class:true,id: Math.random()*100})
         this.classes.push({name: this.nameofclass})
         this.nameofclass = ''
-      }
+      },
+      async removeClass () {
+        const db = getFirestore()
+        console.log('Vymazany predmet')
+        let index = this.classes2.indexOf(this.selectedClass2);
+        await deleteDoc(doc(db,'notes',this.selectedClass2.name))
+        this.classes.splice(index, 1);
+        this.classes2.splice(index, 1);
+      },
+      
   }
 }
 </script>

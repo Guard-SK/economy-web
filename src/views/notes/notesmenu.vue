@@ -8,22 +8,23 @@
             </template>
             <Column :expander="true" headerStyle="width: 3rem" />
             <Column field="class" header="Predmety" sortable></Column>
-            <Column headerStyle="width:4rem">
-            <template #body="{data}">
-                
-                <button v-if="userrole =='admin'" class="btn btn-outline btn-error" @click="deleteclass(data.class)">Vymazať</button>
-            </template>
-            
-            
-            </Column>
+
             <template #expansion="slotProps">
                 <div class="orders-subtable">
                     
                     <p-table :value="slotProps.data.docs" responsiveLayout="scroll">
                         <Column field="docname" header="Meno dokumentu"></Column>
+                                                
                        <Column headerStyle="width:4rem">
+                        
+                        <template #body="{data}">
+                            
+                            <Button @click="deletedoc(data.docname,slotProps.data.class)" class="btn btn-outline btn-error" label="Remove"/>
+                        </template>
+                    </Column>
+                       <Column headerStyle="width:4rem">
+                        
                             <template #body="{data}">
-                                
                                 <Button v-if="data.view != ''" @click="redirectToFile(data.view)" icon="pi pi-search" label="View"/>
                             </template>
                         </Column>
@@ -38,7 +39,7 @@
         </p-table>
 </template>
 <script>
-import { getFirestore,setDoc ,doc,getDocs,getDoc,collection, onSnapshot} from "firebase/firestore";
+import { getFirestore,setDoc ,doc,getDocs,getDoc,collection, onSnapshot, deleteDoc,query} from "firebase/firestore";
 import Dropdown from 'primevue/dropdown';
 import Column from "primevue/column";
 import Button from "primevue/button";
@@ -69,9 +70,12 @@ async created() {
    					 
 					 this.userrole = doc.data().role
 			});
-    
-    const classesSnap = await getDocs(collection(db,'notes'))
-    classesSnap.forEach(async class1 => {
+    const q = query(collection(db, "notes"))
+    const unsubscribe = onSnapshot(q, async (doc2) => {
+        
+        this.classes = []
+        const classesSnap = await getDocs(collection(db,'notes'))
+        classesSnap.forEach(async class1 => {
         const docsclass = await getDocs(collection(db,'notes', class1.id,'docs'))
         const docsprep = []
         docsclass.forEach(doc6 => {
@@ -90,6 +94,8 @@ async created() {
         }
         this.classes.push(finalprep)
     })
+    })
+    
     
     
 },
@@ -97,9 +103,7 @@ methods:{
     linkopen (url) {
         window.open(url,"_blank")
     },
-    async deleteclass (classname){
-        console.log(classname)
-    },
+    
     onRowExpand(event) {
             
         },
@@ -114,12 +118,16 @@ methods:{
             this.expandedRows = null;
             
         },
-    async userset(){
-        console.log(this.selectedUser.uid)
-    },
+
     async redirectToFile(filename) {
         console.log(filename);
         this.$router.push({name: 'FileView',params: {filename:filename}})
+    },
+    async deletedoc(name,class1) {
+        const db = getFirestore()
+        await deleteDoc(doc(db,'notes',class1,'docs',name))
+        await setDoc(doc(db,'notes',class1),{collection: true},{merge:true})
+        
     }
 }
 }
