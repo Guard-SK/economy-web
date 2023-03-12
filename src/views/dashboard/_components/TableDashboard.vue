@@ -11,21 +11,27 @@
                     </div>
                 </template>
         </Column>
-        <Column field="cpp" header="CPP" style="min-width:100px"></Column>
+        <Column field="typeoffond" header="Fond" style="min-width:100px">
+            <template #body="{data}">
+                    <div class="flex gap-3">
+                       <span :class="getFond(data.typeoffond)" class="text-xl">{{ data.typeoffond }}</span>
+                    </div>
+                </template></Column>
         <Column v-for="field in userfields" :key="field" :field="field.name" :header= field.name style="min-width:100px" ></Column>
     </p-table>
     
     <p-dialog header="Header" footer="Footer" v-model:visible="display">
         <template #header>
             <div class="xl:flex block">
+                
+                <h3 style="padding-right: 10px" class="text-xl xl:ml-6 mt-4 xl:my-auto">Detaily transakcie: {{dialname}}</h3>
                 <button v-if="userrole == 'admin'" class="text-base-content btn" v-on:click="openTransaction(nameofevent)">Pridat transakciu</button>
-                <h3 class="text-xl xl:ml-6 mt-4 xl:my-auto">Detaily transakcie: {{dialname}}</h3>
             </div>
             
         </template>
         <template #footer>
-		<h3 >Spolu cena(poznamenanych):</h3><h3 :class="getCenaClass(total)">{{ total }}</h3>
-        <h3 >Celkova cena:</h3><h3 :class="getCenaClass(costofevent1)">{{ costofevent1  }}€ </h3>
+		<h3 >Celková cena udalosti:</h3><h3 :class="getCenaClass(costofevent1)">{{ costofevent1 }}€</h3>
+        
 	    </template>
         <table class="table table-bordered table-striped">
             <thead>
@@ -35,9 +41,11 @@
             </thead>
             <tbody>
                 <tr v-for="row in rows" :key="row.id">
+                    
                     <td class="max-w-[220px] overflow-hidden text-primary-content truncate">{{ row['Transakcia'] }}</td>
                     <td class="text-primary-content" :class="getCenaClass(row.cena)">{{ row['cena'] }}€</td>
-                    <td v-if="row.file !== false"><button @click="downloadFile(row.file)"><i class="fa fa-download"></i>...Download</button></td>
+                    <td><button v-if="row.file !== false" @click="downloadFile(row.file)"><i v-if="row.file !== false" class="fa fa-download"></i>...Download</button></td>
+                    <td><button v-if="userrole == 'admin'" class="btn btn-outline btn-error" @click="deletetransaction(row.iddoc,dialname,row.cena)">Vymazať</button></td>
                 </tr>
             </tbody>
         </table>
@@ -71,10 +79,11 @@
 
 <script>
 import {getFirestore,getDocs,collection,doc,getDoc,setDoc,addDoc,deleteDoc,onSnapshot} from "firebase/firestore";
-import DataTable from 'primevue/datatable';
+
 import Column from 'primevue/column';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getAuth } from 'firebase/auth'
+
 const storage = getStorage();
 export default {
 name: 'TableComponent',
@@ -111,10 +120,10 @@ async created() {
    					 
 					 this.userrole = doc.data().role
                      if (this.userrole == 'admin'){
-                        console.log('admin')
+                        
                     this.widthfix = 360}
                     if (this.userrole == 'user'){
-                        console.log('user')
+                        
                     this.widthfix = 240}
 
 			});
@@ -140,10 +149,35 @@ props:{
 
 },
 methods:{
-
-    async uploadFile(eventnamepp) {
-        var change = false
+    getFond (fond) {
+        if (fond == 'official') {
+            return 'official-fond'
+        } else {
+          return 'unofficial-fond';
+        }
+    },
+    async deletetransaction(nameoftransaction2,event,price) {
         const db = getFirestore()
+        const data2 = await getDocs(collection(db,'transakcie',event,'transakcie'))
+        
+        console.log(event)
+        await deleteDoc(doc(db,'transakcie',event,'transakcie',nameoftransaction2))
+        this.display = false
+        let x = 0
+        data2.forEach( doc1 => {
+            if (doc1.id != 'number'){
+                
+                x += doc1.data().cena
+            }
+
+        })
+        x-= price
+        await setDoc(doc(db,'events',event),{costofevent:x},{merge:true})
+    },
+    async uploadFile(eventnamepp) {
+        
+        const db = getFirestore()
+        let docs = await getDocs(collection(db, "transakcie", eventnamepp, 'transakcie'));
         const doc11 = await getDoc(doc(db,'transakcie',eventnamepp,'transakcie','number'))
         const number1 = parseInt(doc11.data().number) + 1
         const file = this.$refs.fileInput.files[0]
@@ -166,11 +200,24 @@ methods:{
             Number: number1,
             file: false
             
-        }
-        );
+        });}
         
+        this.total = 0
+        docs.forEach((doc) => {
+        if (doc.id != 'number'){
+            let price  = doc.data().cena
+            this.total += price
+            this.total = Math.round((this.total+ Number.EPSILON) * 100) / 100
+            
+            console.log(this.total)
+            }});
+        this.total += parseFloat(this.priceoftransaction)
+        console.log(this.total)
+        await setDoc(doc(db,'events',eventnamepp),{costofevent: this.total},{merge:true})
+        this.display = false
+        this.display2 = false
 
-    }
+
 
     
     },
@@ -195,7 +242,13 @@ methods:{
             this.total = 0
             docs.forEach((doc) => {
                 if (doc.id != 'number'){
-                this.rows.push(doc.data());
+                const data = {
+                    iddoc: doc.id,
+                    Transakcia: doc.data().Transakcia,
+                    cena: doc.data().cena,
+                    file: doc.data().file
+                }
+                this.rows.push(data);
                 let price  = doc.data().cena
                 
                 this.total += price
@@ -205,7 +258,7 @@ methods:{
             for (var i = 0, len = this.rows.length; i < len; i++) {
                 delete this.rows[i].Number;
             }
-            this.dialname = ' ' + event.eventname
+            this.dialname = event.eventname
             const detRef = doc(db,'events', event.eventname)
             var data1 = await getDoc(detRef);
             this.costofevent1 = data1.data().costofevent

@@ -18,9 +18,25 @@
   .neutral-cena {
     color: black;
   }
+  .official-fond {
+    color: #d18800;
+    
+  }
+  .unofficial-fond {
+    color: #ab3d30;
+    
+  }
+  .official-fond1 {
+    color: #d18800;
+    padding: 16px
+  }
+  .unofficial-fond2 {
+    color: #ab3d30;
+    padding: 16px
+  }
 .center{
   margin:auto;
-  
+
 }
 
 * {

@@ -38,6 +38,9 @@
                     <template #header>
 		                <h3 class="text-2xl">Pridanie udalosti</h3>
 	                </template>
+                    <div class="card mt-4 flex justify-content-center">
+                        <SelectButton v-model="fondtype" :options="options" aria-labelledby="basic" />
+                    </div>
                     <div class="field mb-4">
                         <p>Meno Udalosti</p>
                         <input class="text-base-content input input-bordered" id= "input11" v-model="nameofevent" placeholder="Medická záhrada" />
@@ -51,14 +54,15 @@
                         <input class="text-base-content input input-bordered" id= "input33" v-model="place" placeholder="GJH" />
                     </div>
                     <div class="field mb-4">
-                        <p>Cena (použiť znak - )</p>
-                        <input class="text-base-content input input-bordered" id= "input44" v-model="costofevent" placeholder="-69" /> 
-                        <span class="ml-1 text-xl">€</span>
-                    </div>
-                    <div class="field mb-4">
                         <p>Dodatočné poznámky</p>
                         <input class="text-base-content input input-bordered" id= "input55" v-model="notes" placeholder="Poznamky" />
                     </div>
+                    <div class="field mb-4">
+                        <!-- <p class="text-base-content input input-bordered">Cena (použiť znak - )</p> -->
+                        <!-- <input class="text-base-content input input-bordered" id= "input44" v-model="costofevent" placeholder="-69" />  -->
+                        <span class="ml-1 text-xl">Cena je počítana automaticky transakciami</span>
+                    </div>
+                    
                     <button class="btn btn-primary px-auto" v-on:click="addEvent">Pridať Udalosť</button>
                 </p-dialog>
             </div>
@@ -76,13 +80,15 @@
 </template>
 <script>
 import TableDashboard from './_components/TableDashboard.vue'
+import SelectButton from 'primevue/selectbutton';
 import { doc, getFirestore, getDocs, collection,setDoc, getDoc,addDoc, query, where, onSnapshot} from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
 
 
 export default {
     components: {
-        TableDashboard
+        TableDashboard,
+        SelectButton
     },
     data() {
         return {
@@ -102,7 +108,9 @@ export default {
             headers: [],
             userfields: [],
             userrole: 'user',
-            headers: []
+            headers: [],
+            fondtype: 'unofficial',
+            options: ['unofficial', 'official']
         }
     },
 
@@ -187,8 +195,7 @@ methods: {
             this.priceppofinsert = ''
     },
         async submitForm() {
-            var change = false
-
+            
             this.users.forEach(async doc1 =>{
                 var username = doc1.name + ' ' + doc1.surname
                 if (doc1.id == true){
@@ -258,8 +265,9 @@ methods: {
                     nameofevent: this.nameofevent,
                     dateofevent: this.dateofevent,
                     place: this.place,
-                    costofevent: parseFloat(this.costofevent),
-                    notes:this.notes
+                    costofevent: 0,
+                    notes:this.notes,
+                    typeoffond: this.fondtype
                 })
             const usersRef = collection(db,'users')
             const usersSnap = await getDocs(usersRef)
