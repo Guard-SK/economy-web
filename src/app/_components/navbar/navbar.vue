@@ -1,7 +1,7 @@
 <template>
 	
 <div class="collapse">
-	<nav class="navbar bg-neutral text-neutral-content  md:flex hidden  " >
+	<nav class="navbar bg-neutral text-neutral-content  md:flex hidden" >
 		<div class="flex-1">
 			<a class="btn btn-ghost normal-case text-xl">Kartel 1.B</a>
 		</div>
@@ -23,7 +23,8 @@
 </div>
 
 <div class="collapse md:hidden w-full">
-  <input type="checkbox" class="peer" v-if="isLoggedIn" /> 
+  <input type="checkbox" class="peer" @click="menuchange" v-if="isLoggedIn" :checked="isMenuOpen"/> 
+  
   <div class="collapse-title bg-neutral text-neutral-content flex pr-[16px] justify-between">
 		<div class="">
 			<a class="btn btn-ghost normal-case text-xl">Kartel 1.B</a>
@@ -36,11 +37,11 @@
   <div class="collapse-content bg-neutral text-neutral-content"> 
 		<div class="divider"></div>
 		<ul class="menu menu-vertical px-1">
-			<li><router-link to="/dashboard" class="" v-if="isLoggedIn">Dashboard</router-link></li>
-			<li><router-link to="/profile" class="" v-if="isLoggedIn">My account</router-link></li>
-			<li><router-link to="/notes" class="" v-if="isLoggedIn">Notes</router-link></li>
+			<li><router-link to="/dashboard" class="" @click="changeMenu" v-if="isLoggedIn">Dashboard</router-link></li>
+			<li><router-link to="/profile" class="" @click="changeMenu" v-if="isLoggedIn">My account</router-link></li>
+			<li><router-link to="/notes" class="" @click="changeMenu" v-if="isLoggedIn">Notes</router-link></li>
 			<!-- <li v-if="userrole =='admin'"><router-link to="/photos" class="" v-if="isLoggedIn">PhotosTest</router-link></li> -->
-			<li v-if="userrole =='admin'"><router-link to="/admin" class="" v-if="isLoggedIn">Admin</router-link></li>
+			<li v-if="userrole =='admin'"><router-link to="/admin" class="" @click="changeMenu" v-if="isLoggedIn">Admin</router-link></li>
 			<div class="divider"></div>
 			<li>
 				<button class="btn justify-start" @click="handleSignOut()" v-if="isLoggedIn"><i class="pi pi-sign-out"/>Sign Out</button>
@@ -78,6 +79,7 @@ export default {
 			],
 			isLoggedIn: null,
 			userrole: null,
+			isMenuOpen: false
 			
 			
 		}
@@ -89,7 +91,13 @@ export default {
 			signOut(auth).then(() => {
 				this.$router.push('/auth/login')
 			})
-		}
+		},
+		changeMenu ( ){
+			this.isMenuOpen = false
+		},
+		menuchange (){
+			this.isMenuOpen = true
+		},
 	},
 	created() {
 		
