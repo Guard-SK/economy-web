@@ -19,7 +19,7 @@
                         
                         <template #body="{data}">
                             
-                            <Button @click="deletedoc(data.docname,slotProps.data.class)" class="btn btn-outline btn-error" label="Remove"/>
+                            <Button v-if="userrole == 'admin'" @click="deletedoc(data.docname,slotProps.data.class)" class="btn btn-outline btn-error" label="Remove"/>
                         </template>
                     </Column>
                        <Column headerStyle="width:4rem">

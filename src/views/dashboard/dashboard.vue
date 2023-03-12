@@ -135,9 +135,14 @@ export default {
         const unsubscribe = onSnapshot(q, async (querySnapshot) => {
             
             this.rowsofevents = []
-            const uid = getAuth().currentUser.uid;
-            const documentSnap = await getDoc(doc(db,"users", uid))
-            this.userrole = documentSnap.data()['role'];
+
+      		const uid = getAuth().currentUser.uid;
+				
+				
+				onSnapshot(doc(db, "users", uid), (doc) => {
+   					 
+					 this.userrole = doc.data().role
+			});
             
 
             this.rowsofevents = []

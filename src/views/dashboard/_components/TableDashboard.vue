@@ -2,7 +2,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <p-table :value="rowsofevents" :scrollable="true" :key="rowsofevents" scrollDirection="horizontal">
         <Column field="eventname" header="Nazov udalosti" style="min-width:150px"></Column>
-        <Column style="min-width:360px" header="">
+        <Column :style="{ 'min-width': widthfix + 'px' }" header="">
                 <template #body="{data}">
                     <div class="flex gap-3">
                         <button v-if="data.eventname != 'Zostatok uzivatelov'" class="btn btn-outline btn-accent" @click="details(data)">Detaily</button>
@@ -70,7 +70,7 @@
 
 
 <script>
-import {getFirestore,getDocs,collection,doc,getDoc,setDoc,addDoc,deleteDoc} from "firebase/firestore";
+import {getFirestore,getDocs,collection,doc,getDoc,setDoc,addDoc,deleteDoc,onSnapshot} from "firebase/firestore";
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -96,15 +96,30 @@ data(){
         nameoftransaction: '',
         priceoftransaction:'',
         userrole: 'user',
-        customers2: []
+        customers2: [],
+        widthfix: 240
     }
 },
-async setup() {
+async created() {
+    
+
     const db = getFirestore()
-    const uid = getAuth().currentUser.uid;
-    const documentSnap = await getDoc(doc(db,"users", uid))
-    const userrole = documentSnap.data()['role'];
-    return{userrole}
+      			const uid = getAuth().currentUser.uid;
+				
+				
+				onSnapshot(doc(db, "users", uid), (doc) => {
+   					 
+					 this.userrole = doc.data().role
+                     if (this.userrole == 'admin'){
+                        console.log('admin')
+                    this.widthfix = 360}
+                    if (this.userrole == 'user'){
+                        console.log('user')
+                    this.widthfix = 240}
+
+			});
+
+    
 },
 components:{
     Column
@@ -125,6 +140,7 @@ props:{
 
 },
 methods:{
+
     async uploadFile(eventnamepp) {
         var change = false
         const db = getFirestore()
