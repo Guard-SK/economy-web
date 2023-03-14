@@ -3,20 +3,24 @@
     <div v-if="loading">
         <p-spinner/>
     </div>
-
+    
     <div class="block w-full mt-5" v-else>
         <div >
             <h1 class="md:mt-0 mt-6 text-2xl text-base-content font-bold ">Ahoj {{ username }}!</h1>
         </div>
         <div class='table-responsive my-5 text-center mx-auto'>
             <p class="text-base-content font-light mb-2">Bol si na nejakej akcii? Prihlás sa tu!</p>
+
+            
             <table id="tableComponent" class="table table-bordered table-striped border-2 border-base-200 center">
                 <thead>
                 <th class="text-primary-content">Event</th>
                 <th class="text-primary-content" >Options</th>
+                
                 <th></th>
                 </thead>
                 <tbody>
+
                 <tr v-for="item in items" :key="item">
                     
                     <td v-if="item.visible" class="text-base-content">{{ item.name }}</td>
@@ -39,11 +43,14 @@
                 <thead>
                 <th class="text-primary-content">Meno / Datum</th>
                 <th class="text-primary-content" >Vklad</th>
+                <th class="text-primary-content" >Typ fondu</th>
                 </thead>
                 <tbody>
                 <tr v-for="insert in inserts" :key="insert">
                     <td class="text-base-content">{{ insert.nameofinsertdd }}</td>
                     <td class="text-base-content positive-cena">{{ insert.priceadded }}€</td>
+                    <td :class="getFond(insert.fond)">{{ insert.fond }}</td>
+                    
                 </tr>
                 </tbody>
             </table>
@@ -54,7 +61,7 @@
 
 </template>
 <script>
-import { getFirestore,setDoc ,doc,getDocs,getDoc,collection,query,onSnapshot } from "firebase/firestore";
+import { getFirestore,setDoc,doc,getDocs,getDoc,collection,query,onSnapshot } from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
 export default {
     data() {
@@ -91,14 +98,70 @@ export default {
             querySnapshot1.forEach(async doc1 => {
                 this.inserts.push({
                     nameofinsertdd: doc1.data().nameofinsertdd,
-                    priceadded: doc1.data().priceadded
+                    priceadded: doc1.data().priceadded,
+                    fond: doc1.data().fond
                 })
             })
         })    
         this.loading = false
     },
 methods: {
-        
+    getFond (fond) {
+        if (fond == 'official') {
+            return 'official-fond'
+        } else {
+          return 'unofficial-fond';
+        }
+    },
+        async recalculate() {
+            const db = getFirestore()
+            const events = await getDocs(collection(db,'events'))
+            const users = await getDocs(collection(db,'users'))
+            users.forEach(async user => {
+                let uid = user.id
+                let username = user.data().name + ' ' + user.data().surname
+                let usernameset = user.data().name + ' ' + user.data().surname + 'set'
+                let costsofficial =[0]
+                let costsunofficial = [0]
+                events.forEach(event => {
+
+                    if (event.data()[username] == "✅"){
+                        if (event.data()[usernameset] != false) {
+                            if (event.data().typeoffond == 'official') {
+                            costsofficial.push(parseFloat(event.data()[usernameset]))
+                            }else {
+                            costsunofficial.push(parseFloat(event.data()[usernameset]))
+                            }
+                        }else{
+                            var eventdata = event.data()
+                            const arr = Object.values(eventdata)
+                            var count = arr.filter(function(value) {
+                                return value === "✅";
+                            }).length;
+                            count -= event.data().eventnumberset
+                            var eventcost = event.data().costofevent - event.data().eventcostset
+                            var cpp = eventcost / count
+                            if (event.data().typeoffond == 'official'){
+                                costsofficial.push(cpp)
+    
+                            }else {
+                                costsunofficial.push(cpp)
+                            } 
+                        }
+                    }
+                })
+                const sum = costsofficial.reduce((accumulator, currentValue) => {
+                    return accumulator + currentValue;
+                }, 0);
+                const sum2 = costsunofficial.reduce((accumulator, currentValue) => {
+                    return accumulator + currentValue;
+                }, 0);
+                const baloff = sum + user.data().positivebalanceofficial
+                const balunoff = sum2 + user.data().positivebalanceunofficial
+
+                await setDoc(doc(db,'users',uid),{balanceofficial: parseFloat(baloff.toFixed(2)),balanceunofficial: parseFloat(balunoff.toFixed(2)),},{merge:true})
+            })
+        },
         async updateOption(item) {
         const db = getFirestore()
         const way2 = doc(db,'events',item.name)
@@ -109,33 +172,7 @@ methods: {
         obj1[username] = obj1['selectedOption'];
         delete obj1['selectedOption'];
         await setDoc(way2,obj1,{merge: true})
-        const usersSnap = await getDocs(collection(db,'users'))
-        usersSnap.forEach(async userdoc => {
-            const uddata = userdoc.data()
-            const userid = userdoc.id
-            var posbal = uddata.positivebalance
-            var usedcpp = 0
-            var username2 = uddata.name+ ' ' + uddata.surname
-            const rowsofeventsSnap = await getDocs(collection(db,'events'))
-            rowsofeventsSnap.forEach(eventdoc => {
-                var eventdata = eventdoc.data()
-                const arr = Object.values(eventdata)
-                var count = arr.filter(function(value) {
-                    return value === "✅";
-                }).length;
-                var valuex1 = eventdata.costofevent
-                var cpp123 = valuex1 / count
-                if (eventdata[username2] == "✅")  {
-                    usedcpp += cpp123
-                }
-                
-            })
-            var setbal = posbal + usedcpp
-            var setbal3= Math.round((setbal+ Number.EPSILON) * 100) / 100
-            
-            await setDoc(doc(db,'users',userid),{balance: setbal3},{merge:true})
-            
-        })
+
 
         },
         async setFalse(item){
@@ -149,6 +186,7 @@ methods: {
             delete obj3['selectedOption'];
             await setDoc(way2,obj3,{merge: true})
             await this.updateOption(item)
+            await this.recalculate()
 
             
 

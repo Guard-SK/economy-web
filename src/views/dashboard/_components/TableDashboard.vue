@@ -17,7 +17,7 @@
                        <span :class="getFond(data.typeoffond)" class="text-xl">{{ data.typeoffond }}</span>
                     </div>
                 </template></Column>
-        <Column v-for="field in userfields" :key="field" :field="field.name" :header= field.name style="min-width:100px" ></Column>
+        <Column v-for="field in userfields" :key="field" :field="field.name" :header= field.name style="min-width:130px" ></Column>
     </p-table>
     
     <p-dialog header="Header" footer="Footer" v-model:visible="display">
@@ -156,11 +156,60 @@ methods:{
           return 'unofficial-fond';
         }
     },
+    async recalculate() {
+            const db = getFirestore()
+            const events = await getDocs(collection(db,'events'))
+            const users = await getDocs(collection(db,'users'))
+            users.forEach(async user => {
+                let uid = user.id
+                let username = user.data().name + ' ' + user.data().surname
+                let usernameset = user.data().name + ' ' + user.data().surname + 'set'
+                let costsofficial =[0]
+                let costsunofficial = [0]
+                events.forEach(event => {
+
+                    if (event.data()[username] == "✅"){
+                        if (event.data()[usernameset] != false) {
+                            if (event.data().typeoffond == 'official') {
+                            costsofficial.push(parseFloat(event.data()[usernameset]))
+                            }else {
+                            costsunofficial.push(parseFloat(event.data()[usernameset]))
+                            }
+                        }else{
+                            var eventdata = event.data()
+                            const arr = Object.values(eventdata)
+                            var count = arr.filter(function(value) {
+                                return value === "✅";
+                            }).length;
+                            count -= event.data().eventnumberset
+                            var eventcost = event.data().costofevent - event.data().eventcostset
+                            var cpp = eventcost / count
+                            if (event.data().typeoffond == 'official'){
+                                costsofficial.push(cpp)
+    
+                            }else {
+                                costsunofficial.push(cpp)
+                            } 
+                        }
+                    }
+                })
+                const sum = costsofficial.reduce((accumulator, currentValue) => {
+                    return accumulator + currentValue;
+                }, 0);
+                const sum2 = costsunofficial.reduce((accumulator, currentValue) => {
+                    return accumulator + currentValue;
+                }, 0);
+                const baloff = sum + user.data().positivebalanceofficial
+                const balunoff = sum2 + user.data().positivebalanceunofficial
+
+                await setDoc(doc(db,'users',uid),{balanceofficial: parseFloat(baloff.toFixed(2)),balanceunofficial: parseFloat(balunoff.toFixed(2)),},{merge:true})
+            })
+        },
     async deletetransaction(nameoftransaction2,event,price) {
         const db = getFirestore()
         const data2 = await getDocs(collection(db,'transakcie',event,'transakcie'))
         
-        console.log(event)
+    
         await deleteDoc(doc(db,'transakcie',event,'transakcie',nameoftransaction2))
         this.display = false
         let x = 0
@@ -173,6 +222,7 @@ methods:{
         })
         x-= price
         await setDoc(doc(db,'events',event),{costofevent:x},{merge:true})
+        this.recalculate()
     },
     async uploadFile(eventnamepp) {
         
@@ -209,11 +259,12 @@ methods:{
             this.total += price
             this.total = Math.round((this.total+ Number.EPSILON) * 100) / 100
             
-            console.log(this.total)
+            
             }});
         this.total += parseFloat(this.priceoftransaction)
-        console.log(this.total)
+        
         await setDoc(doc(db,'events',eventnamepp),{costofevent: this.total},{merge:true})
+        this.recalculate()
         this.display = false
         this.display2 = false
 
@@ -294,37 +345,9 @@ methods:{
         transakcie.forEach(async doc5=>{
             await deleteDoc(doc(db,'transakcie',event.eventname,'transakcie',doc5.id))
         })
-        var change = false
         await deleteDoc(doc(db,'transakcie',event.eventname))
         await deleteDoc(doc(db,'events',event.eventname))
-        const usersSnap = await getDocs(collection(db,'users'))
-        usersSnap.forEach(async userdoc => {
-            const uddata = userdoc.data()
-            const userid = userdoc.id
-            var posbal = uddata.positivebalance
-            var usedcpp = 0
-            var username2 = uddata.name+ ' ' + uddata.surname
-            const rowsofeventsSnap = await getDocs(collection(db,'events'))
-            rowsofeventsSnap.forEach(eventdoc => {
-                var eventdata = eventdoc.data()
-                const arr = Object.values(eventdata)
-                var count = arr.filter(function(value) {
-                    return value === "✅";
-                }).length;
-                var valuex1 = eventdata.costofevent
-                var cpp123 = valuex1 / count
-                if (eventdata[username2] == "✅")  {
-                    usedcpp += cpp123
-                }
-                
-            })
-            var setbal = posbal + usedcpp
-            var setbal3= Math.round((setbal+ Number.EPSILON) * 100) / 100
-            await setDoc(doc(db,'users',userid),{balance: setbal3},{merge:true})
-            
-        })
-        
-        
+        this.recalculate()
     },
     getCenaClass(cena) {
         if (cena > 0) {

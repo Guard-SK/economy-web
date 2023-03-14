@@ -7,7 +7,7 @@
 		</div>
 		<div class="flex-none">
 			<ul class="menu menu-horizontal px-1">
-				<li v-if="isLoggedIn"  class="btn">Zostatok : <p class="official-fond">{{ balance }}€</p>  |<p class="unofficial-fond">{{ balanceunofficial }}€</p></li>
+				<li v-if="isLoggedIn"  class="btn">Zostatok : <p class="official-fond">{{ balanceofficial }}€</p>  |<p class="unofficial-fond">{{ balanceunofficial }}€</p></li>
 				<li><router-link to="/dashboard" class="" v-if="isLoggedIn">Dashboard</router-link></li>
 				<li><router-link to="/profile" class="" v-if="isLoggedIn">My account</router-link></li>
 				<li><router-link to="/notes" class="" v-if="isLoggedIn">Notes</router-link></li>
@@ -23,12 +23,12 @@
 </div>
 
 <div class="collapse md:hidden w-full">
-  <input type="checkbox" class="peer" @click="menuchange" v-if="isLoggedIn" :checked="isMenuOpen"/> 
+ 	<input type="checkbox" class="peer" @click="menuchange" v-if="isLoggedIn" :checked="isMenuOpen"/> 
   
-  <div class="collapse-title bg-neutral text-neutral-content flex pr-[16px] justify-between">
+  	<div class="collapse-title bg-neutral text-neutral-content flex pr-[16px] justify-between">
 		<div >
 			<a class="btn btn-ghost normal-case text-xl">Kartel 1.B</a>
-			<a v-if="isLoggedIn"  class="btn ">Zostatok : <p class="official-fond1">{{ balance }}€</p>|<p class="unofficial-fond2">{{ balanceunofficial }}€ </p></a>
+			<a v-if="isLoggedIn"  class="btn ">Zostatok : <p class="official-fond1">{{ balanceofficial }}€</p>|<p class="unofficial-fond2">{{ balanceunofficial }}€ </p></a>
 		</div>
 		<label class="btn btn-square btn-ghost">
 			<svg v-if="isLoggedIn" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -63,7 +63,7 @@ import { getAuth, onAuthStateChanged, signOut } from '@firebase/auth';
 export default {
 	data() {
 		return {
-			balance:0,
+			balanceofficial:0,
 			items: [
 				{
 					label:'Dashboard',
@@ -111,12 +111,14 @@ export default {
 				
 				
 				onSnapshot(doc(db, "users", uid), (doc) => {
-   					 this.balance = doc.data().balance
+   					 this.balanceofficial = doc.data().balanceofficial
+					 this.balanceunofficial = doc.data().balanceunofficial
 					 this.userrole = doc.data().role
 			});
 			} else {
 				this.isLoggedIn = false
-				this.balance = 0
+				this.balanceofficial = 0
+				this.balanceunofficial = 0
 				
 			}
 		})

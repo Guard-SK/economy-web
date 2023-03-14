@@ -130,8 +130,10 @@ export default {
                     surname: this.surname,
                     email: this.email,
                     role: user1,
-                    positivebalance: 0,
-                    balance: 0
+                    positivebalanceofficial: 0,
+                    positivebalanceunofficial: 0,
+                    balanceofficial: 0,
+                    balanceunofficial: 0,
                 })
                 const promises = [];
                 const attendaceRef = collection(db,'events')
@@ -140,14 +142,19 @@ export default {
                     const refatt2 = doc(db,'events',doc4.id)
                     var eventname = this.name + ' ' + this.surname;
                     var name2 = eventname + 'visible'
+                    var name3  =eventname + 'set'
                     let obj1 = {eventname1: "❌"}
                     obj1[eventname] = obj1['eventname1'];
                     delete obj1['eventname1'];
                     let obj2 = {eventname1: true}
                     obj2[name2] = obj2['eventname1'];
                     delete obj2['eventname1'];
+                    let obj3 = {eventname1: false}
+                    obj3[name3] = obj3['eventname1'];
+                    delete obj3['eventname1'];
                     promises.push(setDoc(refatt2, obj1, {merge: true}));
                     promises.push(setDoc(refatt2, obj2, {merge: true}));
+                    promises.push(setDoc(refatt2, obj3, {merge: true}));
                 });
                 await Promise.all(promises);
                 this.$router.push('/dashboard')
