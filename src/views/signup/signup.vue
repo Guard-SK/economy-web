@@ -1,5 +1,5 @@
 <template>
-    <div class="form-demo md:border-0 border-t-2 border-base-200 flex justify-center card bg-neutral md:w-[500px] w-full mx-auto text-neutral-content shadow-lg">
+    <div class="form-demo md:border-0 md:mt-16 border-t-2 border-base-200 flex justify-center card bg-neutral md:w-[500px] w-full mx-auto text-neutral-content shadow-lg">
         <div class="flex justify-content-center">
             <div class="card-body items-center text-center">
                 <div class="typewriter w-auto mx-auto mb-7 card-title">

@@ -72,6 +72,7 @@
                     <button class="btn btn-primary px-auto" v-on:click="addEvent">Pridať Udalosť</button>
                 </p-dialog>
             </div>
+            
         </div>
 
         <div v-if="loading">
@@ -167,6 +168,15 @@ export default {
                 
                 data['eventname'] = doc.id
                 for (const prop in data) {
+                if (prop.includes('visible')){
+                    const newString = prop.replace('visible', '');
+                    
+                   if (data[prop] == true) {
+                    
+                    data[newString] = '❌❓'
+                    
+                   }
+                }
                 if (prop.includes('set')) {
                     if (prop != 'eventnumberset') {
                         if (prop != 'eventcostset'){
