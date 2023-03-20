@@ -7,7 +7,7 @@
                 <button class="text-base-content btn" v-on:click="openDialog">Pridat udalost</button>
                 <button class="text-base-content btn" @click="addMoney">Pridat vklad uzivatelom</button>
                 
-                <p-dialog v-model:visible="displaymoney" style="width:330px">
+                <p-dialog v-model:visible="displaymoney" modal  style="width:330px">
                     <template #header>
                         <h3 class="text-xl">Vklad pre uzivatelov</h3>
                     </template>
@@ -40,7 +40,7 @@
                         <button class="btn btn-primary" @click="pridatVklad">Submit</button>
                     </template>
                 </p-dialog>
-                <p-dialog v-model:visible="display1" style="width:330px">
+                <p-dialog v-model:visible="display1" modal  style="width:330px">
                     <template #header>
 		                <h3 class="text-2xl">Pridanie udalosti</h3>
 	                </template>

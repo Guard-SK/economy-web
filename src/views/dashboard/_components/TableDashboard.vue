@@ -20,7 +20,7 @@
         <Column v-for="field in userfields" :key="field" :field="field.name" :header= field.name style="min-width:130px" ></Column>
     </p-table>
     
-    <p-dialog header="Header" footer="Footer" v-model:visible="display">
+    <p-dialog header="Header" modal footer="Footer" v-model:visible="display">
         <template #header>
             <div class="xl:flex block">
                 
@@ -50,7 +50,7 @@
             </tbody>
         </table>
     </p-dialog>
-    <p-dialog header="Header" v-model:visible="display1">
+    <p-dialog header="Header" modal  v-model:visible="display1">
         <template #header>
 		    <h1 >Detaily(popis):</h1>
 	    </template>
@@ -60,7 +60,7 @@
         <p>Dodatočné poznámky: {{ notes }}</p>
         <p>Celková cena:</p><p :class="getCenaClass(costofevent1)" > {{ costofevent }}</p>
     </p-dialog>
-    <p-dialog header="Header" footer="Footer" v-model:visible="display2">
+    <p-dialog header="Header" modal  footer="Footer" v-model:visible="display2">
         <template #header>
             <h3 class="text-xl">
                 Dialog pre pridavanie transakcii <br>
