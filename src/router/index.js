@@ -135,10 +135,10 @@ const getCurrentUser = () => {
 router.beforeEach(async (to, from, next) => {
 	if (to.matched.some((record) => record.meta.requiresAuth)) {
 		if (await getCurrentUser()) {
-			console.log('user logged in, can go there',getAuth().currentUser)
+			console.log('user logged in, can go there',getAuth().currentUser.uid)
 			next()
 		} else {
-			console.log('not logged in, cant go into there', getAuth().currentUser)
+			console.log('not logged in, cant go into there', getAuth().currentUser.uid)
 			next('/')
 		}
 	} else {
@@ -146,10 +146,10 @@ router.beforeEach(async (to, from, next) => {
 	}
 	if (to.matched.some(record => record.meta.requiresVisitor)) {
 		if (await getCurrentUser()) {
-			console.log('not a visitor', getAuth().currentUser)
+			console.log('not a visitor', getAuth().currentUser.uid)
 			router.push('/dashboard')
 		} else {
-			console.log(getAuth().currentUser)
+			console.log(getAuth().currentUser.uid)
 			next()
 		}
 	} else {
