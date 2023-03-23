@@ -14,14 +14,21 @@
                 {{ selectedUser.fullname }}
               </template>
               <template #content>
-                <Card style="width: 25em">
+                <div style="display:flex;">
+                <Card style="width: 30em" class="cardpad">
 
-                  <template #title> Advanced Card </template>
+                  <template #title> Štatistiky </template>
                   <template #subtitle> Card subtitle </template>
                   <template #content>
                       <p>
-                          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque
-                          quas!
+                          Zostatok oficiálny: {{ selectedUser.balanceofficial }}<br>
+                          Zostatok neoficiálny: {{ selectedUser.balanceunofficial }}<br>
+                          Vklady oficiálne: {{ selectedUser.positivebalanceofficial }}<br>
+                          Vklady neoficiálne: {{ selectedUser.positivebalanceunofficial }}<br>
+                          Rola: {{ selectedUser.role }}<br>
+                          E-mail: {{ selectedUser.email }}<br>
+                          Meno: {{ selectedUser.fullname }}
+                          
                       </p>
                   </template>
                   <template #footer>
@@ -29,9 +36,53 @@
                       <Button icon="pi pi-times" label="Cancel" severity="secondary" style="margin-left: 0.5em" />
                   </template>
               </Card>
-              </template>
-            </Card>
+              <Card style="width: 30em" class="cardpad">
 
+              <template #title> Štatistiky </template>
+              <template #subtitle> Card subtitle </template>
+              <template #content>
+                  <p>
+                      Zostatok oficiálny: {{ selectedUser.balanceofficial }}<br>
+                      Zostatok neoficiálny: {{ selectedUser.balanceunofficial }}<br>
+                      Vklady oficiálne: {{ selectedUser.positivebalanceofficial }}<br>
+                      Vklady neoficiálne: {{ selectedUser.positivebalanceunofficial }}<br>
+                      Rola: {{ selectedUser.role }}<br>
+                      E-mail: {{ selectedUser.email }}<br>
+                      Meno: {{ selectedUser.fullname }}
+                      
+                  </p>
+              </template>
+              <template #footer>
+                  <Button icon="pi pi-check" label="Save" />
+                  <Button icon="pi pi-times" label="Cancel" severity="secondary" style="margin-left: 0.5em" />
+              </template>
+              </Card>
+              <Card style="width: 30em" class="cardpad">
+
+              <template #title> Štatistiky </template>
+              <template #subtitle> Card subtitle </template>
+              <template #content>
+                  <p>
+                      Zostatok oficiálny: {{ selectedUser.balanceofficial }}<br>
+                      Zostatok neoficiálny: {{ selectedUser.balanceunofficial }}<br>
+                      Vklady oficiálne: {{ selectedUser.positivebalanceofficial }}<br>
+                      Vklady neoficiálne: {{ selectedUser.positivebalanceunofficial }}<br>
+                      Rola: {{ selectedUser.role }}<br>
+                      E-mail: {{ selectedUser.email }}<br>
+                      Meno: {{ selectedUser.fullname }}
+                      
+                  </p>
+              </template>
+              <template #footer>
+                  <Button icon="pi pi-check" label="Save" />
+                  <Button icon="pi pi-times" label="Cancel" severity="secondary" style="margin-left: 0.5em" />
+              </template>
+              </Card>
+            </div>
+              </template>
+            
+            </Card>
+          
           
           </template>
     </Card>
@@ -40,6 +91,9 @@
 <style>
   .darker-card {
     background-color: #071426;
+  }
+  .cardpad{
+    margin: 15px
   }
 </style>
 <script>
