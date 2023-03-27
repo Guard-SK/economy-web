@@ -301,7 +301,7 @@ methods: {
                 
             })
     
-            this.recalculate()
+            await this.recalculate()
             this.displaymoney = false
             
             

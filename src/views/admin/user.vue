@@ -13,9 +13,10 @@
               <template #title>
                 {{ selectedUser.fullname }}
               </template>
-              <template #content>
-                <div style="display:flex;">
-                <Card style="width: 30em" class="cardpad">
+              <template #content >
+                <div class="flex flex-wrap gap-4 mt-5">
+                
+                <Card  class="cardpad">
 
                   <template #title> Štatistiky </template>
                   <template #subtitle> Card subtitle </template>
@@ -36,7 +37,7 @@
                       <Button icon="pi pi-times" label="Cancel" severity="secondary" style="margin-left: 0.5em" />
                   </template>
               </Card>
-              <Card style="width: 30em" class="cardpad">
+              <Card  class="cardpad">
 
               <template #title> Štatistiky </template>
               <template #subtitle> Card subtitle </template>
@@ -57,7 +58,7 @@
                   <Button icon="pi pi-times" label="Cancel" severity="secondary" style="margin-left: 0.5em" />
               </template>
               </Card>
-              <Card style="width: 30em" class="cardpad">
+              <Card  class="cardpad">
 
               <template #title> Štatistiky </template>
               <template #subtitle> Card subtitle </template>

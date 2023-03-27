@@ -222,7 +222,7 @@ methods:{
         })
         x-= price
         await setDoc(doc(db,'events',event),{costofevent:x},{merge:true})
-        this.recalculate()
+        await this.recalculate()
     },
     async uploadFile(eventnamepp) {
         
@@ -264,7 +264,7 @@ methods:{
         this.total += parseFloat(this.priceoftransaction)
         
         await setDoc(doc(db,'events',eventnamepp),{costofevent: this.total},{merge:true})
-        this.recalculate()
+        await this.recalculate()
         this.display = false
         this.display2 = false
 
@@ -347,7 +347,7 @@ methods:{
         })
         await deleteDoc(doc(db,'transakcie',event.eventname))
         await deleteDoc(doc(db,'events',event.eventname))
-        this.recalculate()
+        await this.recalculate()
     },
     getCenaClass(cena) {
         if (cena > 0) {
