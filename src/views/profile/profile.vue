@@ -186,7 +186,9 @@ methods: {
             delete obj3['selectedOption'];
             await setDoc(way2,obj3,{merge: true})
             await this.updateOption(item)
-            await this.recalculate()
+        setTimeout(() => {
+            this.recalculate()
+        }, 1000);
 
             
 

@@ -301,7 +301,9 @@ methods: {
                 
             })
     
-            await this.recalculate()
+                    setTimeout(() => {
+            this.recalculate()
+        }, 1000);
             this.displaymoney = false
             
             
