@@ -3,7 +3,7 @@
 
     <Card>      
       <template #content>
-        
+
             <h1 class="font-semibold spacing  text-xl ">Posuvatelne menu</h1>
             <TabMenu class="mt-5 " style="align: center" :model="items" :activeIndex="activeIndex" >
             </TabMenu>
@@ -11,12 +11,15 @@
             <button class="btn btn-primary px-auto" v-on:click="recalculate">Prepočítať</button>
             <Card v-if="selectedEvent != null" class="mt-5 darker-card">
                 <template #content >
+                    <div class="card flex flex-wrap justify-content-center gap-3">
                     <div v-for="user in users" class="flex align-items-center">
                         
                         <TriStateCheckbox v-model="selectedEvent[user.name+ 'admin']"/>
                         
                         <label>{{ user.name }}</label>
                     </div>
+                    </div>
+                    <button class="btn btn-primary px-auto" v-on:click="saveNowstate">Ulozit ucast</button>
                 </template>
             </Card>
             
@@ -103,6 +106,51 @@ export default {
       })
   },
   methods:{
+    async saveNowstate (){
+        const promises = [];
+        const db = getFirestore()
+        this.users.forEach(user => {
+            const state = this.selectedEvent[user.name+'admin']
+            if (state== null){
+                let objnull = {selectedOption: '❌'}
+                var username123 = user.name
+                var usernamevisible = user.name + 'visible'
+                var usernameset = user.name + 'set'
+                objnull[username123] = objnull['selectedOption'];
+                delete objnull['selectedOption'];
+                objnull[usernamevisible] = true
+                objnull[usernameset] = false
+                promises.push(setDoc(doc(db,'events',this.selectedEvent.nameofevent),objnull, {merge: true}))
+            }
+            if (state== false){
+                let objfalse = {selectedOption: '❌'}
+                var username123 = user.name
+                var usernamevisible = user.name + 'visible'
+                var usernameset = user.name + 'set'
+                objfalse[username123] = objfalse['selectedOption'];
+                delete objfalse['selectedOption'];
+                objfalse[usernamevisible] = false
+                objfalse[usernameset] = false
+                
+                promises.push(setDoc(doc(db,'events',this.selectedEvent.nameofevent),objfalse, {merge: true}))
+            }
+            if (state== true){
+                let objtrue = {selectedOption: '✅'}
+                var username123 = user.name
+                var usernamevisible = user.name + 'visible'
+                var usernameset = user.name + 'set'
+                objtrue[username123] = objtrue['selectedOption'];
+                delete objtrue['selectedOption'];
+                objtrue[usernamevisible] = false
+                objtrue[usernameset] = false
+                
+                promises.push(setDoc(doc(db,'events',this.selectedEvent.nameofevent),objtrue, {merge: true}))
+            }
+        })
+        await Promise.all(promises);
+        await this.recalculate()
+        console.log('done')
+    },
     async recalculate() {
             const db = getFirestore()
             const events = await getDocs(collection(db,'events'))
