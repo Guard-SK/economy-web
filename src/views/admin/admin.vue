@@ -3,11 +3,22 @@
 
     <Card>      
       <template #content>
+        
             <h1 class="font-semibold spacing  text-xl ">Posuvatelne menu</h1>
             <TabMenu class="mt-5 " style="align: center" :model="items" :activeIndex="activeIndex" >
             </TabMenu>
+            <Dropdown v-model="selectedEvent" :options="events" optionLabel="nameofevent" :filter="true" placeholder="Vyber Udalost" :showClear="true" ></Dropdown>
             <button class="btn btn-primary px-auto" v-on:click="recalculate">Prepočítať</button>
-            
+            <Card v-if="selectedEvent != null" class="mt-5 darker-card">
+                <template #content >
+                    <div v-for="user in users" class="flex align-items-center">
+                        
+                        <TriStateCheckbox v-model="selectedEvent[user.name+ 'admin']"/>
+                        
+                        <label>{{ user.name }}</label>
+                    </div>
+                </template>
+            </Card>
             
 
           
@@ -15,21 +26,31 @@
     </Card>
   </div>
 </template>
+<style>
+  .darker-card {
+    background-color: #071426;
+  }
+  .cardpad{
+    margin: 15px
+  }
+</style>
 <script>
 import { getFirestore,setDoc ,doc,getDocs,getDoc,collection} from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
 import Dropdown from 'primevue/dropdown';
 import TabMenu from 'primevue/tabmenu';
 import Card from 'primevue/card';
+import TriStateCheckbox from 'primevue/tristatecheckbox';
 export default {
   components:{
     Dropdown,
     TabMenu,
-    Card
+    Card,
+    TriStateCheckbox
   },
   data () {
       return{
-          selectedUser: null,
+          selectedEvent: null,
           activeIndex: 0,
           users:[],  
           userrole: 'user',
@@ -39,7 +60,8 @@ export default {
                 {label: 'Poznamky', icon: 'pi pi-fw pi-pencil', to: '/admin/notes'},
                 {label: 'Ulozisko', icon: 'pi pi-fw pi-file', to: '/admin/storage'},
                 
-            ]    
+            ]  ,
+        events: []  
       }
   },
   async created() {
@@ -59,6 +81,26 @@ export default {
       if (this.userrole == 'user') {
         this.$router.push('/dashboard')
       }
+      const events = await getDocs(collection(db,'events'))
+      events.forEach(event => {
+        const event1 = event.data()
+        this.users.forEach(user => {
+            
+            const check = event.data()[user.name]
+            const flag = event.data()[user.name+'visible']
+            if (check == '✅'){
+                event1[user.name + 'admin'] = true
+            }
+            if (flag == false) {
+                if (check == '❌'){
+                    event1[user.name + 'admin'] = false
+                }
+            }else {
+                event1[user.name + 'admin'] = null
+            }
+        })
+        this.events.push(event1)
+      })
   },
   methods:{
     async recalculate() {
