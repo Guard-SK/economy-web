@@ -1,13 +1,6 @@
-<script setup>
-import { useToast } from "primevue/usetoast";
-import Toast from 'primevue/toast';
-        const toast = useToast();
-        const showSuccess = () => {
-            toast.add({ severity: 'success', summary: 'Success Message', detail: 'Message Content', life: 3000 });
-        };
-</script>
+
 <template>
-    <Toast/>
+    
     <div class="block text-center mt-5 mb-5 w-full"> 
         <h1 class="mt-5 font-semibold spacing text-accent text-3xl tracking-wide mb-8">NAŠE UDALOSTI</h1>
         <div v-if="userrole == 'admin'">

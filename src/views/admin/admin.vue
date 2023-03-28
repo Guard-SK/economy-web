@@ -1,9 +1,11 @@
+
 <template>
+    
     <div v-if="userrole == 'admin'">
 
     <Card>      
       <template #content>
-
+            
             <h1 class="font-semibold spacing  text-xl ">Posuvatelne menu</h1>
             <TabMenu class="mt-5 " style="align: center" :model="items" :activeIndex="activeIndex" >
             </TabMenu>
@@ -20,6 +22,7 @@
                     </div>
                     </div>
                     <button class="btn btn-primary px-auto" v-on:click="saveNowstate">Ulozit ucast</button>
+                    <Message :closable="false" v-if="success1 == true" severity="success">Uspesne ulozene a prepocitane</Message>
                 </template>
             </Card>
             
@@ -44,18 +47,22 @@ import Dropdown from 'primevue/dropdown';
 import TabMenu from 'primevue/tabmenu';
 import Card from 'primevue/card';
 import TriStateCheckbox from 'primevue/tristatecheckbox';
+
+import Message from 'primevue/message';
 export default {
   components:{
     Dropdown,
     TabMenu,
     Card,
-    TriStateCheckbox
+    TriStateCheckbox,
+    Message
   },
   data () {
       return{
           selectedEvent: null,
           activeIndex: 0,
           users:[],  
+          success1: false,
           userrole: 'user',
           items: [
                 {label: 'Udalosti', icon: 'pi pi-fw pi-home', to: '/admin'},
@@ -198,6 +205,10 @@ export default {
                 const balunoff = sum2 + user.data().positivebalanceunofficial
 
                 await setDoc(doc(db,'users',uid),{balanceofficial: parseFloat(baloff.toFixed(2)),balanceunofficial: parseFloat(balunoff.toFixed(2)),},{merge:true})
+                this.success1 = true
+                setTimeout(() => {
+                    this.success1 = false
+                }, 3000);
             })
         },
       async userset(){
