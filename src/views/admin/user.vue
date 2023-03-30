@@ -3,23 +3,25 @@
      
     <div v-if="userrole == 'admin'" class="card">
     <Card>      
+      
       <template #content>
+        
             <h1 class="font-semibold spacing  text-xl">Posuvatelne menu</h1>
             <TabMenu class="mt-5" :model="items" :activeIndex="activeIndex" >
             </TabMenu>
             
-            <Dropdown v-model="selectedUser" :options="users" optionLabel="fullname" :filter="true" placeholder="Vyber Uzivatela" :showClear="true" ></Dropdown>
+            <Dropdown class='mt-5' v-model="selectedUser" :options="users" optionLabel="fullname" :filter="true" placeholder="Vyber Uzivatela" :showClear="true" ></Dropdown>
             <Card v-if='selectedUser != null' class="mt-5 darker-card">
               <template #title>
                 {{ selectedUser.fullname }}
               </template>
               <template #content >
-                <div class="flex flex-wrap gap-4 mt-5">
+                <div class="flex flex-wrap gap-4">
                 
                 <Card  class="cardpad">
 
                   <template #title> Štatistiky </template>
-                  <template #subtitle> Card subtitle </template>
+                  
                   <template #content>
                       <p>
                           Zostatok oficiálny: {{ selectedUser.balanceofficial }}<br>
@@ -33,30 +35,31 @@
                       </p>
                   </template>
                   <template #footer>
-                      <Button icon="pi pi-check" label="Save" />
-                      <Button icon="pi pi-times" label="Cancel" severity="secondary" style="margin-left: 0.5em" />
+                      <Button icon="pi pi-times" class="btn-error"  v-on:click="deleteaccount()" label="Vymazať účeť" />
+                      
                   </template>
               </Card>
               <Card  class="cardpad">
 
-              <template #title> Štatistiky </template>
-              <template #subtitle> Card subtitle </template>
+              <template #title> Vklady </template>
+              
               <template #content>
-                  <p>
-                      Zostatok oficiálny: {{ selectedUser.balanceofficial }}<br>
-                      Zostatok neoficiálny: {{ selectedUser.balanceunofficial }}<br>
-                      Vklady oficiálne: {{ selectedUser.positivebalanceofficial }}<br>
-                      Vklady neoficiálne: {{ selectedUser.positivebalanceunofficial }}<br>
-                      Rola: {{ selectedUser.role }}<br>
-                      E-mail: {{ selectedUser.email }}<br>
-                      Meno: {{ selectedUser.fullname }}
-                      
-                  </p>
+                
+                  <p-table :value="inserts" :key="inserts" :rowClass="rowClass" scrollable >
+                    <Column field="nameofinsertdd" header="Nazov vkladu" >
+                    </Column>
+                    <Column field="priceadded" header="Hodnota" ></Column>
+                    <Column field="priceadded" header="Vymazat" >
+                      <template #body="{data}">
+                    <div class="flex gap-3">
+                      <Button class="btn-error"  v-on:click='test(data)' icon="pi pi-times"/>
+                    </div>
+                  </template>
+                    </Column>
+
+                  </p-table>
               </template>
-              <template #footer>
-                  <Button icon="pi pi-check" label="Save" />
-                  <Button icon="pi pi-times" label="Cancel" severity="secondary" style="margin-left: 0.5em" />
-              </template>
+
               </Card>
               <Card  class="cardpad">
 
@@ -94,7 +97,13 @@
     background-color: #071426;
   }
   .cardpad{
-    margin: 15px
+    width:auto;
+    margin-left: 10px;
+    margin-right: 10px;
+    flex: 1;
+  }
+  .color1 {
+    background-color: #071426;
   }
 </style>
 <script>
@@ -104,17 +113,20 @@ import TabMenu from 'primevue/tabmenu';
 import Card from 'primevue/card';
 import Button from 'primevue/button'
 import { getAuth } from 'firebase/auth'
+import Column from 'primevue/column'
 
 export default {
   components:{
     Dropdown,
     TabMenu,
     Card,
-    Button
+    Button,
+    Column
   },
   data () {
       return{
           selectedUser: null,
+          inserts: [],
           activeIndex: 1,
           userrole: 'user',
           users:[],  
@@ -132,6 +144,7 @@ export default {
       const data = await getDocs(collection(db,'users'))
       data.forEach(doc => {
           var data = doc.data()
+          
           var username = doc.data().name + ' ' + doc.data().surname
           var uid = doc.id
           data['fullname'] = username
@@ -149,9 +162,32 @@ export default {
       }
   },
   methods:{
-      async userset(){
-          console.log(this.selectedUser.uid)
-      },
+    rowClass(data){
+      console.log(data.fond)
+      if (data.fond == 'official'){
+        return 'official-fond2'
+      }else{
+        return 'unofficial-fond3'
+      }
+      
+    },
+    test (data){
+      console.log(data)
+    }
+  },
+  watch: {
+     async selectedUser(newVal, oldVal) {
+      this.inserts = []
+      const db =getFirestore()
+      console.log(this.selectedUser.uid)
+      const data =  await getDocs(collection(db,'users',this.selectedUser.uid,'vklady'))
+      data.forEach(doc1 => {
+        this.inserts.push(doc1.data())
+        
+      })
+      
+
+    },
   }
 }
 </script>
