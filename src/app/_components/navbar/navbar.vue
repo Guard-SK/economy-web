@@ -28,7 +28,8 @@
   	<div class="collapse-title bg-neutral text-neutral-content flex pr-[16px] justify-between">
 		<div >
 			<a class="btn btn-ghost normal-case text-xl">Kartel 1.B</a>
-			<a v-if="isLoggedIn"  class="btn ">Zostatok : <p class="official-fond1">{{ balanceofficial }}€</p>|<p class="unofficial-fond2">{{ balanceunofficial }}€ </p></a>
+			<a v-if="!isMenuOpen"  class="btn "><p class="official-fond1">{{ balanceofficial }}€</p>|<p class="unofficial-fond2">{{ balanceunofficial }}€ </p></a>
+			<a v-if="isMenuOpen"  class="btn ">Zostatok: <p class="official-fond1">{{ balanceofficial }}€</p>|<p class="unofficial-fond2">{{ balanceunofficial }}€ </p></a>
 		</div>
 		<label class="btn btn-square btn-ghost">
 			<svg v-if="isLoggedIn" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -37,6 +38,7 @@
   <div class="collapse-content bg-neutral text-neutral-content"> 
 		<div class="divider"></div>
 		<ul class="menu menu-vertical px-1">
+			
 			<li><router-link to="/dashboard" class="" @click="changeMenu" v-if="isLoggedIn">Dashboard</router-link></li>
 			<li><router-link to="/profile" class="" @click="changeMenu" v-if="isLoggedIn">My account</router-link></li>
 			<li><router-link to="/notes" class="" @click="changeMenu" v-if="isLoggedIn">Notes</router-link></li>
@@ -97,7 +99,12 @@ export default {
 			this.isMenuOpen = false
 		},
 		menuchange (){
-			this.isMenuOpen = true
+			if(this.isMenuOpen ==false){
+				this.isMenuOpen = true
+			}else{
+				this.isMenuOpen = false
+			}
+			
 		},
 	},
 	created() {

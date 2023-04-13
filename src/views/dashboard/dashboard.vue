@@ -49,6 +49,7 @@
                         <SelectButton v-model="fondtype" :options="options" aria-labelledby="basic" />
                     </div>
                     <div class="field mb-4">
+                        
                         <p>Meno Udalosti</p>
                         <input class="text-base-content input input-bordered" id= "input11" v-model="nameofevent" placeholder="Medická záhrada" />
                     </div>

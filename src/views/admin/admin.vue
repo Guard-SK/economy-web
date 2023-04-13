@@ -13,15 +13,44 @@
             <button class="btn btn-primary px-auto" v-on:click="recalculate">Prepočítať</button>
             <Card v-if="selectedEvent != null" class="mt-5 darker-card">
                 <template #content >
-                    <div class="card flex flex-wrap justify-content-center gap-3">
-                    <div v-for="user in users" class="flex align-items-center">
+
+                    <div class="flex-container">
+              <div class="card flex-child" style="width: 210px;">
+                <div v-for="user in users" class="flex align-items-center gap-3">
+                  <TriStateCheckbox v-model="selectedEvent[user.name + 'admin']" />
+                  <label>{{ user.name }}</label>
+                </div>
+                <button class="btn btn-primary px-auto" @click="saveNowstate">Ulozit ucast</button>
+              </div>
+              <div class="card flex-child"  style="overflow-x: auto;">
+                
+                <p-table :value="transakcieevent" :scrollable="true" :key="transakcieevent" scrollDirection="horizontal" class="p-datatable-large">
+                    <Column field="Transakcia" header="Transakcia" ></Column>
+                    <Column field="cena" header="Hodnota v EUR" >
+                      <template #body="{data}">
+                        <div >
+                          <InputNumber v-model="data.cena" inputId="minmaxfraction" :minFractionDigits="0" :maxFractionDigits="2 " />
+                          
+                        </div>
                         
-                        <TriStateCheckbox v-model="selectedEvent[user.name+ 'admin']"/>
+                      
+                      </template>
+                    
+                    </Column>
+                    
+                    <Column>
+                      <template #body="{data}">
                         
-                        <label>{{ user.name }}</label>
-                    </div>
-                    </div>
-                    <button class="btn btn-primary px-auto" v-on:click="saveNowstate">Ulozit ucast</button>
+                        <button v-if="userrole == 'admin'" class="btn btn-outline btn-error" @click="deletetransaction(data.id)">Vymazať</button>
+                      </template>
+                    </Column>
+                    
+                </p-table>
+                <button class="btn btn-primary px-auto" @click="saveTransactions">Ulozit transakcie</button>
+                
+              </div>
+            </div>
+                   
                     <Message :closable="false" v-if="success1 == true" severity="success">Uspesne ulozene a prepocitane</Message>
                 </template>
             </Card>
@@ -39,31 +68,50 @@
   .cardpad{
     margin: 15px
   }
+  .flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  .flex-child {
+    margin-right: 20px;
+    margin-bottom: 20px;
+    
+  }
+  .p-inputnumber-input{
+    width: 80px
+  }
+
+ 
 </style>
 <script>
-import { getFirestore,setDoc ,doc,getDocs,getDoc,collection} from "firebase/firestore";
+import { getFirestore,setDoc ,doc,getDocs,getDoc,collection, deleteDoc} from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
 import Dropdown from 'primevue/dropdown';
 import TabMenu from 'primevue/tabmenu';
 import Card from 'primevue/card';
 import TriStateCheckbox from 'primevue/tristatecheckbox';
-
+import Column from 'primevue/column'
 import Message from 'primevue/message';
+import InputNumber from 'primevue/inputnumber';
 export default {
   components:{
     Dropdown,
     TabMenu,
     Card,
     TriStateCheckbox,
-    Message
+    Message,
+    Column,
+    InputNumber
   },
   data () {
       return{
-          selectedEvent: null,
+          selectedEvent:null,
           activeIndex: 0,
           users:[],  
           success1: false,
           userrole: 'user',
+          transakcieevent: null,
           items: [
                 {label: 'Udalosti', icon: 'pi pi-fw pi-home', to: '/admin'},
                 {label: 'Uzivatelia', icon: 'pi pi-fw pi-calendar', to: '/admin/user'},
@@ -112,7 +160,53 @@ export default {
         this.events.push(event1)
       })
   },
+  
+  watch: {
+     async selectedEvent(newVal, oldVal) {
+      this.transakcieevent = []
+      const db =getFirestore()
+      
+      const data =  await getDocs(collection(db,'transakcie',this.selectedEvent.nameofevent,'transakcie'))
+      data.forEach(doc1 => {
+       if (doc1.id != 'number'){
+        var data = doc1.data()
+        data['id'] = doc1.id
+        this.transakcieevent.push(data)
+        
+       }
+        
+        
+      })
+      
+      
+
+    },
+  },
   methods:{
+    async deletetransaction(rowid){
+      
+
+      const db= getFirestore()
+      this.transakcieevent = this.transakcieevent.filter((item) => item.id !== rowid);
+      await deleteDoc(doc(db,'transakcie',this.selectedEvent.nameofevent,'transakcie',rowid))
+      await this.saveTransactions()
+      
+      
+
+    },
+    async saveTransactions() {
+      var sum = 0
+      const db = getFirestore()
+      
+      await this.transakcieevent.forEach( async tran => {
+      sum += tran.cena
+      
+      await setDoc(doc(db,'transakcie',this.selectedEvent.nameofevent,'transakcie',tran.id),{cena:tran.cena},{merge: true})
+      
+     })
+     await setDoc(doc(db,'events',this.selectedEvent.nameofevent),{costofevent: sum},{merge: true})
+     await this.recalculate()
+    },
     async saveNowstate (){
         const promises = [];
         const db = getFirestore()
@@ -156,7 +250,7 @@ export default {
         })
         await Promise.all(promises);
         await this.recalculate()
-        console.log('done')
+        
     },
     async recalculate() {
             const db = getFirestore()

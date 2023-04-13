@@ -71,10 +71,11 @@
             <button class="text-base-content btn" v-on:click="uploadFile(namename)">Potvrdit a odoslat</button>
 	    </template>
         <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input111" v-model="nameoftransaction" placeholder="Meno Transakcie" /></div>
-        <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input222" v-model="priceoftransaction" placeholder="Cena Transakcie" /></div>
+        <div class="field mb-4"><input class="text-base-content input input-bordered" id= "input222" v-model="priceoftransaction" placeholder="Cena napr. -78" /></div>
         <input type="file" ref="fileInput"  class="file-input file-input-bordered file-input-info w-full max-w-xs" />
     </p-dialog>
 </template>
+
 
 
 <script>
