@@ -15,7 +15,7 @@
                 <template #content >
 
                     <div class="flex-container">
-              <div class="card flex-child" style="width: 210px;">
+              <div class="card flex-child card2" style="width: 300px;">
                 <div v-for="user in users" class="flex align-items-center gap-3">
                   <TriStateCheckbox v-model="selectedEvent[user.name + 'admin']" />
                   <label>{{ user.name }}</label>
@@ -74,13 +74,18 @@
     justify-content: flex-start;
   }
   .flex-child {
-    margin-right: 20px;
+    
     margin-bottom: 20px;
     
   }
   .p-inputnumber-input{
     width: 80px
   }
+  @media only screen and (min-width: 600px) {
+  .card2 {
+    margin-right: 60px;
+  }
+}
 
  
 </style>

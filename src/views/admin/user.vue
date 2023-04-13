@@ -13,7 +13,7 @@
             <Dropdown class='mt-5' v-model="selectedUser" :options="users" optionLabel="fullname" :filter="true" placeholder="Vyber Uzivatela" :showClear="true" ></Dropdown>
             <Card v-if='selectedUser != null' class="mt-5 darker-card">
               <template #title>
-                {{ selectedUser.fullname }}
+                {{ selectedUser.fullname }}    NENI HOTOVE
               </template>
               <template #content >
                 <div class="flex flex-wrap gap-4">
