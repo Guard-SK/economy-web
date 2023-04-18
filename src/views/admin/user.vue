@@ -34,10 +34,7 @@
                           
                       </p>
                   </template>
-                  <template #footer>
-                      <Button icon="pi pi-times" class="btn-error"  v-on:click="deleteaccount()" label="Vymazať účeť" />
-                      
-                  </template>
+
               </Card>
               <Card  class="cardpad">
 
@@ -48,11 +45,18 @@
                   <p-table :value="inserts" :key="inserts" :rowClass="rowClass" scrollable >
                     <Column field="nameofinsertdd" header="Nazov vkladu" >
                     </Column>
-                    <Column field="priceadded" header="Hodnota" ></Column>
+                    <Column field="priceadded" header="Hodnota" >
+                      <template #body="{data}">
+                      <div>
+                        {{ data.priceadded }}€
+                      </div>
+                      </template>
+                    
+                    </Column>
                     <Column field="priceadded" header="Vymazat" >
                       <template #body="{data}">
                     <div class="flex gap-3">
-                      <Button class="btn-error"  v-on:click='test(data)' icon="pi pi-times"/>
+                      <Button class="btn-error"  v-on:click='deletevklad(data)' icon="pi pi-times"/>
                     </div>
                   </template>
                     </Column>
@@ -107,12 +111,12 @@
   }
 </style>
 <script>
-import { getFirestore,setDoc ,doc,getDocs,getDoc,collection} from "firebase/firestore";
+import { getFirestore,setDoc ,doc,getDocs,getDoc,collection, deleteDoc} from "firebase/firestore";
 import Dropdown from 'primevue/dropdown';
 import TabMenu from 'primevue/tabmenu';
 import Card from 'primevue/card';
 import Button from 'primevue/button'
-import { getAuth } from 'firebase/auth'
+import { getAuth  } from 'firebase/auth'
 import Column from 'primevue/column'
 
 export default {
@@ -162,6 +166,9 @@ export default {
       }
   },
   methods:{
+    async deleteaccount ( ) {
+      console.log(this.selectedUser.uid)
+    },
     rowClass(data){
       console.log(data.fond)
       if (data.fond == 'official'){
@@ -171,10 +178,28 @@ export default {
       }
       
     },
-    test (data){
-      console.log(data)
+    async deletevklad (data){
+      const db = getFirestore()
+      const price = data.priceadded
+      const fond = data.fond
+      if (fond == 'official'){
+        await setDoc(doc(db,'users',this.selectedUser.uid),{
+          balanceofficial: this.selectedUser.balanceofficial - price,
+          positivebalanceofficial: this.selectedUser.positivebalanceofficial - price
+        },{merge: true})
+      await deleteDoc(doc(db,'users',this.selectedUser.uid,'vklady',data.id))
+      this.inserts = this.inserts.filter((item) => item.id !== data.id);
+
+      
+    }else {
+      await setDoc(doc(db,'users',this.selectedUser.uid),{
+        balanceunofficial: this.selectedUser.balanceunofficial - price,
+        positivebalanceunofficial: this.selectedUser.positivebalanceunofficial - price
+      },{merge: true})
+      await deleteDoc(doc(db,'users',this.selectedUser.uid,'vklady',data.id))
+      this.inserts = this.inserts.filter((item) => item.id !== data.id);
     }
-  },
+  }},
   watch: {
      async selectedUser(newVal, oldVal) {
       this.inserts = []
@@ -182,7 +207,9 @@ export default {
       console.log(this.selectedUser.uid)
       const data =  await getDocs(collection(db,'users',this.selectedUser.uid,'vklady'))
       data.forEach(doc1 => {
-        this.inserts.push(doc1.data())
+        const doc = doc1.data()
+        doc['id'] = doc1.id
+        this.inserts.push(doc)
         
       })
       
@@ -190,4 +217,5 @@ export default {
     },
   }
 }
+
 </script>
