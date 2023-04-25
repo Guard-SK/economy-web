@@ -13,7 +13,7 @@
             <Dropdown class='mt-5' v-model="selectedUser" :options="users" optionLabel="fullname" :filter="true" placeholder="Vyber Uzivatela" :showClear="true" ></Dropdown>
             <Card v-if='selectedUser != null' class="mt-5 darker-card">
               <template #title>
-                {{ selectedUser.fullname }}    NENI HOTOVE
+                {{ selectedUser.fullname }}
               </template>
               <template #content >
                 <div class="flex flex-wrap gap-4">
@@ -65,27 +65,7 @@
               </template>
 
               </Card>
-              <Card  class="cardpad">
 
-              <template #title> Štatistiky </template>
-              <template #subtitle> Card subtitle </template>
-              <template #content>
-                  <p>
-                      Zostatok oficiálny: {{ selectedUser.balanceofficial }}<br>
-                      Zostatok neoficiálny: {{ selectedUser.balanceunofficial }}<br>
-                      Vklady oficiálne: {{ selectedUser.positivebalanceofficial }}<br>
-                      Vklady neoficiálne: {{ selectedUser.positivebalanceunofficial }}<br>
-                      Rola: {{ selectedUser.role }}<br>
-                      E-mail: {{ selectedUser.email }}<br>
-                      Meno: {{ selectedUser.fullname }}
-                      
-                  </p>
-              </template>
-              <template #footer>
-                  <Button icon="pi pi-check" label="Save" />
-                  <Button icon="pi pi-times" label="Cancel" severity="secondary" style="margin-left: 0.5em" />
-              </template>
-              </Card>
             </div>
               </template>
             
