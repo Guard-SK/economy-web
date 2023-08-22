@@ -8,13 +8,15 @@
 			<RouterView style="margin-top: 90px;"/>
 		</div>
 	</Suspense>
-	<div id="ball" :style="ballStyles"></div>
+	{{ viewportWidth }}
+	<div id="ball" :style="ballStyles" v-if="viewportWidth> 500"></div>
 </template>
 <script>
   export default {
     data() {
       return {
         mouseCoords: null,
+		viewportWidth: window.innerWidth || document.documentElement.clientWidth,
         ballStyles: {
           position: 'fixed',
           width: '30px',
@@ -36,6 +38,7 @@
       updateBallPosition(event) {
         this.ballStyles.left = (event.clientX - 15) + 'px'; // Update the left position
         this.ballStyles.top = (event.clientY - 15) + 'px'; // Update the top position
+		console.log(this.viewportWidth)
     }
     },
     beforeDestroy() {
