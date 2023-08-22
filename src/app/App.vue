@@ -8,7 +8,6 @@
 			<RouterView style="margin-top: 90px;"/>
 		</div>
 	</Suspense>
-	{{ viewportWidth }}
 	<div id="ball" :style="ballStyles" v-if="viewportWidth> 500"></div>
 </template>
 <script>
