@@ -6,7 +6,9 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-
+body{
+  background-color: #f3dfc1;
+}
 .positive-cena {
     color: green;
   }

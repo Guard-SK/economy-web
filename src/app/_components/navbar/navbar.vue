@@ -1,112 +1,54 @@
 <template>
-	
-<div class="collapse">
-	<nav class="navbar bg-neutral text-neutral-content  md:flex hidden" >
-		<div class="flex-1">
-			<a class="btn btn-ghost normal-case text-xl">Kartel 1.B</a>
+	<div class="navbar--fixed " >
+	  <nav class="mobile-navbar nav1" >
+		<span  @click='home' class="kartelb">Kartel 2.B</span>
+		<div  @click="animateBox" class="menu btn15" :class="{ open: isOpen, disabled: isDivDisabled }">
+		  <div class="icon"></div>
 		</div>
-		<div class="flex-none">
-			<ul class="menu menu-horizontal px-1">
-				<li v-if="isLoggedIn"  class="btn">Zostatok : <p class="official-fond">{{ balanceofficial }}€</p>  |<p class="unofficial-fond">{{ balanceunofficial }}€</p></li>
-				<li><router-link to="/dashboard" class="" v-if="isLoggedIn">Dashboard</router-link></li>
-				<li><router-link to="/profile" class="" v-if="isLoggedIn">My account</router-link></li>
-				<li><router-link to="/notes" class="" v-if="isLoggedIn">Notes</router-link></li>
-				<!-- <li v-if="userrole =='admin'"><router-link to="/photos" class="" v-if="isLoggedIn">PhotosTest</router-link></li> -->
-				<li v-if="userrole =='admin'"><router-link to="/admin" class="" v-if="isLoggedIn">Admin</router-link></li>
-
-				<li>
-					<button class="btn" @click="handleSignOut()" v-if="isLoggedIn"><i class="pi pi-sign-out"/></button>
-				</li>
-			</ul>
-		</div>
-	</nav>
-</div>
-
-<div class="collapse md:hidden w-full">
- 	<input type="checkbox" class="peer" @click="menuchange" v-if="isLoggedIn" :checked="isMenuOpen"/> 
-  
-  	<div class="collapse-title bg-neutral text-neutral-content flex pr-[16px] justify-between">
-		<div >
-			<a class="btn btn-ghost normal-case text-xl">Kartel 1.B</a>
-			<a v-if="!isMenuOpen"  class="btn "><p class="official-fond1">{{ balanceofficial }}€</p>|<p class="unofficial-fond2">{{ balanceunofficial }}€ </p></a>
-			<a v-if="isMenuOpen"  class="btn ">Zostatok: <p class="official-fond1">{{ balanceofficial }}€</p>|<p class="unofficial-fond2">{{ balanceunofficial }}€ </p></a>
-		</div>
-		<label class="btn btn-square btn-ghost">
-			<svg v-if="isLoggedIn" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-		</label>
-  </div>
-  <div class="collapse-content bg-neutral text-neutral-content"> 
-		<div class="divider"></div>
-		<ul class="menu menu-vertical px-1">
-			
-			<li><router-link to="/dashboard" class="" @click="changeMenu" v-if="isLoggedIn">Dashboard</router-link></li>
-			<li><router-link to="/profile" class="" @click="changeMenu" v-if="isLoggedIn">My account</router-link></li>
-			<li><router-link to="/notes" class="" @click="changeMenu" v-if="isLoggedIn">Notes</router-link></li>
-			<!-- <li v-if="userrole =='admin'"><router-link to="/photos" class="" v-if="isLoggedIn">PhotosTest</router-link></li> -->
-			<li v-if="userrole =='admin'"><router-link to="/admin" class="" @click="changeMenu" v-if="isLoggedIn">Admin</router-link></li>
-			<div class="divider"></div>
-			<li>
-				<button class="btn justify-start" @click="handleSignOut()" v-if="isLoggedIn"><i class="pi pi-sign-out"/>Sign Out</button>
+		<div class="container3" ref="box" >
+		  <ul>
+			<li class='stagger' style='color:white' v-if="isLoggedIn" >Zostatok : <p class="official-fond">{{ balanceofficial }}€</p>  |<p class="unofficial-fond ">{{ balanceunofficial }}€</p></li>
+			<li><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/dashboard" class="stagger" v-if="isLoggedIn">Dashboard</router-link></li>
+			<li><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/profile" class="stagger" v-if="isLoggedIn">My account</router-link></li>
+			<li><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/notes" class="stagger" v-if="isLoggedIn">Notes</router-link></li>
+			<li v-if="userrole =='admin'"><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/admin" class="stagger" v-if="isLoggedIn">Admin</router-link></li>
+			<li class="stagger">
+				<button style="color:white" @click="handleSignOut()" v-if="isLoggedIn"><i class="pi pi-sign-out"/></button>
 			</li>
 		</ul>
-  </div>
-</div>
-
-</template>
-
-<script>
-
-import {getFirestore,getDoc,doc,onSnapshot} from "firebase/firestore" ;
-import { getAuth, onAuthStateChanged, signOut } from '@firebase/auth';
-
-
-
-
-export default {
-	data() {
+		</div>
+	  </nav>
+	</div>
+  </template>
+  <script>
+	import {getFirestore,getDoc,doc,onSnapshot} from "firebase/firestore" ;
+	import { getAuth, onAuthStateChanged, signOut } from '@firebase/auth';
+	import gsap from 'gsap';
+	export default {
+	  data() {
 		return {
-			balanceofficial:0,
-			items: [
-				{
-					label:'Dashboard',
-					icon:'pi pi-fw pi-home',
-					command: () => {
-						this.$router.push('/dashboard')
-					} 
-				},
-				{
-					label:'Quit',
-					icon:'pi pi-fw pi-power-off'
-				}
-			],
-			isLoggedIn: null,
-			userrole: null,
-			isMenuOpen: false,
-			balanceunofficial: 0
-			
-			
+		  isDesktop: true,
+		  isOpen: false,
+		  isDivDisabled:false,
+		  menuDisabled: true,
+		  isLoggedIn:false,
+		  userrole:'user',
+		  balanceofficial:0,
+		  balanceunofficial:0
+		};
+	  },
+	  computed: {
+		isLightBackground() {
+		  // Implement your logic to determine if the background is light
+		  // For example, you can check the background color of the parent container
+		  return true; // Replace with your logic
+		},
+		isDarkBackground() {
+		  // Implement your logic to determine if the background is dark
+		  // For example, you can check the background color of the parent container
+		  return false; // Replace with your logic
 		}
-	},
-
-	methods: {
-		handleSignOut() {
-			let auth = getAuth()
-			signOut(auth).then(() => {
-				this.$router.push('/auth/login')
-			})
-		},
-		changeMenu ( ){
-			this.isMenuOpen = false
-		},
-		menuchange (){
-			if(this.isMenuOpen ==false){
-				this.isMenuOpen = true
-			}else{
-				this.isMenuOpen = false
-			}
-			
-		},
-	},
+	  },
 	created() {
 		
 		let auth = getAuth()
@@ -130,88 +72,243 @@ export default {
 			}
 		})
 	},
-}
-</script>
+	mounted() {
+		// Check the initial viewport width
+		this.isDesktop = window.innerWidth >= 768;
+	
+		// Add a listener to handle viewport width changes
+		window.addEventListener("resize", this.handleResize);
+	  },
+	  beforeDestroy() {
+		// Remove the listener when the component is destroyed
+		window.removeEventListener("resize", this.handleResize);
+	  },
+	  methods: {
+		handleSignOut() {
+			let auth = getAuth()
+			signOut(auth).then(() => {
+				this.$router.push('/auth/login')
+				this.animateBox()
+			})
+		},
+		home(){
+		  this.$router.push({ path: '/' })
+		  if (this.menuDisabled == false) {
+			this.animateBox()}
+		},
+		  toggleOpen() {
+			  this.isOpen = !this.isOpen;
+  
+		  },
+  
+		  animateBox() {
+			
+			this.menuDisabled= !this.menuDisabled
+			this.isDivDisabled = true
+			console.log(this.isDivDisabled)
+		  
+		  const box = this.$refs.box;
+		  const calculatedHeight= window.innerHeight - 70
+		  const tl = gsap.timeline({delay: 0.2});
+		 
+		  tl.fromTo(
+			box,
+			{ x: window.innerWidth, y: '50%',width: '0%' },
+			{ x: 0, y: '50%', width: '100%', duration: 0.5 }
+		  );
+		  tl.fromTo(
+			box,
+			{ y: '50%',height:'20px', top:'50vh'},
+			{  y: "90px",height: calculatedHeight + 'px',top:0,duration: 0.5}
+		  );
 
-<!-- <template>
-<nav class="navbar navbar-expand-lg bg-light d-lg-flex">
-  <div class="container-fluid">
-	<a class="navbar-brand" href="#">
-		<img src="./_assets/logo.png" alt="Bootstrap" width="24" height="24">
-		Kartel 1.B
-	</a>
-	<div class="collapse navbar-collapse" id="navbarNav">
-	  <ul class="navbar-nav">
-		<li class="nav-item">
-			<router-link to="/dashboard" class="nav-link active" v-if="isLoggedIn">Dashboard</router-link>
-		</li>
-		
-		<li class="nav-item">
-			<router-link to="/profile" class="nav-link" v-if="isLoggedIn">My account</router-link>
-		</li>
-		<li>
-			<button class="btn btn-secondary" @click="handleSignOut()" v-if="isLoggedIn">Log out</button>
-		</li>
-	  </ul>
-	</div>
-  </div>
-</nav>
-<nav class="navbar bg-light fixed-top d-lg-none">
-  <div class="container-fluid">
-	<a class="navbar-brand" href="#">
-		<img src="./_assets/logo.png" alt="Bootstrap" width="24" height="24">
-		Kartel 1.B
-	</a>
-	<button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-	  <span class="navbar-toggler-icon"></span>
-	</button>
-	<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-	  <div class="offcanvas-header">
-		<h5 class="offcanvas-title" id="offcanvasNavbarLabel">Navigation</h5>
-		<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-	  </div>
-	  <div class="offcanvas-body">
-		<ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-		  <li class="nav-item">
-			<router-link to="/app/dashboard" class="nav-link active" v-if="isLoggedIn">Dashboard</router-link>
-		  </li>
-		  <li class="nav-item">
-			<router-link to="/app/about" class="nav-link" v-if="isLoggedIn">My account</router-link>
-		  </li>
-
-		  <li>
-			<button class="btn-primary" @click="handleSignOut()" v-if="isLoggedIn">Log out</button>
-		  </li>
-		</ul>
-	  </div>
-	</div>
-  </div>
-</nav>
-</template>
-
-<script setup>
-import { onMounted, ref } from 'vue';
-import { getAuth, onAuthStateChanged, signOut } from '@firebase/auth';
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-const isLoggedIn = ref(false)
-let auth
-onMounted(() => {
-	auth = getAuth()
-	onAuthStateChanged(auth, (user) => {
-		if (user) {
-			isLoggedIn.value = true
-		} else {
-			isLoggedIn.value = false
+		  tl.fromTo(('.stagger'),
+		  { opacity:0},
+		  { opacity: 1, pointerEvents: 'all', stagger: .1 }, )
+		  
+		  if (this.isOpen ==true){
+			  tl.reverse(0)
+		  }
+		  this.isOpen = !this.isOpen;
+		  setTimeout(() => {
+		  this.isDivDisabled = false;
+		  }, 1500);
+		  
+		  
+		},
+  
+		handleResize() {
+		  // Update the isDesktop flag based on the viewport width
+		  this.isDesktop = window.innerWidth >= 768;
 		}
-	})
-})
-
-const handleSignOut = () => {
-	signOut(auth).then(() => {
-		router.push('/auth/login')
-	})
-}
-
-</script> -->
+	  }
+	};
+	</script>
+	
+	<style lang="scss">
+	$dark: #0c203e;
+  $light: #efefef;
+  $color: #b3e5fc;
+  
+  .nav1{
+	  
+	  display: flex;
+	  justify-content: center;
+	  align-items: center;
+	  
+  }
+  .disabled {
+	pointer-events: none !important;
+	
+  }
+  
+  .nav1 ul{
+	  list-style-type: none
+  }
+  .nav1 ul li a {
+	  color: #fafafa;
+	  font-size: 3em;
+	  text-decoration: none;
+	  font-weight: 500;
+	  position: relative;
+	opacity:0
+	  
+  }
+  @mixin btn($top, $right) {
+	position: fixed;
+	width: 60px;
+	height: 60px;
+	top: $top;
+	right: $right;
+	transition-duration: 0.5s;
+  }
+  @mixin icon($height, $width) {
+	transition-duration: 0.5s;
+	position: absolute;
+	height: $height;
+	width: $width;
+	top: 30px;
+	background-color: $light;
+  }
+  @mixin icon-before($height, $width, $top) {
+	transition-duration: 0.5s;
+	position: absolute;
+	width: $width;
+	height: $height;
+	left:0px;
+	background-color: $light;
+	content: "";
+	top: $top;
+  }
+  
+  @mixin icon-after($height, $width, $top) {
+	transition-duration: 0.5s;
+	position: absolute;
+	width: $width;
+	height: $height;
+	left:0px;
+	background-color: $light;
+	content: "";
+	top: $top;
+  }
+	
+  .container3 {
+	  position: fixed;
+	  top: 50vh;
+	  right: 0;
+	  background-color: #0c203e;
+	  width: 0;
+	  height: 20px ;
+	}
+  .btn15{
+	  @include btn(15px, 15px);
+	  .icon {
+		  @include icon(4px, 30px);
+		  border-radius: 4px;
+		  left: 15px;
+		  
+		  &:before{
+		  @include icon-before(4px, 30px, -10px);
+		  border-radius: 4px;
+		  
+		  }
+		  
+		  &:after{
+		  @include icon-after(4px, 30px, 10px);
+		  border-radius: 4px;
+		  }
+	  }
+	  &.open {
+		  .icon {
+		  transition-duration: 0.5s;
+		  background: transparent;
+		  
+		  &:before{
+			  transform: rotateZ(45deg) scaleX(1.25) translate(6.5px, 6.5px);
+		  }
+  
+		  &:after{
+			  transform: rotateZ(-45deg) scaleX(1.25) translate(6px, -6px);
+		  }
+		  }
+	  }  
+  
+	  &:hover {
+		  background: transparent;
+		  cursor: none;
+	  }
+  }
+	/* Styles for desktop navbar */
+	.desktop-navbar {
+	  display: flex;
+	  justify-content: flex-start;
+	  align-items: center;
+	  height:50px
+	}
+	
+	.desktop-navbar ul {
+	  list-style: none;
+	  padding: 0;
+	  margin: 0;
+	  display: flex;
+	}
+	
+	.desktop-navbar li {
+	  margin-right: 10px;
+	}
+	
+	.desktop-navbar li:last-child {
+	  margin-right: 0;
+	}
+	
+	.desktop-navbar a {
+	  text-decoration: none;
+	  color: #0c203e;
+	  font-weight: bold;
+	}
+	
+  
+	
+	.kartelb {
+	  cursor:none;
+	  font-size: 30px;
+	  font-weight: bold;
+	  color: #fff;
+	  margin: 0 auto; /* Add this line */
+	  margin-left: 15px;
+	  text-align: center; /* Add this line */
+	  line-height: 90px; /* Adjust this value based on the height of the navigation bar */
+	  }
+	.mobile-navbar{
+	  height: 90px;
+	  
+	}
+	.navbar--fixed {
+	position: fixed;
+	background-color: #0c203e; 
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 9999;
+  }
+  </style>

@@ -10,5 +10,6 @@
 }
 
 .p-dialog {
+    margin-top: 90px;
     @apply xl:w-[40%] md:w-[50%] w-[90%]
 }
