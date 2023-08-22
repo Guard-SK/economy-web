@@ -10,7 +10,7 @@
             <TabMenu class="mt-5 " style="align: center" :model="items" :activeIndex="activeIndex" >
             </TabMenu>
             <Dropdown v-model="selectedEvent" :options="events" optionLabel="nameofevent" :filter="true" placeholder="Vyber Udalost" :showClear="true" ></Dropdown>
-            <button class="btn btn-primary px-auto" v-on:click="recalculate">Prepočítať</button>
+            <button class="btn btn-primary px-auto" v-on:click="triggerFunction">Prepočítať</button>
             <Card v-if="selectedEvent != null" class="mt-5 darker-card">
                 <template #content >
 
@@ -99,6 +99,7 @@ import TriStateCheckbox from 'primevue/tristatecheckbox';
 import Column from 'primevue/column'
 import Message from 'primevue/message';
 import InputNumber from 'primevue/inputnumber';
+import axios from 'axios';
 export default {
   components:{
     Dropdown,
@@ -188,6 +189,16 @@ export default {
     },
   },
   methods:{
+    async triggerFunction() {
+      try {
+        const response = await axios.post(
+          'https://us-central1-vuefirebaseauth-35637.cloudfunctions.net/recalculate'
+        );
+        console.log(response.data); // Assuming the function returns a message
+      } catch (error) {
+        console.error('Error triggering function:', error);
+      }
+    },
     async deletetransaction(rowid){
       
 

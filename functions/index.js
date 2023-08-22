@@ -1,10 +1,11 @@
 const functions = require("firebase-functions")
 const admin = require("firebase-admin")
 admin.initializeApp()
-
+const cors = require('cors'); // Import the cors library
 const db = admin.firestore()
-
+const corsHandler = cors({ origin: true });
 exports.recalculate = functions.https.onRequest(async (req, res) => {
+    corsHandler(req, res, async () => {
   try {
     const eventsSnapshot = await db.collection("events").get()
     const usersSnapshot = await db.collection("users").get()
@@ -60,3 +61,4 @@ exports.recalculate = functions.https.onRequest(async (req, res) => {
     return res.status(500).send("An error occurred during recalculation.")
   }
 })
+});
