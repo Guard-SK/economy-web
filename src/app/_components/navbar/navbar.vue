@@ -2,8 +2,8 @@
 	<div class="navbar--fixed " >
 	  <nav class="mobile-navbar nav1" >
 		<span  @click='home' class="kartelb">Kartel 2.B</span>
-		<div  @click="animateBox" class="menu btn15" :class="{ open: isOpen, disabled: isDivDisabled }">
-		  <div class="icon"></div>
+		<div   v-if="isLoggedIn"  @click="animateBox" class="menu btn15" :class="{ open: isOpen, disabled: isDivDisabled }">
+		  <div v-if="isLoggedIn"  class="icon"></div>
 		</div>
 		<div class="container3" ref="box" >
 		  <ul>

@@ -17,7 +17,7 @@ export default createStore({
   mutations: {
     setUser(state, payload) {
       state.user = payload
-      console.log('user state changed:', state.user)
+      console.log('user state changed:', state.user.uid)
     }
   },
   actions: {
