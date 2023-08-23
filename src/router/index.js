@@ -49,7 +49,10 @@ const routes = [
 	},
 	{
 		path: '/auth/dashboard',
-		redirect: '/dashboard'
+		redirect: '/dashboard',
+		meta: {
+			requiresAuth: true
+		}
 	},
 	{
 		path: '/notes',
@@ -138,18 +141,13 @@ router.beforeEach(async (to, from, next) => {
 			console.log('user logged in, can go there',getAuth().currentUser.uid)
 			next()
 		} else {
-			console.log('not logged in, cant go into there', getAuth().currentUser.uid)
-			next('/')
+			console.log('not logged in, cant go into there')
+			next('/auth/login')
 		}
-	} else {
-		next()
-	}
-	if (to.matched.some(record => record.meta.requiresVisitor)) {
+	} else if (to.matched.some(record => record.meta.requiresVisitor)) {
 		if (await getCurrentUser()) {
-			console.log('not a visitor', getAuth().currentUser.uid)
 			router.push('/dashboard')
 		} else {
-			console.log(getAuth().currentUser.uid)
 			next()
 		}
 	} else {

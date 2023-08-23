@@ -62,3 +62,55 @@ exports.recalculate = functions.https.onRequest(async (req, res) => {
   }
 })
 });
+
+exports.createUser = functions.https.onRequest(async (req, res) => {
+  corsHandler(req, res, async () => {
+  try {
+    const data = req.body; // Get the data from the request body
+
+    const uid = data.uid;
+      const user1 = 'user';
+
+      await db.collection('users').doc(uid).set({
+          name: data.name,
+          surname: data.surname,
+          email: data.email,
+          role: user1,
+          positivebalanceofficial: 0,
+          positivebalanceunofficial: 0,
+          balanceofficial: 0,
+          balanceunofficial: 0,
+      });
+
+      const promises = [];
+      const attendaceRef = db.collection('events');
+      const attendaceSnap = await attendaceRef.get();
+
+      attendaceSnap.forEach(doc4 => {
+          const refatt2 = db.collection('events').doc(doc4.id);
+          var eventname = data.name + ' ' + data.surname;
+          var name2 = eventname + 'visible';
+          var name3 = eventname + 'set';
+          let obj1 = { eventname1: "❌" };
+          obj1[eventname] = obj1['eventname1'];
+          delete obj1['eventname1'];
+          let obj2 = { eventname1: true };
+          obj2[name2] = obj2['eventname1'];
+          delete obj2['eventname1'];
+          let obj3 = { eventname1: false };
+          obj3[name3] = obj3['eventname1'];
+          delete obj3['eventname1'];
+          promises.push(refatt2.set(obj1, { merge: true }));
+          promises.push(refatt2.set(obj2, { merge: true }));
+          promises.push(refatt2.set(obj3, { merge: true }));
+      });
+
+      await Promise.all(promises);
+      res.status(200).json({ message: 'User created successfully.' + uid });
+    
+  } catch (e) {
+    console.error("Error adding document: ", e);
+    res.status(500).json({ error: 'An error occurred.' });
+  }
+  })
+})

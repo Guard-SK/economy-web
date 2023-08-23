@@ -3,11 +3,11 @@
 </script>
 <template>
 	<NavBar/>
-	<Suspense>
-		<div>
-			<RouterView style="margin-top: 90px;"/>
-		</div>
-	</Suspense>
+  <div class="content">
+      <Suspense>
+        <RouterView />
+      </Suspense>
+  </div>
 	<div id="ball" :style="ballStyles" v-if="viewportWidth> 500"></div>
 </template>
 <script>
@@ -51,6 +51,9 @@
   };
 </script>
 <style>
+.content {
+  margin-top: 90px;
+}
      * {
    cursor: none !important;
      }

@@ -8,7 +8,7 @@
                 <form @submit.prevent="submit()" class="p-fluid form-control w-full h-full">
                     <div class="field mb-4">
                         <div>
-                            <input id="email" v-model="v$.email.$model" placeholder="Email" class="input input-bordered w-[70%] shadow-md" :class="{'p-invalid':v$.email.$invalid && submitted}" aria-describedby="email-error"/>
+                            <input id="email" autocomplete="email" v-model="v$.email.$model" placeholder="Email" class="input input-bordered w-[70%] shadow-md" :class="{'p-invalid':v$.email.$invalid && submitted}" aria-describedby="email-error"/>
                         </div>
                         <span v-if="v$.email.$error && submitted">
                             <span id="email-error" v-for="(error, index) of v$.email.$errors" :key="index">
@@ -18,7 +18,7 @@
                         <small v-else-if="(v$.email.$invalid && submitted) || v$.email.$pending.$response" class="p-error">{{v$.email.required.$message.replace('Value', 'Email')}}</small>
                     </div>
                     <div class="field mb-8">
-                        <p-password id="password" placeholder="Heslo" :feedback="false" v-model="v$.password.$model" :class="{'p-invalid':v$.password.$invalid && submitted}" toggleMask></p-password>
+                        <p-password id="password" placeholder="Heslo"  :feedback="false" v-model="v$.password.$model" :class="{'p-invalid':v$.password.$invalid && submitted}" toggleMask></p-password>
                         <small v-if="(v$.password.$invalid && submitted) || v$.password.$pending.$response" class="p-error">{{v$.password.required.$message.replace('Value', 'Password')}}</small>
                     </div>
                     <div class="card-action">
@@ -52,7 +52,8 @@ export default {
             password: '',
             submitted: false,
             showMessage: false,
-            error: ''
+            error: '',
+            
         }
     },
     validations() {

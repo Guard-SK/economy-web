@@ -11,6 +11,7 @@
             </TabMenu>
             <Dropdown v-model="selectedEvent" :options="events" optionLabel="nameofevent" :filter="true" placeholder="Vyber Udalost" :showClear="true" ></Dropdown>
             <button class="btn btn-primary px-auto" v-on:click="triggerFunction">Prepočítať</button>
+          
             <Card v-if="selectedEvent != null" class="mt-5 darker-card">
                 <template #content >
 
@@ -91,6 +92,7 @@
 </style>
 <script>
 import { getFirestore,setDoc ,doc,getDocs,getDoc,collection, deleteDoc} from "firebase/firestore";
+
 import { getAuth } from 'firebase/auth'
 import Dropdown from 'primevue/dropdown';
 import TabMenu from 'primevue/tabmenu';
@@ -100,6 +102,7 @@ import Column from 'primevue/column'
 import Message from 'primevue/message';
 import InputNumber from 'primevue/inputnumber';
 import axios from 'axios';
+
 export default {
   components:{
     Dropdown,
@@ -189,6 +192,7 @@ export default {
     },
   },
   methods:{
+
     async triggerFunction() {
       try {
         const response = await axios.post(

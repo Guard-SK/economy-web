@@ -105,9 +105,7 @@
 			
 			this.menuDisabled= !this.menuDisabled
 			this.isDivDisabled = true
-			console.log(this.isDivDisabled)
-		  
-		  const box = this.$refs.box;
+			const box = this.$refs.box;
 		  const calculatedHeight= window.innerHeight - 70
 		  const tl = gsap.timeline({delay: 0.2});
 		 

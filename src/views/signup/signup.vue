@@ -8,19 +8,19 @@
                 <form @submit.prevent="handleSubmit()" class="p-fluid form-control w-full h-full">
                     <div class="field mb-4">
                         <div>
-                            <input id="name" v-model="v$.name.$model" placeholder="Meno" class="input input-bordered w-[70%] shadow-md" :class="{'p-invalid':v$.name.$invalid && submitted}" />
+                            <input id="name"  autocomplete="given-name" v-model="v$.name.$model" placeholder="Meno" class="input input-bordered w-[70%] shadow-md" :class="{'p-invalid':v$.name.$invalid && submitted}" />
                         </div>
                         <small v-if="(v$.name.$invalid && submitted) || v$.name.$pending.$response" class="p-error h-3">{{v$.name.required.$message.replace('Value', 'Name')}}</small>
                     </div>
                     <div class="field mb-4">
                         <div>
-                            <input id="surname" v-model="v$.surname.$model" placeholder="Priezvisko" class="input input-bordered w-[70%] shadow-md" :class="{'p-invalid':v$.surname.$invalid && submitted}" />
+                            <input id="surname"  autocomplete="family-name" v-model="v$.surname.$model" placeholder="Priezvisko" class="input input-bordered w-[70%] shadow-md" :class="{'p-invalid':v$.surname.$invalid && submitted}" />
                         </div>
                         <small v-if="(v$.surname.$invalid && submitted) || v$.surname.$pending.$response" class="p-error">{{v$.name.required.$message.replace('Value', 'Surname')}}</small>
                     </div>
                     <div class="field mb-4">
                         <div>
-                            <input id="email" v-model="v$.email.$model" placeholder="Email" class="input input-bordered w-[70%] shadow-md" :class="{'p-invalid':v$.email.$invalid && submitted}" aria-describedby="email-error"/>
+                            <input id="email"  autocomplete="email" v-model="v$.email.$model"  placeholder="Email" class="input input-bordered w-[70%] shadow-md" :class="{'p-invalid':v$.email.$invalid && submitted}" aria-describedby="email-error"/>
                         </div>
                         <span v-if="v$.email.$error && submitted">
                             <span id="email-error" v-for="(error, index) of v$.email.$errors" :key="index">
@@ -30,7 +30,7 @@
                         <small v-else-if="(v$.email.$invalid && submitted) || v$.email.$pending.$response" class="p-error">{{v$.email.required.$message.replace('Value', 'Email')}}</small>
                     </div>
                     <div class="field mb-8">
-                        <p-password id="password" placeholder="Heslo" v-model="v$.password.$model" :class="{'p-invalid':v$.password.$invalid && submitted}" toggleMask></p-password>
+                        <p-password  id="password" placeholder="Heslo" v-model="v$.password.$model" :class="{'p-invalid':v$.password.$invalid && submitted}" toggleMask></p-password>
                         <small v-if="(v$.password.$invalid && submitted) || v$.password.$pending.$response" class="p-error">{{v$.password.required.$message.replace('Value', 'Password')}}</small>
                     </div>
                     <div class="card-action">
@@ -57,6 +57,8 @@ import { email, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import { getFirestore,setDoc ,doc,getDoc,collection, getDocs } from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
+import axios from 'axios';
+
 const db = getFirestore();
 export default {
     setup: () => ({ v$: useVuelidate() }),
@@ -120,46 +122,29 @@ export default {
             }
 
             try {
-                var change = false
+                
                 const auth = getAuth();
                 const user = auth.currentUser;
                 const uid = user.uid;
-                const user1 = 'user'
-                await setDoc(doc(db, "users", uid), {
+                const userData = {
                     name: this.name,
                     surname: this.surname,
                     email: this.email,
-                    role: user1,
-                    positivebalanceofficial: 0,
-                    positivebalanceunofficial: 0,
-                    balanceofficial: 0,
-                    balanceunofficial: 0,
-                })
-                const promises = [];
-                const attendaceRef = collection(db,'events')
-                const attendaceSnap = await getDocs(attendaceRef)
-                attendaceSnap.forEach(async doc4 =>{
-                    const refatt2 = doc(db,'events',doc4.id)
-                    var eventname = this.name + ' ' + this.surname;
-                    var name2 = eventname + 'visible'
-                    var name3  =eventname + 'set'
-                    let obj1 = {eventname1: "❌"}
-                    obj1[eventname] = obj1['eventname1'];
-                    delete obj1['eventname1'];
-                    let obj2 = {eventname1: true}
-                    obj2[name2] = obj2['eventname1'];
-                    delete obj2['eventname1'];
-                    let obj3 = {eventname1: false}
-                    obj3[name3] = obj3['eventname1'];
-                    delete obj3['eventname1'];
-                    promises.push(setDoc(refatt2, obj1, {merge: true}));
-                    promises.push(setDoc(refatt2, obj2, {merge: true}));
-                    promises.push(setDoc(refatt2, obj3, {merge: true}));
-                });
-                await Promise.all(promises);
-                this.$router.push('/dashboard')
+                    uid: uid
+                };
+                try {
+                    const response = await axios.post(
+                        "https://us-central1-vuefirebaseauth-35637.cloudfunctions.net/createUser",
+                        userData
+                    );
+                    console.log(response.data.message);
+                    // Handle the response as needed, e.g., show a success message
+                } catch (error) {
+                    console.error("Error:", error);
+                    // Handle errors, e.g., show an error message
+                }
                 this.resetForm()
-                
+                this.$router.push('/dashboard')
             } catch (e) {
                 console.error("Error adding document: ", e);
             }
