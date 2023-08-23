@@ -32,15 +32,20 @@
     },
     mounted() {
       window.addEventListener('mousemove', this.updateBallPosition);
+      window.addEventListener('resize', this.updateViewportWidth);
     },
     methods: {
+      updateViewportWidth() {
+      this.viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+      },
       updateBallPosition(event) {
         this.ballStyles.left = (event.clientX - 15) + 'px'; // Update the left position
         this.ballStyles.top = (event.clientY - 15) + 'px'; // Update the top position
-		console.log(this.viewportWidth)
+		
     }
     },
     beforeDestroy() {
+      window.removeEventListener('resize', this.updateViewportWidth);
       window.removeEventListener('mousemove', this.updateBallPosition);
     }
   };
