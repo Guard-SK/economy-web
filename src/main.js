@@ -9,22 +9,15 @@ import Dialog from 'primevue/dialog'
 import DataTable from 'primevue/datatable';
 import Button from 'primevue/button';
 import ProgressSpinner from 'primevue/progressspinner';
-import axios from 'axios';
+
 import 'primevue/resources/themes/saga-blue/theme.css'
 import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 import '../src/style/main.css'
+import { recalculate } from './globalFunctions';
 const app = createApp(App)
-app.config.globalProperties.$recalculate = async function() {
-    try {
-      const response = await axios.post(
-        'https://us-central1-vuefirebaseauth-35637.cloudfunctions.net/recalculate'
-      );
-      console.log(response.data); // Assuming the function returns a message
-    } catch (error) {
-      console.error('Error triggering function:', error);
-    }
-};
+
+app.config.globalProperties.$recalculate = recalculate;
 app
     .use(store)
     .use(router)

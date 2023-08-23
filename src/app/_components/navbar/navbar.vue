@@ -6,16 +6,17 @@
 		  <div v-if="isLoggedIn"  class="icon"></div>
 		</div>
 		<div class="container3" ref="box" >
-		  <ul>
-			<li class='stagger' style='color:white' v-if="isLoggedIn" >Zostatok : <p class="official-fond">{{ balanceofficial }}€</p>  |<p class="unofficial-fond ">{{ balanceunofficial }}€</p></li>
+		  <ul style="height: 100%;">
+			<li class='stagger fontnav' style='color:white' v-if="isLoggedIn" >Zostatok : <p class="official-fond ">{{ balanceofficial }}€</p>  |<p class="unofficial-fond ">{{ balanceunofficial }}€</p></li>
 			<li><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/dashboard" class="stagger" v-if="isLoggedIn">Dashboard</router-link></li>
 			<li><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/profile" class="stagger" v-if="isLoggedIn">My account</router-link></li>
 			<li><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/notes" class="stagger" v-if="isLoggedIn">Notes</router-link></li>
 			<li v-if="userrole =='admin'"><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/admin" class="stagger" v-if="isLoggedIn">Admin</router-link></li>
-			<li class="stagger">
-				<button style="color:white" @click="handleSignOut()" v-if="isLoggedIn"><i class="pi pi-sign-out"/></button>
-			</li>
+			
+				
+			
 		</ul>
+		<button class=" btn  btn-error stagger logout" style="color:white; font-size: 1em;" @click="handleSignOut()" v-if="isLoggedIn"><p class="fontnav">Log out</p></button>
 		</div>
 	  </nav>
 	</div>
@@ -144,24 +145,27 @@
 	</script>
 	
 	<style lang="scss">
-	$dark: #0c203e;
+  $dark: #0c203e;
   $light: #efefef;
   $color: #b3e5fc;
-  
+  .logout{
+	position:relative;
+	bottom:50px;
+	
+  }
+  .fontnav{
+	font-size:1.5em;
+  }
   .nav1{
-	  
 	  display: flex;
 	  justify-content: center;
 	  align-items: center;
-	  
   }
   .disabled {
 	pointer-events: none !important;
-	
   }
-  
   .nav1 ul{
-	  list-style-type: none
+	  list-style-type:none
   }
   .nav1 ul li a {
 	  color: #fafafa;

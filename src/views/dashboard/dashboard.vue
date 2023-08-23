@@ -94,7 +94,7 @@ import TableDashboard from './_components/TableDashboard.vue'
 import SelectButton from 'primevue/selectbutton';
 import { doc, getFirestore, getDocs, collection,setDoc, getDoc,addDoc, query, where, onSnapshot} from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
-
+import axios from 'axios';
 
 export default {
     components: {
@@ -199,21 +199,7 @@ export default {
                 }
                 }
                             
-                //const doc2 = doc.data()
-                // const arr = Object.values(doc2)
-                // count = arr.filter(function(value) {
-                //     return value === "✅";
-                // }).length;
-                // var valuex1 = doc.data().costofevent
-                // var cpp = valuex1 / count
-                // cpp = Math.round((cpp+ Number.EPSILON) * 100) / 100
-                // if (cpp == Infinity){
-                //     data['cpp'] = 'None'
-                // } else if (cpp == -Infinity){
-                //     data['cpp'] = 'None'
-                // } else{
-                //     data['cpp'] = cpp + '€'
-                // }
+
                 
                 this.rowsofevents.push(data)
                
@@ -284,49 +270,22 @@ methods: {
             this.notes = ''
         },
         async addEvent() {
-            const db = getFirestore();
-            await setDoc(doc(db, "events", this.nameofevent), {
-                    nameofevent: this.nameofevent,
+            try {
+                const eventInfo = {
+                    nameofevent: this.nameofevent, 
                     dateofevent: this.dateofevent,
-                    place: this.place,
-                    costofevent: 0,
+                    place:this.place,
                     notes:this.notes,
-                    typeoffond: this.fondtype,
-                    eventcostset: 0,
-                    eventnumberset: 0
-                })
-            const usersRef = collection(db,'users')
-            const usersSnap = await getDocs(usersRef)
-            usersSnap.forEach(async (doc1)=> {
-                var username = doc1.data().name + ' ' + doc1.data().surname
-                var username1 = username+ 'visible'
-                var username2 = username+ 'set'
-                const reff1223 = doc(db,'events',this.nameofevent)
-                let obj1 = {eventname1: "❌"}
-                obj1[username] = obj1['eventname1'];
-                delete obj1['eventname1'];
-                let obj2 = {eventname1: true}
-                obj2[username1] = obj2['eventname1'];
-                delete obj2['eventname1'];
-
-                let obj3 = {eventname1: false}
-                obj3[username2] = obj3['eventname1'];
-                delete obj3['eventname1'];
-                
-                await setDoc(reff1223, obj1,{merge:true}) 
-                await setDoc(reff1223, obj2,{merge:true}) 
-                await setDoc(reff1223, obj3,{merge:true}) 
-
-
-                
-            });
-            const coll = doc(db, 'transakcie', this.nameofevent,'transakcie', 'number')
-            await setDoc(coll,{
-                number: 0
-            });
+                    fondtype: this.fondtype,
+                    costofevent: 0
+                };
+                const response = await axios.post('https://us-central1-vuefirebaseauth-35637.cloudfunctions.net/addEvent', eventInfo);
+                console.log('Response from Cloud Function:', response.data);
+            } catch (error) {
+                console.error('Error adding event:', error);
+            }
             this.display1 = false
             this.resetForm()
-            
         } 
     }
 }

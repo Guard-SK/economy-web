@@ -114,3 +114,57 @@ exports.createUser = functions.https.onRequest(async (req, res) => {
   }
   })
 })
+exports.addEvent = functions.https.onRequest(async (req, res) => {
+  corsHandler(req, res, async () => {
+  try {
+      const eventInfo = req.body; // Assuming you're sending the event data in the request body
+      
+      const eventRef = db.collection('events').doc(eventInfo.nameofevent);
+      await eventRef.set({
+          nameofevent: eventInfo.nameofevent,
+          dateofevent: eventInfo.dateofevent,
+          place: eventInfo.place,
+          costofevent: eventInfo.costofevent,
+          notes: eventInfo.notes,
+          typeoffond: eventInfo.fondtype,
+          eventcostset: 0,
+          eventnumberset: 0
+      });
+
+      const usersRef = db.collection('users');
+      const usersSnap = await usersRef.get();
+      usersSnap.forEach(async (doc1) => {
+          const username = doc1.data().name + ' ' + doc1.data().surname;
+          const username1 = username + 'visible';
+          const username2 = username + 'set';
+          const eventRef = db.collection('events').doc(eventInfo.nameofevent);
+          
+          let obj1 = { eventname1: "❌" };
+          obj1[username] = obj1['eventname1'];
+          delete obj1['eventname1'];
+
+          let obj2 = { eventname1: true };
+          obj2[username1] = obj2['eventname1'];
+          delete obj2['eventname1'];
+
+          let obj3 = { eventname1: false };
+          obj3[username2] = obj3['eventname1'];
+          delete obj3['eventname1'];
+
+          await eventRef.set(obj1, { merge: true });
+          await eventRef.set(obj2, { merge: true });
+          await eventRef.set(obj3, { merge: true });
+      });
+
+      const transakcieColl = db.collection('transakcie').doc(eventInfo.nameofevent).collection('transakcie').doc('number');
+      await transakcieColl.set({
+          number: 0
+      });
+
+      res.status(200).send('Event added successfully.');
+  } catch (error) {
+      console.error('Error adding event:', error);
+      res.status(500).send('An error occurred while adding the event.');
+  }
+})
+})
