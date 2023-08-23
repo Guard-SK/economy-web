@@ -10,7 +10,7 @@
             <TabMenu class="mt-5 " style="align: center" :model="items" :activeIndex="activeIndex" >
             </TabMenu>
             <Dropdown v-model="selectedEvent" :options="events" optionLabel="nameofevent" :filter="true" placeholder="Vyber Udalost" :showClear="true" ></Dropdown>
-            <button class="btn btn-primary px-auto" v-on:click="triggerFunction">Prepočítať</button>
+            <button class="btn btn-primary px-auto" v-on:click="triggerFunction1">Prepočítať</button>
           
             <Card v-if="selectedEvent != null" class="mt-5 darker-card">
                 <template #content >
@@ -193,15 +193,8 @@ export default {
   },
   methods:{
 
-    async triggerFunction() {
-      try {
-        const response = await axios.post(
-          'https://us-central1-vuefirebaseauth-35637.cloudfunctions.net/recalculate'
-        );
-        console.log(response.data); // Assuming the function returns a message
-      } catch (error) {
-        console.error('Error triggering function:', error);
-      }
+    async triggerFunction1() {
+      this.$recalculate();
     },
     async deletetransaction(rowid){
       
@@ -225,7 +218,7 @@ export default {
       
      })
      await setDoc(doc(db,'events',this.selectedEvent.nameofevent),{costofevent: sum},{merge: true})
-     await this.recalculate()
+     this.$recalculate();
     },
     async saveNowstate (){
         const promises = [];
@@ -269,62 +262,10 @@ export default {
             }
         })
         await Promise.all(promises);
-        await this.recalculate()
+        this.$recalculate();
         
     },
-    async recalculate() {
-            const db = getFirestore()
-            const events = await getDocs(collection(db,'events'))
-            const users = await getDocs(collection(db,'users'))
-            users.forEach(async user => {
-                let uid = user.id
-                let username = user.data().name + ' ' + user.data().surname
-                let usernameset = user.data().name + ' ' + user.data().surname + 'set'
-                let costsofficial =[0]
-                let costsunofficial = [0]
-                events.forEach(event => {
-
-                    if (event.data()[username] == "✅"){
-                        if (event.data()[usernameset] != false) {
-                            if (event.data().typeoffond == 'official') {
-                            costsofficial.push(parseFloat(event.data()[usernameset]))
-                            }else {
-                            costsunofficial.push(parseFloat(event.data()[usernameset]))
-                            }
-                        }else{
-                            var eventdata = event.data()
-                            const arr = Object.values(eventdata)
-                            var count = arr.filter(function(value) {
-                                return value === "✅";
-                            }).length;
-                            count -= event.data().eventnumberset
-                            var eventcost = event.data().costofevent - event.data().eventcostset
-                            var cpp = eventcost / count
-                            if (event.data().typeoffond == 'official'){
-                                costsofficial.push(cpp)
     
-                            }else {
-                                costsunofficial.push(cpp)
-                            } 
-                        }
-                    }
-                })
-                const sum = costsofficial.reduce((accumulator, currentValue) => {
-                    return accumulator + currentValue;
-                }, 0);
-                const sum2 = costsunofficial.reduce((accumulator, currentValue) => {
-                    return accumulator + currentValue;
-                }, 0);
-                const baloff = sum + user.data().positivebalanceofficial
-                const balunoff = sum2 + user.data().positivebalanceunofficial
-
-                await setDoc(doc(db,'users',uid),{balanceofficial: parseFloat(baloff.toFixed(2)),balanceunofficial: parseFloat(balunoff.toFixed(2)),},{merge:true})
-                this.success1 = true
-                setTimeout(() => {
-                    this.success1 = false
-                }, 3000);
-            })
-        },
       async userset(){
           console.log(this.selectedUser.uid)
       },

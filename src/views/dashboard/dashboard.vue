@@ -233,56 +233,7 @@ methods: {
             this.nameofinsert = ''
             this.priceppofinsert = ''
     },
-    async recalculate() {
-        
-            const db = getFirestore()
-            const events = await getDocs(collection(db,'events'))
-            const users = await getDocs(collection(db,'users'))
-            users.forEach(async user => {
-                let uid = user.id
-                let username = user.data().name + ' ' + user.data().surname
-                let usernameset = user.data().name + ' ' + user.data().surname + 'set'
-                let costsofficial =[0]
-                let costsunofficial = [0]
-                events.forEach(event => {
 
-                    if (event.data()[username] == "✅"){
-                        if (event.data()[usernameset] != false) {
-                            if (event.data().typeoffond == 'official') {
-                            costsofficial.push(parseFloat(event.data()[usernameset]))
-                            }else {
-                            costsunofficial.push(parseFloat(event.data()[usernameset]))
-                            }
-                        }else{
-                            var eventdata = event.data()
-                            const arr = Object.values(eventdata)
-                            var count = arr.filter(function(value) {
-                                return value === "✅";
-                            }).length;
-                            count -= event.data().eventnumberset
-                            var eventcost = event.data().costofevent - event.data().eventcostset
-                            var cpp = eventcost / count
-                            if (event.data().typeoffond == 'official'){
-                                costsofficial.push(cpp)
-    
-                            }else {
-                                costsunofficial.push(cpp)
-                            } 
-                        }
-                    }
-                })
-                const sum = costsofficial.reduce((accumulator, currentValue) => {
-                    return accumulator + currentValue;
-                }, 0);
-                const sum2 = costsunofficial.reduce((accumulator, currentValue) => {
-                    return accumulator + currentValue;
-                }, 0);
-                const baloff = sum + user.data().positivebalanceofficial
-                const balunoff = sum2 + user.data().positivebalanceunofficial
-
-                await setDoc(doc(db,'users',uid),{balanceofficial: parseFloat(baloff.toFixed(2)),balanceunofficial: parseFloat(balunoff.toFixed(2)),},{merge:true})
-            })
-        },
         async pridatVklad() {
             console.log(this.fondtype)
             this.users.forEach(async doc1 =>{           
@@ -309,7 +260,7 @@ methods: {
             })
     
                     setTimeout(() => {
-            this.recalculate()
+                        this.$recalculate();
         }, 1000);
             this.displaymoney = false
             

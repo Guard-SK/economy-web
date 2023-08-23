@@ -157,55 +157,7 @@ methods:{
           return 'unofficial-fond';
         }
     },
-    async recalculate() {
-            const db = getFirestore()
-            const events = await getDocs(collection(db,'events'))
-            const users = await getDocs(collection(db,'users'))
-            users.forEach(async user => {
-                let uid = user.id
-                let username = user.data().name + ' ' + user.data().surname
-                let usernameset = user.data().name + ' ' + user.data().surname + 'set'
-                let costsofficial =[0]
-                let costsunofficial = [0]
-                events.forEach(event => {
-
-                    if (event.data()[username] == "✅"){
-                        if (event.data()[usernameset] != false) {
-                            if (event.data().typeoffond == 'official') {
-                            costsofficial.push(parseFloat(event.data()[usernameset]))
-                            }else {
-                            costsunofficial.push(parseFloat(event.data()[usernameset]))
-                            }
-                        }else{
-                            var eventdata = event.data()
-                            const arr = Object.values(eventdata)
-                            var count = arr.filter(function(value) {
-                                return value === "✅";
-                            }).length;
-                            count -= event.data().eventnumberset
-                            var eventcost = event.data().costofevent - event.data().eventcostset
-                            var cpp = eventcost / count
-                            if (event.data().typeoffond == 'official'){
-                                costsofficial.push(cpp)
-    
-                            }else {
-                                costsunofficial.push(cpp)
-                            } 
-                        }
-                    }
-                })
-                const sum = costsofficial.reduce((accumulator, currentValue) => {
-                    return accumulator + currentValue;
-                }, 0);
-                const sum2 = costsunofficial.reduce((accumulator, currentValue) => {
-                    return accumulator + currentValue;
-                }, 0);
-                const baloff = sum + user.data().positivebalanceofficial
-                const balunoff = sum2 + user.data().positivebalanceunofficial
-
-                await setDoc(doc(db,'users',uid),{balanceofficial: parseFloat(baloff.toFixed(2)),balanceunofficial: parseFloat(balunoff.toFixed(2)),},{merge:true})
-            })
-        },
+   
     async deletetransaction(nameoftransaction2,event,price) {
         const db = getFirestore()
         const data2 = await getDocs(collection(db,'transakcie',event,'transakcie'))
@@ -224,7 +176,7 @@ methods:{
         x-= price
         await setDoc(doc(db,'events',event),{costofevent:x},{merge:true})
                 setTimeout(() => {
-            this.recalculate()
+                    this.$recalculate();
         }, 1000);
     },
     async uploadFile(eventnamepp) {
@@ -268,7 +220,7 @@ methods:{
         
         await setDoc(doc(db,'events',eventnamepp),{costofevent: this.total},{merge:true})
         setTimeout(() => {
-            this.recalculate()
+            this.$recalculate();
         }, 1000);
         this.display = false
         this.display2 = false
@@ -353,7 +305,7 @@ methods:{
         await deleteDoc(doc(db,'transakcie',event.eventname))
         await deleteDoc(doc(db,'events',event.eventname))
                 setTimeout(() => {
-            this.recalculate()
+            this.$recalculate();
         }, 1000);
     },
     getCenaClass(cena) {
