@@ -2,18 +2,25 @@
 
 ## Project setup
 ```
-yarn install
+npm run install
 ```
 
 ### Compiles and hot-reloads for development
 ```
-yarn serve
+npm run serve
 ```
 
 ### Compiles and minifies for production
 ```
-yarn build
+npm run build
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## To test PWA app
+
+```
+npm run build
+```
+```
+npx http-server dist
+```
+Then select http://127.0.0.1:8081

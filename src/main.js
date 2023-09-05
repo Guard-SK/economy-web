@@ -15,6 +15,7 @@ import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 import '../src/style/main.css'
 import { recalculate } from './globalFunctions';
+import './registerServiceWorker'
 const app = createApp(App)
 
 app.config.globalProperties.$recalculate = recalculate;
