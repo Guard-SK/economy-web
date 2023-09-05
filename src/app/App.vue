@@ -57,18 +57,6 @@
   * {
     cursor: none !important;
   }
-  .ball {
-    position: 'fixed';
-    width: '30px';
-    height: '30px';
-    border-radius: '50%';
-    pointer-events:'none';
-    
-    left: '0px';
-    top: '0px';
-    z-index: '10000';
-    backdrop-filter: 'invert(100%)'
-  }
   #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
