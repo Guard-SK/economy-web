@@ -4,7 +4,7 @@
         <p-spinner/>
     </div>
     
-    <div class="block w-full mt-5" v-else>
+    <div style="margin-top: 120px;" class="block w-full mt-5" v-else>
         <div >
             <h1 class="md:mt-0 mt-6 text-2xl text-base-content font-bold ">Ahoj {{ username }}!</h1>
         </div>

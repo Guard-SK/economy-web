@@ -8,7 +8,7 @@
 		<div class="container3" ref="box" >
 		  <ul style="height: 100%;">
 			<li class='stagger fontnav' style='color:white' v-if="isLoggedIn" >Balance : <p class="official-fond ">{{ balanceofficial }}€</p>  |<p class="unofficial-fond ">{{ balanceunofficial }}€</p></li>
-			<li><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/dashboard" class="stagger" v-if="isLoggedIn">Dashboard</router-link></li>
+			<li><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/dashboard" class="stagger" v-if="isLoggedIn">Events</router-link></li>
 			<li><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/profile" class="stagger" v-if="isLoggedIn">My account</router-link></li>
 			<li><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/notes" class="stagger" v-if="isLoggedIn">Notes</router-link></li>
 			<li v-if="userrole =='admin'"><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/admin" class="stagger" v-if="isLoggedIn">Admin</router-link></li>

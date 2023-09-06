@@ -2,7 +2,10 @@
 	import NavBar from './_components/navbar/navbar.vue'
 </script>
 <template>
-	<NavBar/>
+  <header>
+    <NavBar/>
+  </header>
+	
   <div class="content">
       <Suspense>
         <RouterView />
@@ -52,7 +55,7 @@
 </script>
 <style>
   .content {
-    margin-top: 120px;
+    margin-top: 90px;
   }
   * {
     cursor: none !important;
