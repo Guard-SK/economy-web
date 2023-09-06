@@ -26,5 +26,4 @@ npx http-server dist
 Then select http://127.0.0.1:8081
 
 
-Author: Benik1234 https://github.com/Benik1234
-        Guard-SK
+Author: Benik1234 https://github.com/Benik1234        and         Guard-SK
