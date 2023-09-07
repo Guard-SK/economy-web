@@ -315,3 +315,27 @@
     border-bottom-right-radius: 3px;
     border-bottom-left-radius: 3px;
   }
+  .p-divider .p-divider-content {
+    background-color: #1e1e1e;
+  }
+  .p-divider.p-divider-horizontal {
+    margin: 1rem 0;
+    padding: 0 1rem;
+  }
+  .p-divider.p-divider-horizontal:before {
+    border-top: 2px #9c9c9c;
+  }
+  .p-divider.p-divider-horizontal .p-divider-content {
+    padding: 0 0.5rem;
+  }
+  .p-divider.p-divider-vertical {
+    margin: 0 1rem;
+    padding: 1rem 0;
+  }
+  .p-divider.p-divider-vertical:before {
+    border-left: 1px #151515;
+  }
+  .p-divider.p-divider-vertical .p-divider-content {
+    padding: 0.5rem 0;
+  }
+  

@@ -1,5 +1,5 @@
 <template>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <p-table :value="rowsofevents" :scrollable="true" :key="rowsofevents" scrollDirection="horizontal">
         <Column field="eventname" header="Nazov udalosti" style="min-width:150px"></Column>
         <Column :style="{ 'min-width': widthfix + 'px' }" header="">
@@ -19,7 +19,7 @@
                 </template></Column>
         <Column v-for="field in userfields" :key="field" :field="field.name" :header= field.name style="min-width:130px" ></Column>
     </p-table>
-    
+     -->
     <p-dialog header="Header" modal footer="Footer" v-model:visible="display">
         <template #header>
             <div class="xl:flex block">
@@ -50,7 +50,7 @@
             </tbody>
         </table>
     </p-dialog>
-    <p-dialog header="Header" modal  v-model:visible="display1">
+    <!-- <p-dialog header="Header" modal  v-model:visible="display1">
         <template #header>
 		    <h1 >Detaily(popis):</h1>
 	    </template>
@@ -59,7 +59,7 @@
         <p>Miesto: {{ place }}</p>
         <p>Dodatočné poznámky: {{ notes }}</p>
         <p>Celková cena:</p><p :class="getCenaClass(costofevent1)" > {{ costofevent }}</p>
-    </p-dialog>
+    </p-dialog> -->
     <p-dialog header="Header" modal  footer="Footer" v-model:visible="display2">
         <template #header>
             <h3 class="text-xl">

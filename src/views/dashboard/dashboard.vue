@@ -1,8 +1,8 @@
 
 <template>
     
-    <div class="block text-center mt-5 mb-5 w-full"> 
-        <h1 style="margin-top: 110px;color: white;" class="mt-5 font-semibold spacing  text-3xl tracking-wide mb-8">NAŠE UDALOSTI</h1>
+    <div class="block text-center mt-5 mb-5 w-full" style="margin-top: 110px;"> 
+        <!-- <h1 style="margin-top: 110px;color: white;" class="mt-5 font-semibold spacing  text-3xl tracking-wide mb-8">NAŠE UDALOSTI</h1> -->
         <div v-if="userrole == 'admin'">
             <div class="flex justify-center gap-3 my-4">
                 <button class="text-base-content btn" v-on:click="openDialog">Pridat udalost</button>
@@ -76,32 +76,28 @@
             </div>
             
         </div>
-
+        <EventDataComponent />
         <div v-if="loading">
             <p-spinner/>
         </div>
 
-        <div class="table-responsive my-5 text-base-content md:mx-8 mx-0" v-else>
-            <!-- The table component -->
-            <TableDashboard :userfields='userfields' :rowsofevents ="rowsofevents" :headersoftransactions="headers"></TableDashboard>
-        </div>
+
     </div>
 </template>
 
 
 <script>
-import TableDashboard from './_components/TableDashboard.vue'
+
 import SelectButton from 'primevue/selectbutton';
+import EventDataComponent from './_components/EventDataComponent.vue';
 import { doc, getFirestore, getDocs, collection,setDoc, getDoc,addDoc, query, where, onSnapshot} from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
 import axios from 'axios';
 
 export default {
     components: {
-        TableDashboard,
         SelectButton,
-        
-        
+        EventDataComponent
     },
     data() {
         return {
