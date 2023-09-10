@@ -29,6 +29,7 @@
     <div v-if="selectedevent!= null" class="eventcontainer">
         <div class="eventheader">
             <h1 class="font-semibold text-3xl eventheadertext">{{ selectedevent.name }}</h1>
+            
 
         </div>
         <Accordion :activeIndex="0">
@@ -47,9 +48,9 @@
         
         
     </AccordionTab>
-    <!-- <AccordionTab header="Transakcie">
+     
        
-        <button v-if="userrole == 'admin'" class="text-base-content btn" v-on:click="openTransaction(nameofevent)">Pridat transakciu</button>
+        <!-- <button v-if="userrole == 'admin'" class="text-base-content btn" v-on:click="openTransaction(nameofevent)">Pridat transakciu</button>
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -68,13 +69,17 @@
         </table>
         
         <h3 >Celková cena udalosti:</h3><h3 :class="getCenaClass(shownevent.costofevent)">{{ shownevent.costofevent }}€</h3>
+     -->
     
-    </AccordionTab> -->
     <AccordionTab header="Účasť">
         <div v-for="user in users" class="userinfo">
             <p>{{ user }}:</p> <span >{{ shownevent[user] }}</span>
         </div>
     </AccordionTab>
+    <AccordionTab header="Transakcie">
+
+    </AccordionTab>
+    
 </Accordion>
 <table class="table table-bordered table-striped">
             <thead>
@@ -129,6 +134,7 @@ export default {
     },
     data() {
         return {
+            
             selectedevent:null,
             events:[],
             userrole: 'user',
