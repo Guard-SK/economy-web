@@ -369,6 +369,7 @@ h2{
     
 }
 .eventcontainer{
+    max-width: 1000px;
     height: 300px;
     background-color: #141414;
     
