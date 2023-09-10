@@ -97,7 +97,7 @@
                 </tr>
             </tbody>
         </table>
-<button class=" btn  btn-error stagger " style="color:white; font-size: 1em;position: relative;bottom: 0px;margin-top: 100px;margin-bottom: 10px;" @click="deleteevent()" v-if="userrole== 'admin'"><p class="fontnav">Delete event</p></button>
+<button class=" btn  btn-error" style="color:white; font-size: 1em;position: relative;bottom: 0px;margin-top: 100px;margin-bottom: 10px;" @click="deleteevent()" v-if="userrole== 'admin'"><p class="fontnav">Delete event</p></button>
     </div>
 
 </div>
