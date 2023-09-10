@@ -47,7 +47,8 @@
         
         
     </AccordionTab>
-    <AccordionTab header="Transakcie">
+    <!-- <AccordionTab header="Transakcie">
+       
         <button v-if="userrole == 'admin'" class="text-base-content btn" v-on:click="openTransaction(nameofevent)">Pridat transakciu</button>
         <table class="table table-bordered table-striped">
             <thead>
@@ -59,22 +60,41 @@
                 <tr v-for="row in rows" :key="row.id">
                     
                     <td class="max-w-[220px] overflow-hidden text-primary-content truncate">{{ row['Transakcia'] }}</td>
-                    <td class="text-primary-content" :class="getCenaClass(row.cena)">{{ row['cena'] }}€</td>
-                    <td><button v-if="row.file !== false" @click="downloadFile(row.file)" class="btn btn-info">Download</button></td>
-                    <td><button v-if="userrole == 'admin'" class="btn btn-outline btn-error" @click="deletetransaction(row.iddoc,dialname,row.cena)">Vymazať</button></td>
+                    <td class="text-primary-content" :class="getCenaClass(row?.cena)">{{ row['cena'] }}€</td>
+                    <td><button v-if="row?.file !== false" @click="downloadFile(row?.file)" class="btn btn-info">Download</button></td>
+                    <td><button v-if="userrole == 'admin'" class="btn btn-outline btn-error" @click="deletetransaction(row?.iddoc,dialname,row?.cena)">Vymazať</button></td>
                 </tr>
             </tbody>
         </table>
+        
         <h3 >Celková cena udalosti:</h3><h3 :class="getCenaClass(shownevent.costofevent)">{{ shownevent.costofevent }}€</h3>
-    </AccordionTab>
+    
+    </AccordionTab> -->
     <AccordionTab header="Účasť">
         <div v-for="user in users" class="userinfo">
             <p>{{ user }}:</p> <span >{{ shownevent[user] }}</span>
         </div>
     </AccordionTab>
 </Accordion>
+<table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th v-for="header in headersoftransactions" :key="header" class="text-primary-content">{{header}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="row in rows" :key="row.id">
+                    
+                    <td class="max-w-[220px] overflow-hidden text-primary-content truncate">{{ row['Transakcia'] }}</td>
+                    <td class="text-primary-content" :class="getCenaClass(row?.cena)">{{ row['cena'] }}€</td>
+                    <td><button v-if="row?.file !== false" @click="downloadFile(row?.file)" class="btn btn-info">Download</button></td>
+                    <td><button v-if="userrole == 'admin'" class="btn btn-outline btn-error" @click="deletetransaction(row?.iddoc,dialname,row?.cena)">Vymazať</button></td>
+                </tr>
+            </tbody>
+        </table>
 <button class=" btn  btn-error stagger " style="color:white; font-size: 1em;position: relative;bottom: 0px;margin-top: 100px;margin-bottom: 10px;" @click="handleSignOut()" v-if="userrole== 'admin'"><p class="fontnav">Delete event</p></button>
     </div>
+
 </div>
 </div>
 
