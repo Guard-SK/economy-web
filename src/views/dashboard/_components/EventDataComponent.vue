@@ -92,7 +92,7 @@
                 </tr>
             </tbody>
         </table>
-<button class=" btn  btn-error stagger " style="color:white; font-size: 1em;position: relative;bottom: 0px;margin-top: 100px;margin-bottom: 10px;" @click="handleSignOut()" v-if="userrole== 'admin'"><p class="fontnav">Delete event</p></button>
+<button class=" btn  btn-error stagger " style="color:white; font-size: 1em;position: relative;bottom: 0px;margin-top: 100px;margin-bottom: 10px;" @click="deleteevent()" v-if="userrole== 'admin'"><p class="fontnav">Delete event</p></button>
     </div>
 
 </div>
@@ -186,6 +186,24 @@ export default {
         })
     },
     methods:{
+        async renewdata() {
+            this.events = []
+            const db = getFirestore()
+        const q = query(collection(db, "events"));
+        const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                const event = {name: doc.data().nameofevent,date: doc.data().dateofevent,doc:doc.id}
+                this.events.push(event)
+            })
+     
+        })
+        this.users = []
+        const usersSnap = await getDocs(collection(db,'users'))
+        usersSnap.forEach((doc)=>{
+            const username= doc.data().name + ' ' + doc.data().surname
+            this.users.push(username)
+        })
+        },
         getCenaClass(cena) {
         if (cena > 0) {
           return 'positive-cena';
@@ -243,6 +261,8 @@ export default {
         })
         await deleteDoc(doc(db,'transakcie',this.shownevent.nameofevent))
         await deleteDoc(doc(db,'events',this.shownevent.nameofevent))
+        this.selectedevent= null
+        this.renewdata()
         setTimeout(() => {
             this.$recalculate();
         }, 1000);
