@@ -24,6 +24,8 @@
             </Dropdown>
         </div>
     </div>
+    <div class="center2">
+    <div class="centercontainer">
     <div v-if="selectedevent!= null" class="eventcontainer">
         <div class="eventheader">
             <h1 class="font-semibold text-3xl eventheadertext">{{ selectedevent.name }}</h1>
@@ -73,6 +75,8 @@
 </Accordion>
 <button class=" btn  btn-error stagger " style="color:white; font-size: 1em;position: relative;bottom: 0px;margin-top: 100px;margin-bottom: 10px;" @click="handleSignOut()" v-if="userrole== 'admin'"><p class="fontnav">Delete event</p></button>
     </div>
+</div>
+</div>
 
     <p-dialog header="Header" modal  footer="Footer" v-model:visible="display">
         <template #header>
@@ -298,6 +302,17 @@ h2{
     text-align: left;
 
 }
+.centercontainer {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+max-width: 1000px;
+width: 100%;
+}
+.center2{
+    display: flex;
+  justify-content: center; /* Center horizontally */
+
+}
 .box {
   display: flex;
   align-items: center; 
@@ -369,9 +384,11 @@ h2{
     
 }
 .eventcontainer{
-    max-width: 1000px;
+   width: 100%;
+    
     height: 300px;
     background-color: #141414;
+
     
     height: fit-content;
    border-radius: 30px;
