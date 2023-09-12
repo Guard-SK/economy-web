@@ -89,7 +89,7 @@
 	beforeMount() {
 		window.addEventListener('beforeinstallprompt', (e) => {
 		e.preventDefault()
-			if (!Cookies.get("add-to-home-screen") === undefined) {
+			if (Cookies.get("add-to-home-screen") === undefined) {
 				this.installEvent = e
 				this.shown = true
 			}
