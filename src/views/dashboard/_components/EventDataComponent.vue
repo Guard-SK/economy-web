@@ -81,6 +81,7 @@
     </AccordionTab>
     
 </Accordion>
+<button v-if="userrole == 'admin'" class="text-base-content btn" v-on:click="openTransaction(nameofevent)">Pridat transakciu</button>
 <table class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -91,9 +92,9 @@
                 <tr v-for="row in rows" :key="row.id">
                     
                     <td class="max-w-[220px] overflow-hidden text-primary-content truncate">{{ row['Transakcia'] }}</td>
-                    <td class="text-primary-content" :class="getCenaClass(row?.cena)">{{ row['cena'] }}€</td>
-                    <td><button v-if="row?.file !== false" @click="downloadFile(row?.file)" class="btn btn-info">Download</button></td>
-                    <td><button v-if="userrole == 'admin'" class="btn btn-outline btn-error" @click="deletetransaction(row?.iddoc,dialname,row?.cena)">Vymazať</button></td>
+                    <td class="text-primary-content" :class="getCenaClass(row.cena)">{{ row['cena'] }}€</td>
+                    <td><button v-if="row.file !== false" @click="downloadFile(row.file)" class="btn btn-info">Download</button></td>
+                    <td><button v-if="userrole == 'admin'" class="btn btn-outline btn-error" @click="deletetransaction(row.iddoc,dialname,row.cena)">Vymazať</button></td>
                 </tr>
             </tbody>
         </table>
@@ -118,7 +119,7 @@
 <script>
 import Dropdown from 'primevue/dropdown';
 import Divider from 'primevue/divider';
-import { doc, getFirestore, getDocs, collection,setDoc, getDoc, query, onSnapshot,deleteDoc} from "firebase/firestore";
+import { doc, getFirestore, getDocs, collection,setDoc, getDoc, query, onSnapshot,deleteDoc,addDoc} from "firebase/firestore";
 import { getAuth , onAuthStateChanged} from 'firebase/auth'
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import axios from 'axios';
@@ -179,6 +180,7 @@ export default {
         const db = getFirestore()
         const q = query(collection(db, "events"));
         const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+            this.events = []
             querySnapshot.forEach((doc) => {
                 const event = {name: doc.data().nameofevent,date: doc.data().dateofevent,doc:doc.id}
                 this.events.push(event)
@@ -193,10 +195,11 @@ export default {
     },
     methods:{
         async renewdata() {
-            this.events = []
+            
             const db = getFirestore()
         const q = query(collection(db, "events"));
         const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+            this.events = []
             querySnapshot.forEach((doc) => {
                 const event = {name: doc.data().nameofevent,date: doc.data().dateofevent,doc:doc.id}
                 this.events.push(event)
@@ -266,10 +269,12 @@ export default {
             await deleteDoc(doc(db,'transakcie',this.shownevent.nameofevent,'transakcie',doc5.id))
         })
         await deleteDoc(doc(db,'transakcie',this.shownevent.nameofevent))
+        console.log(this.shownevent.nameofevent)
         await deleteDoc(doc(db,'events',this.shownevent.nameofevent))
         this.selectedevent= null
-        this.renewdata()
+        
         setTimeout(() => {
+            this.renewdata()
             this.$recalculate();
         }, 1000);
     },
