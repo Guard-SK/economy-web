@@ -5,7 +5,6 @@
   <header>
     <NavBar/>
   </header>
-	
   <div class="content">
       <Suspense>
         <RouterView />

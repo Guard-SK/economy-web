@@ -12,19 +12,31 @@
 			<li><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/profile" class="stagger" v-if="isLoggedIn">My account</router-link></li>
 			<li><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/notes" class="stagger" v-if="isLoggedIn">Notes</router-link></li>
 			<li v-if="userrole =='admin'"><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/admin" class="stagger" v-if="isLoggedIn">Admin</router-link></li>
-			
-				
-			
+
 		</ul>
 		<button class=" btn  btn-error stagger logout" style="color:white; font-size: 1em;" @click="handleSignOut()" v-if="isLoggedIn"><p class="fontnav">Log out</p></button>
 		</div>
 	  </nav>
+	  <div v-if="shown" class="flex flex-col md:flex-row justify-center items-center mb-4">
+		<span class="text-white pr-2">Nainstalovat nasu aplikaciu? <span class="text-gray-400">Nezaberie skoro ziadne miesto a vzdy ju budete mat poruke!</span></span>
+
+		<button class="btn btn-primary mb-2 md:mb-0 mr-0 md:mr-2" @click="installPWA">
+			Inštalovať!
+		</button>
+
+		<button class="btn btn-group" @click="dismissPrompt">
+			Nie, ďakujem
+		</button>
+      </div>
 	</div>
   </template>
   <script>
 	import {getFirestore,getDoc,doc,onSnapshot} from "firebase/firestore" ;
 	import { getAuth, onAuthStateChanged, signOut } from '@firebase/auth';
 	import gsap from 'gsap';
+	import Cookies from "js-cookie";
+
+
 	export default {
 	  data() {
 		return {
@@ -35,7 +47,8 @@
 		  isLoggedIn:false,
 		  userrole:'user',
 		  balanceofficial:0,
-		  balanceunofficial:0
+		  balanceunofficial:0,
+		  shown: false,
 		};
 	  },
 	  computed: {
@@ -70,6 +83,15 @@
 				this.balanceofficial = 0
 				this.balanceunofficial = 0
 				
+			}
+		})
+	},
+	beforeMount() {
+		window.addEventListener('beforeinstallprompt', (e) => {
+		e.preventDefault()
+			if (!Cookies.get("add-to-home-screen") === undefined) {
+				this.installEvent = e
+				this.shown = true
 			}
 		})
 	},
@@ -135,6 +157,23 @@
 		  
 		  
 		},
+
+		dismissPrompt() {
+			Cookies.set("add-to-home-screen", null, { expires: 7 });
+            this.shown = false
+        },
+    
+        installPWA() {
+            this.installEvent.prompt()
+            this.installEvent.userChoice.then((choice) => {
+            this.dismissPrompt() // Hide the prompt once the user's clicked
+            if (choice.outcome === 'accepted') {
+                // Do something additional if the user chose to install
+            } else {
+                // Do something additional if the user declined
+            }
+            })
+        },
   
 		handleResize() {
 		  // Update the isDesktop flag based on the viewport width
