@@ -20,8 +20,8 @@
 		viewportWidth: window.innerWidth || document.documentElement.clientWidth,
         ballStyles: {
           position: 'fixed',
-          width: '30px',
-          height: '30px',
+          width: '16px',
+          height: '16px',
           borderRadius: '50%',
           pointerEvents:'none',
           
@@ -41,8 +41,8 @@
       this.viewportWidth = window.innerWidth || document.documentElement.clientWidth;
       },
       updateBallPosition(event) {
-        this.ballStyles.left = (event.clientX - 15) + 'px'; // Update the left position
-        this.ballStyles.top = (event.clientY - 15) + 'px'; // Update the top position
+        this.ballStyles.left = (event.clientX - 8) + 'px'; // Update the left position
+        this.ballStyles.top = (event.clientY - 8) + 'px'; // Update the top position
 		
     }
     },

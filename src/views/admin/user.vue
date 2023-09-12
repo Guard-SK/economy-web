@@ -1,6 +1,6 @@
 
 <template>
-     
+     {{ selectedUser }}
     <div v-if="userrole == 'admin'" class="card">
     <Card>      
       
@@ -161,22 +161,26 @@ export default {
     async deletevklad (data){
       const db = getFirestore()
       const price = data.priceadded
+      console.log(price)
       const fond = data.fond
-      if (fond == 'official'){
+      console.log(this.selectedUser.balanceofficial)
+      if (fond == 'official'){        
         await setDoc(doc(db,'users',this.selectedUser.uid),{
           balanceofficial: this.selectedUser.balanceofficial - price,
           positivebalanceofficial: this.selectedUser.positivebalanceofficial - price
         },{merge: true})
       await deleteDoc(doc(db,'users',this.selectedUser.uid,'vklady',data.id))
-      this.inserts = this.inserts.filter((item) => item.id !== data.id);
-
-      
+      this.selectedUser.balanceofficial -= price
+      this.selectedUser.positivebalanceofficial -=price
+      this.inserts = this.inserts.filter((item) => item.id !== data.id);      
     }else {
       await setDoc(doc(db,'users',this.selectedUser.uid),{
         balanceunofficial: this.selectedUser.balanceunofficial - price,
         positivebalanceunofficial: this.selectedUser.positivebalanceunofficial - price
       },{merge: true})
       await deleteDoc(doc(db,'users',this.selectedUser.uid,'vklady',data.id))
+      this.selectedUser.balanceunofficial -= price
+      this.selectedUser.positivebalanceunofficial -=price
       this.inserts = this.inserts.filter((item) => item.id !== data.id);
     }
   }},
