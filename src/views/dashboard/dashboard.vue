@@ -193,13 +193,8 @@ export default {
                     }
                     
                 }
-                }
-                            
-
-                
-                this.rowsofevents.push(data)
-               
-                
+                }               
+            this.rowsofevents.push(data)               
                 
                 
             }); 

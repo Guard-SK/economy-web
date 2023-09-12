@@ -1,6 +1,6 @@
 
 <template>
-     {{ selectedUser }}
+     
     <div v-if="userrole == 'admin'" class="card">
     <Card>      
       
