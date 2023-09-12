@@ -18,7 +18,7 @@
 		</div>
 	  </nav>
 	  <div v-if="shown" class="flex flex-col md:flex-row justify-center items-center mb-4">
-		<span class="text-white pr-2">Nainstalovat nasu aplikaciu? <span class="text-gray-400">Nezaberie skoro ziadne miesto a vzdy ju budete mat poruke!</span></span>
+		<span class="text-white pr-2">Nainštalovať našu aplikáciu? <span class="text-gray-400">Nezaberie skoro žiadne miesto a vždy ju budete mať poruke!</span></span>
 
 		<button class="btn btn-primary mb-2 md:mb-0 mr-0 md:mr-2" @click="installPWA">
 			Inštalovať!
