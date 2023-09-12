@@ -24,9 +24,12 @@
             </Dropdown>
         </div>
     </div>
+    <div class="center2">
+    <div class="centercontainer">
     <div v-if="selectedevent!= null" class="eventcontainer">
         <div class="eventheader">
             <h1 class="font-semibold text-3xl eventheadertext">{{ selectedevent.name }}</h1>
+            
 
         </div>
         <Accordion :activeIndex="0">
@@ -45,8 +48,9 @@
         
         
     </AccordionTab>
-    <AccordionTab header="Transakcie">
-        <button v-if="userrole == 'admin'" class="text-base-content btn" v-on:click="openTransaction(nameofevent)">Pridat transakciu</button>
+     
+       
+        <!-- <button v-if="userrole == 'admin'" class="text-base-content btn" v-on:click="openTransaction(nameofevent)">Pridat transakciu</button>
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -57,22 +61,47 @@
                 <tr v-for="row in rows" :key="row.id">
                     
                     <td class="max-w-[220px] overflow-hidden text-primary-content truncate">{{ row['Transakcia'] }}</td>
-                    <td class="text-primary-content" :class="getCenaClass(row.cena)">{{ row['cena'] }}€</td>
-                    <td><button v-if="row.file !== false" @click="downloadFile(row.file)" class="btn btn-info">Download</button></td>
-                    <td><button v-if="userrole == 'admin'" class="btn btn-outline btn-error" @click="deletetransaction(row.iddoc,dialname,row.cena)">Vymazať</button></td>
+                    <td class="text-primary-content" :class="getCenaClass(row?.cena)">{{ row['cena'] }}€</td>
+                    <td><button v-if="row?.file !== false" @click="downloadFile(row?.file)" class="btn btn-info">Download</button></td>
+                    <td><button v-if="userrole == 'admin'" class="btn btn-outline btn-error" @click="deletetransaction(row?.iddoc,dialname,row?.cena)">Vymazať</button></td>
                 </tr>
             </tbody>
         </table>
+        
         <h3 >Celková cena udalosti:</h3><h3 :class="getCenaClass(shownevent.costofevent)">{{ shownevent.costofevent }}€</h3>
-    </AccordionTab>
+     -->
+    
     <AccordionTab header="Účasť">
         <div v-for="user in users" class="userinfo">
             <p>{{ user }}:</p> <span >{{ shownevent[user] }}</span>
         </div>
     </AccordionTab>
+    <AccordionTab header="Transakcie">
+
+    </AccordionTab>
+    
 </Accordion>
-<button class=" btn  btn-error stagger " style="color:white; font-size: 1em;position: relative;bottom: 0px;margin-top: 100px;margin-bottom: 10px;" @click="handleSignOut()" v-if="userrole== 'admin'"><p class="fontnav">Delete event</p></button>
+<table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th v-for="header in headersoftransactions" :key="header" class="text-primary-content">{{header}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="row in rows" :key="row.id">
+                    
+                    <td class="max-w-[220px] overflow-hidden text-primary-content truncate">{{ row['Transakcia'] }}</td>
+                    <td class="text-primary-content" :class="getCenaClass(row?.cena)">{{ row['cena'] }}€</td>
+                    <td><button v-if="row?.file !== false" @click="downloadFile(row?.file)" class="btn btn-info">Download</button></td>
+                    <td><button v-if="userrole == 'admin'" class="btn btn-outline btn-error" @click="deletetransaction(row?.iddoc,dialname,row?.cena)">Vymazať</button></td>
+                </tr>
+            </tbody>
+        </table>
+<button class=" btn  btn-error" style="color:white; font-size: 1em;position: relative;bottom: 0px;margin-top: 100px;margin-bottom: 10px;" @click="deleteevent()" v-if="userrole== 'admin'"><p class="fontnav">Delete event</p></button>
     </div>
+
+</div>
+</div>
 
     <p-dialog header="Header" modal  footer="Footer" v-model:visible="display">
         <template #header>
@@ -105,6 +134,7 @@ export default {
     },
     data() {
         return {
+            
             selectedevent:null,
             events:[],
             userrole: 'user',
@@ -162,6 +192,24 @@ export default {
         })
     },
     methods:{
+        async renewdata() {
+            this.events = []
+            const db = getFirestore()
+        const q = query(collection(db, "events"));
+        const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                const event = {name: doc.data().nameofevent,date: doc.data().dateofevent,doc:doc.id}
+                this.events.push(event)
+            })
+     
+        })
+        this.users = []
+        const usersSnap = await getDocs(collection(db,'users'))
+        usersSnap.forEach((doc)=>{
+            const username= doc.data().name + ' ' + doc.data().surname
+            this.users.push(username)
+        })
+        },
         getCenaClass(cena) {
         if (cena > 0) {
           return 'positive-cena';
@@ -219,6 +267,8 @@ export default {
         })
         await deleteDoc(doc(db,'transakcie',this.shownevent.nameofevent))
         await deleteDoc(doc(db,'events',this.shownevent.nameofevent))
+        this.selectedevent= null
+        this.renewdata()
         setTimeout(() => {
             this.$recalculate();
         }, 1000);
@@ -298,6 +348,17 @@ h2{
     text-align: left;
 
 }
+.centercontainer {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+max-width: 1000px;
+width: 100%;
+}
+.center2{
+    display: flex;
+  justify-content: center; /* Center horizontally */
+
+}
 .box {
   display: flex;
   align-items: center; 
@@ -369,8 +430,11 @@ h2{
     
 }
 .eventcontainer{
+   width: 100%;
+    
     height: 300px;
     background-color: #141414;
+
     
     height: fit-content;
    border-radius: 30px;
