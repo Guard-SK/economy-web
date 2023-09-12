@@ -94,7 +94,9 @@
                     <td class="max-w-[220px] overflow-hidden text-primary-content truncate">{{ row['Transakcia'] }}</td>
                     <td class="text-primary-content" :class="getCenaClass(row.cena)">{{ row['cena'] }}€</td>
                     <td><button v-if="row.file !== false" @click="downloadFile(row.file)" class="btn btn-info">Download</button></td>
-                    <td><button v-if="userrole == 'admin'" class="btn btn-outline btn-error" @click="deletetransaction(row.iddoc,dialname,row.cena)">Vymazať</button></td>
+                    <td><button v-if="userrole == 'admin'" class="btn btn-outline btn-error" @click="deletetransaction(row.iddoc,row.cena)">Vymazať</button></td>
+                  
+                 
                 </tr>
             </tbody>
         </table>
@@ -239,28 +241,31 @@ export default {
             
             this.shownevent= data.data()
             
-            try {
-            const db = getFirestore();
-            const docRef = collection(db, "transakcie", this.shownevent.nameofevent, 'transakcie');
-            let docs = await getDocs(docRef);
             this.rows = [];
-            docs.forEach((doc) => {
-                if (doc.id != 'number'){
-                const data = {
-                    iddoc: doc.id,
-                    Transakcia: doc.data().Transakcia,
-                    cena: doc.data().cena,
-                    file: doc.data().file
-                }
-                this.rows.push(data);
-            this.rows.sort((a, b) => a.Number - b.Number);
-            }});
-            for (var i = 0, len = this.rows.length; i < len; i++) {
-                delete this.rows[i].Number;
-            }
-        } catch (error) {
-            console.error(error);
-        }
+            const q = query(collection(db, "transakcie", this.shownevent.nameofevent, 'transakcie'));
+            const unsubscribe1 = onSnapshot(q, async (querySnapshot) => {
+                this.rows = [];
+                querySnapshot.forEach((doc)=>{
+                    if (doc.id != 'number'){
+                    const data = {
+                        iddoc: doc.id,
+                        Transakcia: doc.data().Transakcia,
+                        cena: doc.data().cena,
+                        file: doc.data().file
+                    }
+                    this.rows.push(data);
+                }})
+
+                 setTimeout(async () =>  {
+                    const snapeventcost = await getDoc(doc(db,'events',this.shownevent.nameofevent))
+                    this.shownevent.costofevent = snapeventcost.data().costofevent
+                    
+        }, 1000);
+                this.rows.sort((a, b) => a.Number - b.Number);
+                for (var i = 0, len = this.rows.length; i < len; i++) {
+                    delete this.rows[i].Number;
+            }})
+  
         },
         async deleteevent(){
         const db = getFirestore()
@@ -276,6 +281,28 @@ export default {
         setTimeout(() => {
             this.renewdata()
             this.$recalculate();
+        }, 1000);
+    },
+       
+    async deletetransaction(nameoftransaction2,price) {
+        const db = getFirestore()
+        const data2 = await getDocs(collection(db,'transakcie',this.shownevent.nameofevent,'transakcie'))
+        
+    
+        await deleteDoc(doc(db,'transakcie',this.shownevent.nameofevent,'transakcie',nameoftransaction2))
+        
+        let x = 0
+        data2.forEach( doc1 => {
+            if (doc1.id != 'number'){
+                
+                x += doc1.data().cena
+            }
+
+        })
+        x-= price
+        await setDoc(doc(db,'events',this.shownevent.nameofevent),{costofevent:x},{merge:true})
+                setTimeout(() => {
+                    this.$recalculate();
         }, 1000);
     },
     async uploadFile(eventnamepp) {
