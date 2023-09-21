@@ -135,17 +135,17 @@
 		  tl.fromTo(
 			box,
 			{ x: window.innerWidth, y: '50%',width: '0%' },
-			{ x: 0, y: '50%', width: '100%', duration: 0.5 }
+			{ x: 0, y: '50%', width: '100%', duration: 0.4 }
 		  );
 		  tl.fromTo(
 			box,
 			{ y: '50%',height:'20px', top:'50vh'},
-			{  y: "90px",height: calculatedHeight + 'px',top:0,duration: 0.5}
+			{  y: "90px",height: calculatedHeight + 'px',top:0,duration: 0.3}
 		  );
 
 		  tl.fromTo(('.stagger'),
 		  { opacity:0},
-		  { opacity: 1, pointerEvents: 'all', stagger: .1 }, )
+		  { opacity: 1, pointerEvents: 'all', stagger: .05 }, )
 		  
 		  if (this.isOpen ==true){
 			  tl.reverse(0)
