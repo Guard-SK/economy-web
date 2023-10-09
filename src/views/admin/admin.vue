@@ -11,6 +11,7 @@
             </TabMenu>
             <Dropdown v-model="selectedEvent" :options="events" optionLabel="nameofevent" :filter="true" placeholder="Vyber Udalost" :showClear="true" ></Dropdown>
             <button class="btn btn-primary px-auto" v-on:click="triggerFunction1">Prepočítať</button>
+            <button class="btn btn-primary px-auto" v-on:click="triggerFunction3">Print sum of funds</button>
           
             <Card v-if="selectedEvent != null" class="mt-5 darker-card">
                 <template #content >
@@ -117,6 +118,7 @@ export default {
       return{
           selectedEvent:null,
           activeIndex: 0,
+          sumofusers:0,
           users:[],  
           success1: false,
           userrole: 'user',
@@ -192,6 +194,17 @@ export default {
     },
   },
   methods:{
+    async triggerFunction3() {
+      const db = getFirestore()
+      const data3 =  await getDocs(collection(db,'users'))
+      data3.forEach(doc1 => {
+        var x5 = doc1.data().balanceofficial
+        this.sumofusers = this.sumofusers + x5
+
+      })
+      console.log(this.sumofusers)
+      this.sumofusers = 0
+    },
 
     async triggerFunction1() {
       this.$recalculate();

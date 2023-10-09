@@ -1,13 +1,14 @@
 <template>
 	<div class="navbar--fixed " >
 	  <nav class="mobile-navbar nav1" >
-		<span  @click='home' class="kartelb">Kartel 2.B</span>
+		<span  @click='home' class="kartelb">Kartel 2.B </span>
 		<div   v-if="isLoggedIn"  @click="animateBox" class="menu btn15" :class="{ open: isOpen, disabled: isDivDisabled }">
 		  <div v-if="isLoggedIn"  class="icon"></div>
 		</div>
 		<div class="container3" ref="box" >
 		  <ul style="height: 100%;">
-			<li class='stagger fontnav' style='color:white' v-if="isLoggedIn" >Balance : <p class="official-fond ">{{ balanceofficial }}€</p>  |<p class="unofficial-fond ">{{ balanceunofficial }}€</p></li>
+			
+			<li class='stagger fontnav' style='color:white' v-if="isLoggedIn" >Balance : <p class="official-fond ">{{ balanceofficial }}€</p>|<p class="unofficial-fond ">{{ balanceunofficial }}€</p>|<p class="positive-cena stagger  ">{{ sumofusers }}€</p></li>
 			<li><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/dashboard" class="stagger" v-if="isLoggedIn">Events</router-link></li>
 			<li><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/profile" class="stagger" v-if="isLoggedIn">My account</router-link></li>
 			<li><router-link @click="animateBox" :class="{ 'disabled': menuDisabled }" to="/notes" class="stagger" v-if="isLoggedIn">Notes</router-link></li>
@@ -31,7 +32,7 @@
 	</div>
   </template>
   <script>
-	import {getFirestore,getDoc,doc,onSnapshot} from "firebase/firestore" ;
+	import {getFirestore,getDoc,doc,onSnapshot,getDocs,collection} from "firebase/firestore" ;
 	import { getAuth, onAuthStateChanged, signOut } from '@firebase/auth';
 	import gsap from 'gsap';
 	import Cookies from "js-cookie";
@@ -49,6 +50,7 @@
 		  balanceofficial:0,
 		  balanceunofficial:0,
 		  shown: false,
+		  sumofusers: 0
 		};
 	  },
 	  computed: {
@@ -66,12 +68,18 @@
 	created() {
 		
 		let auth = getAuth()
-		onAuthStateChanged(auth, (user) => {
+		onAuthStateChanged(auth, async (user) => {
 			if (user) {
 				this.isLoggedIn = true
 				const db = getFirestore()
       			const uid = getAuth().currentUser.uid;
-				
+				  
+					const data3 =  await getDocs(collection(db,'users'))
+					data3.forEach(doc1 => {
+						var x5 = doc1.data().balanceofficial
+						this.sumofusers = this.sumofusers + x5
+
+					})
 				
 				onSnapshot(doc(db, "users", uid), (doc) => {
    					 this.balanceofficial = doc.data().balanceofficial
