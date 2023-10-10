@@ -212,7 +212,7 @@ methods: {
     },
 
         async pridatVklad() {
-            console.log(this.fondtype)
+            
             this.users.forEach(async doc1 =>{           
                 if (doc1.id == true){
                     const db = getFirestore()
@@ -229,6 +229,7 @@ methods: {
                             priceadded:parseFloat(this.priceppofinsert),
                             fond: this.fondtype
                         })
+                        console.log("success")
                         
                     }
                     
