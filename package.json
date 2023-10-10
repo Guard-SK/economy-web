@@ -2,9 +2,6 @@
   "name": "financeweb",
   "version": "1.1.1",
   "private": true,
-  "engines": {
-    "node": "14.21.3"
-  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build"
@@ -18,12 +15,10 @@
     "cors": "^2.8.5",
     "daisyui": "^2.46.1",
     "firebase": "^9.14.0",
-    "firebase-tools": "^12.6.2",
     "gsap": "^3.12.2",
     "primeicons": "^6.0.1",
     "primevue": "^3.21.0",
     "register-service-worker": "^1.7.2",
-    "thread-loader": "^4.0.2",
     "vue": "^3.2.45",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"
@@ -33,7 +28,7 @@
     "@vue/cli-plugin-pwa": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-plugin-vuex": "~5.0.0",
-    "@vue/cli-service": "^5.0.8",
+    "@vue/cli-service": "~5.0.0",
     "autoprefixer": "^10.4.13",
     "js-cookie": "^3.0.5",
     "node-sass": "^8.0.0",
