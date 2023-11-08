@@ -268,6 +268,7 @@
 	  background-color: #0c203e;
 	  width: 0;
 	  height: 20px ;
+	  font-size: 14px;
 	}
   .btn15{
 	  @include btn(15px, 15px);
