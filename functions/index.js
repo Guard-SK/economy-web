@@ -63,7 +63,12 @@ exports.recalculate = functions.https.onRequest(async (req, res) => {
 })
 });
 exports.returnTrue = functions.https.onRequest((request, response) => {
-  response.json({ result: true });
+    response.set('Access-Control-Allow-Origin', '*');
+  response.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS');
+  response.set('Access-Control-Allow-Headers', 'Content-Type');
+    response.json({ result: true });
+
+  
 });
 exports.createUser = functions.https.onRequest(async (req, res) => {
   corsHandler(req, res, async () => {
