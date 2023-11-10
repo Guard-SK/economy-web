@@ -62,7 +62,9 @@ exports.recalculate = functions.https.onRequest(async (req, res) => {
   }
 })
 });
-
+exports.returnTrue = functions.https.onRequest((request, response) => {
+  response.json({ result: true });
+});
 exports.createUser = functions.https.onRequest(async (req, res) => {
   corsHandler(req, res, async () => {
   try {
