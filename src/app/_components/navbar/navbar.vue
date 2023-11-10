@@ -80,7 +80,7 @@
 						this.sumofusers = this.sumofusers + x5
 
 					})
-				
+				this.sumofusers = parseFloat(this.sumofusers)
 				onSnapshot(doc(db, "users", uid), (doc) => {
    					 this.balanceofficial = doc.data().balanceofficial
 					 this.balanceunofficial = doc.data().balanceunofficial
