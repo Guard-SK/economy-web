@@ -74,7 +74,14 @@
           
           </template>
     </Card>
+    <div style="background-color:rgb(42, 50, 61);width: 100%;">
+      <div v-for="user in users" style="width: 100%;display: flex;justify-content: center;">
+      <p  style="color: white;font-size: 20px; padding: 20px;background-color:rgb(8, 27, 54) ; border-radius: 12px;width: 100%;margin: 20px;">
+        {{ user.fullname }} ----- {{ user.balanceofficial }}
+      </p>
     </div>
+  </div>
+    </div> 
 </template>
 <style>
   .darker-card {
